@@ -2,7 +2,8 @@ chatStream = new Meteor.Stream 'chat'
 
 IMAGE_SIZE = 64
 FACE_SIZE = 128
-NUM_KEYBOARD_NOTES = 127
+NUM_KEYBOARD_NOTES = 60
+KEYBOARD_START = 60
 
 rgb2Color = (r,g,b) ->
   "rgb(#{r},#{g},#{b})"
@@ -14,12 +15,14 @@ class Keyboard
     @canvasContext = canvas.getContext '2d'
 
   drawKeys: ->
-    freqR = 0.05
-    freqG = 0.05
-    freqB = 0.05
-    phaseR = 4
-    phaseG = 5
-    phaseB = 0
+    # Draws a rainbow keyboard
+    freq = 0.5
+    freqR = freq
+    freqG = freq
+    freqB = freq
+    phaseR = 0
+    phaseG = 2
+    phaseB = 4
     width = 128
     center = 127
     yInc = @height / NUM_KEYBOARD_NOTES
@@ -28,8 +31,37 @@ class Keyboard
       g = Math.round(Math.sin(freqG * i + phaseG) * width + center)
       b = Math.round(Math.sin(freqB * i + phaseB) * width + center)
       @canvasContext.fillStyle = rgb2Color(r, g, b)
-      console.log @canvasContext.fillStyle, i, r, g, b
       @canvasContext.fillRect 0, yInc * i, @width, @height
+
+class Synth
+  constructor: (@audioContext) ->
+    @vco = @_createVco()
+    @vca = @_createVca()
+    @vco.connect @vca
+    @vca.connect @audioContext.destination
+
+  playPad: (x, y) ->
+    midiNoteNumber = Math.round(y * NUM_KEYBOARD_NOTES) + KEYBOARD_START
+    @playMidiNote(midiNoteNumber)
+
+  playMidiNote: (midiNoteNumber) ->
+    noteFrequencyHz = 27.5 * Math.pow(2, (midiNoteNumber - 21) / 12)
+    @vco.frequency.value = noteFrequencyHz
+    @vca.gain.value = 1
+    window.setTimeout((=>
+      @vca.gain.value = 0), 50)
+
+  _createVco: ->
+    vco = @audioContext.createOscillator()
+    vco.type = vco.SQUARE
+    vco.frequency.value = 0
+    vco.start(0)
+    vco
+
+  _createVca: ->
+    vca = @audioContext.createGain()
+    vca.gain.value = 0
+    vca
 
 
 if Meteor.isClient
@@ -53,22 +85,12 @@ if Meteor.isClient
   faceCanvasContext = null
   faceLoaded = false
 
+  synth = null
+
 
   Meteor.startup ->
     window.AudioContext = window.AudioContext or window.webkitAudioContext
-    audioContext = new AudioContext()
-
-  playSound = (x, y) ->
-    oscillator = audioContext.createOscillator()
-    oscillator.type = oscillator.SINE
-    midiNote = Math.round(y * NUM_KEYBOARD_NOTES)
-    freq =27.5 * Math.pow(2, ((midiNote - 21)/12))
-    oscillator.frequency.value = freq
-    oscillator.connect(audioContext.destination)
-    oscillator.noteOn && oscillator.noteOn(0)
-    window.setTimeout((->
-      oscillator.disconnect()), 50)
-
+    synth = new Synth(new AudioContext())
 
   Template.controller.rendered = ->
     keyboardCanvas = @find '.keyboard'
@@ -99,7 +121,7 @@ if Meteor.isClient
 
     chatStream.on 'message', (message) ->
       [x, y] = [message.x, message.y]
-      playSound(x, y)
+      synth.playPad(x, y)
       updateBackgroundColour(x, y)
       rawX = x * window.innerWidth
       rawY = y * window.innerHeight
