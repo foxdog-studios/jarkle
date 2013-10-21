@@ -4,6 +4,34 @@ IMAGE_SIZE = 64
 FACE_SIZE = 128
 NUM_KEYBOARD_NOTES = 127
 
+rgb2Color = (r,g,b) ->
+  "rgb(#{r},#{g},#{b})"
+
+class Keyboard
+  constructor: (@canvas, @width, @height) ->
+    @canvas.width = @width
+    @canvas.height = @height
+    @canvasContext = canvas.getContext '2d'
+
+  drawKeys: ->
+    freqR = 0.05
+    freqG = 0.05
+    freqB = 0.05
+    phaseR = 4
+    phaseG = 5
+    phaseB = 0
+    width = 128
+    center = 127
+    yInc = @height / NUM_KEYBOARD_NOTES
+    for i in [0...NUM_KEYBOARD_NOTES]
+      r = Math.round(Math.sin(freqR * i + phaseR) * width + center)
+      g = Math.round(Math.sin(freqG * i + phaseG) * width + center)
+      b = Math.round(Math.sin(freqB * i + phaseB) * width + center)
+      @canvasContext.fillStyle = rgb2Color(r, g, b)
+      console.log @canvasContext.fillStyle, i, r, g, b
+      @canvasContext.fillRect 0, yInc * i, @width, @height
+
+
 if Meteor.isClient
   sendChat = (message) ->
     chatStream.emit 'message', message
@@ -29,7 +57,6 @@ if Meteor.isClient
   Meteor.startup ->
     window.AudioContext = window.AudioContext or window.webkitAudioContext
     audioContext = new AudioContext()
-    startSynth()
 
   playSound = (x, y) ->
     oscillator = audioContext.createOscillator()
@@ -44,6 +71,12 @@ if Meteor.isClient
 
 
   Template.controller.rendered = ->
+    keyboardCanvas = @find '.keyboard'
+    keyboard = new Keyboard(keyboardCanvas, window.innerWidth,
+                            window.innerHeight)
+    keyboard.drawKeys()
+
+
     imageCanvas = document.createElement 'canvas'
     imageCanvas.width = IMAGE_SIZE
     imageCanvas.height = IMAGE_SIZE
@@ -79,9 +112,6 @@ if Meteor.isClient
     canvasContext = canvas.getContext '2d'
     canvas.width = window.innerWidth
     canvas.height = window.innerHeight
-
-  startSynth = ->
-    midicps = T("midicps")
 
   updateBackgroundColour = (x, y) ->
     bgColor = "rgb(#{Math.round(x * 255)}, 40, #{Math.round(y * 255)})"

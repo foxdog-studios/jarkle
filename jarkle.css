@@ -1,4 +1,6 @@
-.info, .controller {
+.info,
+.controller,
+.keyboard {
   position: absolute;
   top: 0;
   bottom: 0;
