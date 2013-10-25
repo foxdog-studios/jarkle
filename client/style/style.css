@@ -7,6 +7,11 @@
   left: 0;
   right: 0;
 }
+
+.keyboard {
+  z-index: -1;
+}
+
 .controller {
   z-index: 1000;
 }
