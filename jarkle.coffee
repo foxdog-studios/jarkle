@@ -89,9 +89,13 @@ if Meteor.isClient
   synth = null
 
 
+  isSupportedSynthDevice = ->
+    Meteor.Device.isDesktop() or Meteor.Device.isTV()
+
   Meteor.startup ->
     window.AudioContext = window.AudioContext or window.webkitAudioContext
-    synth = new Synth(new AudioContext())
+    if isSupportedSynthDevice()
+      synth = new Synth(new AudioContext())
 
   Template.controller.rendered = ->
     keyboardCanvas = @find '.keyboard'
@@ -122,11 +126,12 @@ if Meteor.isClient
 
     chatStream.on 'message', (message) ->
       [x, y, noteOn] = [message.x, message.y, message.noteOn]
-      if noteOn
-        synth.playPad(x, y)
-      else
-        synth.stop()
-        return
+      if isSupportedSynthDevice()
+        if noteOn
+          synth.playPad(x, y)
+        else
+          synth.stop()
+          return
       updateBackgroundColour(x, y)
       rawX = x * window.innerWidth
       rawY = y * window.innerHeight

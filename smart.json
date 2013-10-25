@@ -1,6 +1,7 @@
 {
   "packages": {
     "streams": {},
-    "fastclick": {}
+    "fastclick": {},
+    "device-detection": {}
   }
 }

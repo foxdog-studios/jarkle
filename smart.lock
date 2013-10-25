@@ -3,7 +3,8 @@
   "dependencies": {
     "basePackages": {
       "streams": {},
-      "fastclick": {}
+      "fastclick": {},
+      "device-detection": {}
     },
     "packages": {
       "streams": {
@@ -15,6 +16,11 @@
         "git": "https://github.com/percolatestudio/meteor-fastclick",
         "tag": "v0.6.7",
         "commit": "fcb3bfd34d9f6874e626b4e24e8f54107938db41"
+      },
+      "device-detection": {
+        "git": "https://github.com/Mystor/meteor-device-detection.git",
+        "tag": "v0.1.4",
+        "commit": "9c8db3c2f7d7bd59b361697ab63f006c05aaf089"
       }
     }
   }
