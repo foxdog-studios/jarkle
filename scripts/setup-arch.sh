@@ -40,10 +40,17 @@ readonly REPO="$(
 
 cd -- "${REPO}"
 
+# Ensure a virtual enviroment is not activated
+if which deactivate &> /dev/null; then
+    deactivate
+fi
+
 # Install system packages
 sudo pacman --needed --noconfirm --sync --refresh \
     expect \
-    nodejs
+    nodejs \
+    python2 \
+    python2-virtualenv
 
 # Install bashir
 if ! which bashir &> /dev/null; then
@@ -57,4 +64,19 @@ fi
 # Install global nodejs packages
 sudo npm install -g \
     meteorite
+
+# Set up the virtual environment
+if [[ ! -d env ]]; then
+    virtualenv2 env
+fi
+
+set +o nounset
+source env/bin/activate
+set -o nounset
+
+pip install -r requirements.txt
+
+set +o nounset
+deactivate
+set -o nounset
 
