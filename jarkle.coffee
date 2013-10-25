@@ -2,8 +2,8 @@ chatStream = new Meteor.Stream 'chat'
 
 IMAGE_SIZE = 64
 FACE_SIZE = 128
-NUM_KEYBOARD_NOTES = 60
-KEYBOARD_START = 60
+NUM_KEYBOARD_NOTES = 127
+KEYBOARD_START = 0
 
 rgb2Color = (r,g,b) ->
   "rgb(#{r},#{g},#{b})"
@@ -48,8 +48,9 @@ class Synth
     noteFrequencyHz = 27.5 * Math.pow(2, (midiNoteNumber - 21) / 12)
     @vco.frequency.value = noteFrequencyHz
     @vca.gain.value = 1
-    window.setTimeout((=>
-      @vca.gain.value = 0), 50)
+
+  stop: ->
+    @vca.gain.value = 0
 
   _createVco: ->
     vco = @audioContext.createOscillator()
@@ -120,8 +121,12 @@ if Meteor.isClient
     face.src = 'face.png'
 
     chatStream.on 'message', (message) ->
-      [x, y] = [message.x, message.y]
-      synth.playPad(x, y)
+      [x, y, noteOn] = [message.x, message.y, message.noteOn]
+      if noteOn
+        synth.playPad(x, y)
+      else
+        synth.stop()
+        return
       updateBackgroundColour(x, y)
       rawX = x * window.innerWidth
       rawY = y * window.innerHeight
@@ -139,19 +144,24 @@ if Meteor.isClient
     bgColor = "rgb(#{Math.round(x * 255)}, 40, #{Math.round(y * 255)})"
     document.body.style.backgroundColor = bgColor
 
+  getXYFromEvent = (e) ->
+    if e.touches?
+      touch =  e.touches[0]
+      rawX = touch.pageX
+      rawY = touch.pageY
+    else
+      rawX = e.pageX
+      rawY = e.pageY
+    x = rawX / window.innerWidth
+    y = rawY / window.innerHeight
+    return rawX: rawX, rawY: rawY, x: x, y: y
+
   Template.controller.events
     'mousedown .controller, touchstart .controller, touchmove .controller': \
         (e) ->
-      if e.touches?
-        touch =  e.touches[0]
-        rawX = touch.pageX
-        rawY = touch.pageY
-      else
-        rawX = e.pageX
-        rawY = e.pageY
-      x = rawX / window.innerWidth
-      y = rawY / window.innerHeight
-      sendChat x: x, y: y
+      e.preventDefault()
+      {rawX, rawY, x, y} = getXYFromEvent(e)
+      sendChat x: x, y: y, noteOn: true
       if window.innerWidth != canvas.width
         canvas.width = window.innerWidth
         canvas.height = window.innerHeight
@@ -162,4 +172,9 @@ if Meteor.isClient
         canvasContext.drawImage imageCanvas, imageX, imageY,  \
             IMAGE_SIZE, IMAGE_SIZE
       updateBackgroundColour x, y
+
+    'mouseup .controller, touchcancel .controller, touchend .controller': (e) ->
+      e.preventDefault()
+      sendChat x: null, y: null, noteOn: false
+
 
