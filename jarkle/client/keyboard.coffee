@@ -2,20 +2,33 @@ rgb2Color = (r,g,b) ->
   "rgb(#{r},#{g},#{b})"
 
 @Keyboard = class Keyboard
-  constructor: (@canvas, @width, @height, @numNotes) ->
+  constructor: (@canvas, @width, @height, @numNotes, @pubSub, @eventType) ->
     @canvas.width = @width
     @canvas.height = @height
     @canvasContext = canvas.getContext '2d'
+    @pubSub.on @eventType, @drawRandomKeys
 
-  drawKeys: ->
+  _getRandomPhaseIncrement: ->
+    Math.random() * 2
+
+  drawRandomKeys: =>
+    phaseR = @_getRandomPhaseIncrement()
+    phaseG = phaseR + @_getRandomPhaseIncrement()
+    phaseB = phaseG + @_getRandomPhaseIncrement()
+    @drawKeys
+      phaseR: phaseR
+      phaseG: phaseG
+      phaseB: phaseB
+
+  drawKeys: (options) =>
     # Draws a rainbow keyboard
     freq = 0.05
     freqR = freq
     freqG = freq
     freqB = freq
-    phaseR = 0
-    phaseG = 2
-    phaseB = 4
+    phaseR = options?.phaseR or 0
+    phaseG = options?.phaseG or 2
+    phaseB = options?.phaseB or 4
     width = 128
     center = 127
     yInc = @height / @numNotes

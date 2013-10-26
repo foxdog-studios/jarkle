@@ -10,6 +10,7 @@ $ ->
   FastClick.attach(document.body)
 
 MESSAGE_RECIEVED = 'message-recieved'
+MIDI_NOTE_ON = 'midi-note-on'
 
 audioContext = null
 canvasContext = null
@@ -39,7 +40,8 @@ Template.controller.rendered = ->
 
   keyboardCanvas = @find '.keyboard'
   keyboard = new Keyboard(keyboardCanvas, window.innerWidth,
-                          window.innerHeight, NUM_KEYBOARD_NOTES)
+                          window.innerHeight, NUM_KEYBOARD_NOTES,
+                          pubSub, MIDI_NOTE_ON)
   keyboard.drawKeys()
 
   controller = @find '.controller'
@@ -56,4 +58,7 @@ Template.controller.rendered = ->
 
   chatStream.on 'message', (message) ->
     pubSub.trigger MESSAGE_RECIEVED, message
+
+  chatStream.on 'midiNoteOn', (noteNumber) ->
+    pubSub.trigger MIDI_NOTE_ON, noteNumber
 
