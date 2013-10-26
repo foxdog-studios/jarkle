@@ -3,7 +3,6 @@ FACE_SIZE = 128
 NUM_KEYBOARD_NOTES = 127
 KEYBOARD_START = 0
 
-
 sendChat = (message) ->
   chatStream.emit 'message', message
 
@@ -25,13 +24,13 @@ synth = null
 isSupportedSynthDevice = ->
   Meteor.Device.isDesktop() or Meteor.Device.isTV()
 
-Meteor.startup ->
-  window.AudioContext = window.AudioContext or window.webkitAudioContext
-  if isSupportedSynthDevice()
-    synth = new Synth(new AudioContext(), NUM_KEYBOARD_NOTES, KEYBOARD_START)
-
 Template.controller.rendered = ->
   pubSub = new PubSub
+
+  window.AudioContext = window.AudioContext or window.webkitAudioContext
+  if isSupportedSynthDevice()
+    synth = new Synth(new AudioContext(), NUM_KEYBOARD_NOTES, KEYBOARD_START,
+      pubSub, MESSAGE_RECIEVED)
 
   canvas = @find '.controller'
   canvasContext = canvas.getContext '2d'
@@ -52,16 +51,10 @@ Template.controller.rendered = ->
     TouchMessager.MESSAGE_SENT
 
   faceImage = new ImageCanvas FACE_SIZE, FACE_SIZE, 'face.png'
-  faceImageCanbadComposer = new ImageCanvasComposer canvas, faceImage, pubSub, \
+  faceImageCanvasComposer = new ImageCanvasComposer canvas, faceImage, pubSub, \
     MESSAGE_RECIEVED
 
   chatStream.on 'message', (message) ->
     [x, y, noteOn] = [message.x, message.y, message.noteOn]
-    if isSupportedSynthDevice()
-      if noteOn
-        synth.playPad(x, y)
-      else
-        synth.stop()
-        return
     pubSub.trigger MESSAGE_RECIEVED, message
 

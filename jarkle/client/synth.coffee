@@ -1,9 +1,16 @@
 @Synth = class Synth
-  constructor: (@audioContext, @numNotes, @startNote) ->
+  constructor: (@audioContext, @numNotes, @startNote, @pubSub, @eventType) ->
     @vco = @_createVco()
     @vca = @_createVca()
     @vco.connect @vca
     @vca.connect @audioContext.destination
+    @pubSub.on @eventType, @handleMessage
+
+  handleMessage: (message) =>
+    if message.noteOn
+      @playPad(message.x, message.y)
+    else
+      @stop()
 
   playPad: (x, y) ->
     midiNoteNumber = Math.round(y * @numNotes) + @startNote
