@@ -55,6 +55,5 @@ Template.controller.rendered = ->
     MESSAGE_RECIEVED
 
   chatStream.on 'message', (message) ->
-    [x, y, noteOn] = [message.x, message.y, message.noteOn]
     pubSub.trigger MESSAGE_RECIEVED, message
 

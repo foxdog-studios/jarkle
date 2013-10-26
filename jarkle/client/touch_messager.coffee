@@ -13,7 +13,7 @@
   sendTouchMessage: (touch, noteOn) ->
     x = touch.pageX / window.innerWidth
     y = touch.pageY / window.innerHeight
-    @sendMessage x: x, y: y, noteOn: noteOn
+    @sendMessage x: x, y: y, noteOn: noteOn, identifier: touch.identifier
 
   sendTouchNoteOnMessage: (touch) =>
     @sendTouchMessage touch, true
