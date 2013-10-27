@@ -29,9 +29,10 @@ Template.controller.rendered = ->
   pubSub = new PubSub
 
   window.AudioContext = window.AudioContext or window.webkitAudioContext
-  if isSupportedSynthDevice()
-    synth = new Synth(new AudioContext(), NUM_KEYBOARD_NOTES, KEYBOARD_START,
-      pubSub, MESSAGE_RECIEVED)
+  noteMap = new MajorKeyNoteMap NUM_KEYBOARD_NOTES, KEYBOARD_START, 'C'
+  #noteMap = new ChromaticNoteMap NUM_KEYBOARD_NOTES, KEYBOARD_START
+  if window.AudioContext? and isSupportedSynthDevice()
+    synth = new Synth(new AudioContext(), noteMap, pubSub, MESSAGE_RECIEVED)
 
   canvas = @find '.controller'
   canvasContext = canvas.getContext '2d'
@@ -40,9 +41,13 @@ Template.controller.rendered = ->
 
   keyboardCanvas = @find '.keyboard'
   keyboard = new Keyboard(keyboardCanvas, window.innerWidth,
-                          window.innerHeight, NUM_KEYBOARD_NOTES,
+                          window.innerHeight, noteMap.getNumberOfNotes(),
                           pubSub, MIDI_NOTE_ON)
   keyboard.drawKeys()
+
+  keysCanvas = @find '.keys'
+  keys = new Keys(keysCanvas, window.innerWidth, window.innerHeight,
+                  noteMap.getNumberOfNotes(), pubSub)
 
   controller = @find '.controller'
   touchController = new TouchController controller, pubSub

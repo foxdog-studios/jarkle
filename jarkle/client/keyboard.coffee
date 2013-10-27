@@ -1,7 +1,7 @@
-rgb2Color = (r,g,b) ->
+@rgb2Color = (r,g,b) ->
   "rgb(#{r},#{g},#{b})"
 
-@Keyboard = class Keyboard
+class @Keyboard
   constructor: (@canvas, @width, @height, @numNotes, @pubSub, @eventType) ->
     @canvas.width = @width
     @canvas.height = @height
@@ -38,4 +38,5 @@ rgb2Color = (r,g,b) ->
       b = Math.round(Math.sin(freqB * i + phaseB) * width + center)
       @canvasContext.fillStyle = rgb2Color(r, g, b)
       @canvasContext.fillRect 0, yInc * i, @width, @height
+
 

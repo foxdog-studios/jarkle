@@ -1,5 +1,5 @@
-@Synth = class Synth
-  constructor: (@audioContext, @numNotes, @startNote, @pubSub, @eventType) ->
+class @Synth
+  constructor: (@audioContext, @noteMap, @pubSub, @eventType) ->
     @pubSub.on @eventType, @handleMessage
     @voices = {}
 
@@ -10,7 +10,7 @@
       @stopPad(message.identifier)
 
   playPad: (x, y, identifier) ->
-    midiNoteNumber = Math.round(y * @numNotes) + @startNote
+    midiNoteNumber = @noteMap.getNote(y)
     voice = @voices[identifier]
     unless voice?
       voice = new Voice @audioContext
