@@ -43,5 +43,6 @@ source scripts/setup/arch-tasks.sh
 install_system_packages
 create_ve
 install_python_packages
+install_pygame
 install_global_node_packages
 
