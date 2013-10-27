@@ -13,7 +13,9 @@ node_global_packages=(
 )
 
 python_packages=(
-    git+https://github.com/foxdog-studios/conf.git@v2.0.2
+    'ws4py==0.3.2'
+    'git+https://github.com/foxdog-studios/conf.git@v2.0.2'
+    'git+https://github.com/foxdog-studios/pyddp.git'
 )
 
 python_version=2.7

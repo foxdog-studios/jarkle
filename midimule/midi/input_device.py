@@ -8,6 +8,7 @@ import sys
 
 import pygame.midi
 
+from midimule.midi.input_reader import InputReader
 
 logger = logging.getLogger(__name__)
 
@@ -21,9 +22,10 @@ class InputMidiDevice(object):
             raise ValueError('device is already open')
         logger.debug('Opening input MIDI device %d', self._device_id)
         self._device = pygame.midi.Input(self._device_id)
-        return self._device
+        return InputReader(self._device)
 
     def __exit__(self, type_, value, traceback):
+        logger.debug('Closing input MIDI device %d', self._device_id)
         try:
             stderr = sys.stderr
             with open(os.devnull, 'w') as devnull:

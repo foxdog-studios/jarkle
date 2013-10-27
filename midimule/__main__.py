@@ -7,6 +7,7 @@ from collections import OrderedDict
 import logging
 import os
 import sys
+import time
 
 
 LOG_LEVELS = (
@@ -54,8 +55,14 @@ def main(argv=None):
         else:
             device_id = util.request_input_device_id()
 
-        with manager.get_input_device(device_id) as input_device:
-            print(input_device)
+        with manager.get_input_device(device_id) as device:
+            while True:
+                e = device.try_read()
+                if e:
+                    print(e)
+                else:
+                    time.sleep(0.5)
+
 
     return 0
 
