@@ -30,6 +30,9 @@ hasWebGL = ->
   window.WebGLRenderingContext \
     and (canvas.getContext('webgl') or canvas.getContext('experimental-webgl'))
 
+useWebGL = ->
+  isSupportedSynthDevice() and hasWebGL()
+
 Template.controller.rendered = ->
   pubSub = new PubSub
 
@@ -45,10 +48,11 @@ Template.controller.rendered = ->
   canvas.height = window.innerHeight
 
 
-  if isSupportedSynthDevice() and hasWebGL()
+  if useWebGL()
     webGLDiv = @find '.webGLcontainer'
     webGLVis = new WebGLVisualisation(webGLDiv, window.innerWidth,
-                                      window.innerHeight)
+                                      window.innerHeight,
+                                      pubSub, MESSAGE_RECIEVED)
 
   else
     keyboardCanvas = @find '.keyboard'
@@ -69,9 +73,10 @@ Template.controller.rendered = ->
   dinoImageCanvasComposer = new ImageCanvasComposer controller, dinoImage, pubSub, \
     TouchMessager.MESSAGE_SENT
 
-  faceImage = new ImageCanvas FACE_SIZE, FACE_SIZE, 'face.png'
-  faceImageCanvasComposer = new ImageCanvasComposer controller, faceImage, pubSub, \
-    MESSAGE_RECIEVED
+  unless useWebGL()
+    faceImage = new ImageCanvas FACE_SIZE, FACE_SIZE, 'face.png'
+    faceImageCanvasComposer = new ImageCanvasComposer controller, faceImage, \
+      pubSub, MESSAGE_RECIEVED
 
   chatStream.on 'message', (message) ->
     pubSub.trigger MESSAGE_RECIEVED, message
