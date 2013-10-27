@@ -1,3 +1,4 @@
+*.pyc
 /bower_components/
 /conf/site/
 /env/
