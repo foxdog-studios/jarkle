@@ -1,6 +1,13 @@
+body {
+  background-color: #000;
+  color: #fff;
+}
+
+.webGLcontainer canvas,
 .info,
 .controller,
 .keys,
+.webGLcontainer,
 .keyboard {
   position: absolute;
   top: 0;

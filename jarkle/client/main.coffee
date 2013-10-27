@@ -25,6 +25,11 @@ synth = null
 isSupportedSynthDevice = ->
   Meteor.Device.isDesktop() or Meteor.Device.isTV()
 
+hasWebGL = ->
+  canvas = document.createElement('canvas')
+  window.WebGLRenderingContext \
+    and (canvas.getContext('webgl') or canvas.getContext('experimental-webgl'))
+
 Template.controller.rendered = ->
   pubSub = new PubSub
 
@@ -39,11 +44,18 @@ Template.controller.rendered = ->
   canvas.width = window.innerWidth
   canvas.height = window.innerHeight
 
-  keyboardCanvas = @find '.keyboard'
-  keyboard = new Keyboard(keyboardCanvas, window.innerWidth,
-                          window.innerHeight, noteMap.getNumberOfNotes(),
-                          pubSub, MIDI_NOTE_ON)
-  keyboard.drawKeys()
+
+  if isSupportedSynthDevice() and hasWebGL()
+    webGLDiv = @find '.webGLcontainer'
+    webGLVis = new WebGLVisualisation(webGLDiv, window.innerWidth,
+                                      window.innerHeight)
+
+  else
+    keyboardCanvas = @find '.keyboard'
+    keyboard = new Keyboard(keyboardCanvas, window.innerWidth,
+                            window.innerHeight, noteMap.getNumberOfNotes(),
+                            pubSub, MIDI_NOTE_ON)
+    keyboard.drawKeys()
 
   keysCanvas = @find '.keys'
   keys = new Keys(keysCanvas, window.innerWidth, window.innerHeight,
@@ -54,11 +66,11 @@ Template.controller.rendered = ->
   touchMessage = new TouchMessager chatStream, pubSub
 
   dinoImage = new ImageCanvas IMAGE_SIZE, IMAGE_SIZE, 'fatterdino.gif'
-  dinoImageCanvasComposer = new ImageCanvasComposer canvas, dinoImage, pubSub, \
+  dinoImageCanvasComposer = new ImageCanvasComposer controller, dinoImage, pubSub, \
     TouchMessager.MESSAGE_SENT
 
   faceImage = new ImageCanvas FACE_SIZE, FACE_SIZE, 'face.png'
-  faceImageCanvasComposer = new ImageCanvasComposer canvas, faceImage, pubSub, \
+  faceImageCanvasComposer = new ImageCanvasComposer controller, faceImage, pubSub, \
     MESSAGE_RECIEVED
 
   chatStream.on 'message', (message) ->
