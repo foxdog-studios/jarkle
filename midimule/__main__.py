@@ -9,6 +9,8 @@ import os
 import sys
 import time
 
+from ddp.client import DdpClient
+
 
 LOG_LEVELS = (
     logging.CRITICAL,
@@ -29,6 +31,7 @@ def build_argument_parser():
     parser.add_argument('-l', '--log-level', choices=LOG_NAME_TO_LEVEL.keys(),
                         default=LOG_LEVEL_TO_NAMES[logging.INFO])
     parser.add_argument('-d', '--device-id', type=int)
+    parser.add_argument('-m', '--meteor', default='127.0.0.1:3000')
     return parser
 
 
@@ -45,6 +48,9 @@ def main(argv=None):
             level=LOG_NAME_TO_LEVEL[args.log_level])
     logger = logging.getLogger(__name__)
 
+    client = DdpClient(args.meteor)
+    client.connect()
+
     from midimule.midi import get_midi_manager
     from midimule.midi import util
 
@@ -60,8 +66,9 @@ def main(argv=None):
                 e = device.try_read()
                 if e:
                     print(e)
+                    client.method_async('midiNoteOn', [64])
                 else:
-                    time.sleep(0.5)
+                    time.sleep(0.1)
 
 
     return 0
