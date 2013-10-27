@@ -65,8 +65,10 @@ def main(argv=None):
             while True:
                 e = device.try_read()
                 if e:
-                    print(e)
-                    client.method_async('midiNoteOn', [64])
+                    func, note, vel = e[0][:3]
+                    if func == 153 and note == 51 and vel > 0:
+                        print(e)
+                        client.method_async('midiNoteOn', [64])
                 else:
                     time.sleep(0.1)
 
