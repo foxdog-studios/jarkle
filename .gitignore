@@ -2,5 +2,5 @@
 /bower_components/
 /conf/site/
 /env/
-/tissue/client/lib/external/
+/jarkle/client/lib/external/**/*
 

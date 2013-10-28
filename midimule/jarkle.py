@@ -9,8 +9,9 @@ def jarkle(device, client):
         e = device.try_read()
         if e:
             func, note, vel = e[0][:3]
-            print(e)
-            client.method_async('midiNoteOn', [note])
+            if func != 248:
+                print(e)
+                client.method_async('midiNoteOn', [note])
         else:
             time.sleep(0.1)
 
