@@ -51,8 +51,9 @@ Template.controller.rendered = ->
   if useWebGL()
     webGLDiv = @find '.webGLcontainer'
     webGLVis = new WebGLVisualisation(webGLDiv, window.innerWidth,
-                                      window.innerHeight,
-                                      pubSub, MESSAGE_RECIEVED)
+                                      window.innerHeight)
+    pubSub.on MESSAGE_RECIEVED, webGLVis.updateCube
+    pubSub.on MIDI_NOTE_ON, webGLVis.updateSprite
 
   else
     keyboardCanvas = @find '.keyboard'

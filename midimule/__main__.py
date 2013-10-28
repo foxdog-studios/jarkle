@@ -7,7 +7,6 @@ from collections import OrderedDict
 import logging
 import os
 import sys
-import time
 
 from ddp.client import DdpClient
 
@@ -51,6 +50,7 @@ def main(argv=None):
     client = DdpClient(args.meteor)
     client.connect()
 
+    from midimule.jarkle import jarkle
     from midimule.midi import get_midi_manager
     from midimule.midi import util
 
@@ -62,15 +62,7 @@ def main(argv=None):
             device_id = util.request_input_device_id()
 
         with manager.get_input_device(device_id) as device:
-            while True:
-                e = device.try_read()
-                if e:
-                    func, note, vel = e[0][:3]
-                    if func == 153 and note == 51 and vel > 0:
-                        print(e)
-                        client.method_async('midiNoteOn', [64])
-                else:
-                    time.sleep(0.1)
+            jarkle(device, client)
 
     return 0
 
