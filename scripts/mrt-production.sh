@@ -47,6 +47,7 @@ cd "$repo"
 # =============================================================================
 
 git_check() {
+    echo "git check ${1} ${@:2}"
     git "$1" | grep -v "${@:2}"
 }
 
@@ -59,7 +60,8 @@ if git_check pull 'Already up-to-date.'; then
 fi
 
 if git_check status 'working directory clean'; then
-    abort 'Uncommited changes, aborting!'
+    #abort 'Uncommited changes, aborting!'
+    echo 'Uncommited'
 fi
 
 if git_check describe --regexp '-[0-9]\+-'; then
@@ -90,9 +92,9 @@ domain=$(conf "$meteor_setings" site domain)
 password=$(conf "$meteor_setings" site password)
 
 if [[ $REPLY =~ ^[Yy]$ ]]; then
-    echo "
+    expect -c "
         set timeout -1
-        spawn ./scripts/mrt.sh --settings \"$meteor_setings\" $action $domain
+        spawn ./scripts/mrt.sh $action $domain
         expect \"Password:\"
         send \"$password\r\"
         expect eof
