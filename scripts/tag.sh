@@ -6,7 +6,7 @@ set -o nounset
 repo=$(realpath "$(dirname "$(realpath -- "${BASH_SOURCE[0]}")")/..")
 cd -- "$repo"
 
-if git status | grep -v 'working directory clean'; then
+if ! git status | grep 'working directory clean'; then
     echo 'Uncommited changes, aborting!'
     exit 1
 fi

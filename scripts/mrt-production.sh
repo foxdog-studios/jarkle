@@ -46,24 +46,23 @@ cd "$repo"
 # = Git checks                                                                =
 # =============================================================================
 
-git_check() {
-    git "$1" | grep -v "${@:2}"
+git_present() {
+    git "$1" 2>&1 | grep "${@:2}"
 }
 
-if git_check branch '* master'; then
+if ! git_present branch '* master'; then
     abort 'Not on master branch, aborting!'
 fi
 
-if git_check pull 'Already up-to-date.'; then
+if ! git_present pull 'Already up-to-date.'; then
     abort 'Pulled changes, aborting!'
 fi
 
-if git_check status 'working directory clean'; then
-    #abort 'Uncommited changes, aborting!'
-    echo 'Uncommited'
+if ! git_present status 'working directory clean'; then
+    abort 'Uncommited changes, aborting!'
 fi
 
-if git_check describe --regexp '-[0-9]\+-'; then
+if git_present describe --regexp '-[0-9]\+-'; then
     abort 'Not on a tagged commit, aborting!'
 fi
 
