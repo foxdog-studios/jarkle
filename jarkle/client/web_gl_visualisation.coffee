@@ -7,9 +7,9 @@ CUBE_DECREMENTS = DRAW_DISTANCE / 1000
 CUBE_DISTANCE_LIMIT = 100
 NUM_CUBES = 50
 NUM_SPRITES = 20
-DINO_HEAD_OBJ = 'dino-head.obj'
-DINO_HEAD_MTL = 'dino-head.mtl'
-NUM_DINO_HEADS = 5
+TRAIL_HEAD_OBJ = 'pug.obj'
+TRAIL_HEAD_MTL = 'pug.mtl'
+NUM_TRAIL_HEADS = 5
 
 class @WebGLVisualisation
   constructor: (@el, @width, @height) ->
@@ -109,21 +109,21 @@ class @WebGLVisualisation
 
 
   _initObj: ->
-    @dinoHeads = []
-    @dinoIndex = 0
+    @trailHeads = []
+    @headIndex = 0
     manager = new THREE.LoadingManager()
     manager.onProgress = (item, loaded, total) ->
       console.log item, loaded, total
     loader = new THREE.OBJMTLLoader(manager)
-    loader.load DINO_HEAD_OBJ, DINO_HEAD_MTL, (object) =>
+    loader.load TRAIL_HEAD_OBJ, TRAIL_HEAD_MTL, (object) =>
       object.position.z = -10
       object.scale.multiplyScalar(0.15)
-      for i in [0...NUM_DINO_HEADS]
-        dino = object.clone()
-        dino.traverse (obj) ->
+      for i in [0...NUM_TRAIL_HEADS]
+        head = object.clone()
+        head.traverse (obj) ->
           obj.visible = false
-        @dinoHeads.push dino
-        @scene.add dino
+        @trailHeads.push head
+        @scene.add head
 
 
   updateCube: (message) =>
@@ -194,20 +194,20 @@ class @WebGLVisualisation
         cube.visible = false
         cube.active = false
 
-    dinoIndex = 0
+    headIndex = 0
     for id, touchData of @touchMap
-      dinoHead = @dinoHeads[dinoIndex]
+      trailHead = @trailHeads[headIndex]
       if touchData.on
         cube = @_cycleCube(touchData.x, touchData.y)
-        dinoHead.position.copy(cube.position)
-        dinoHead.traverse (obj) ->
+        trailHead.position.copy(cube.position)
+        trailHead.traverse (obj) ->
           obj.visible = true
       else
-        dinoHead.position.z -= CUBE_DECREMENTS
-        if dinoHead.position.z < -CUBE_DISTANCE_LIMIT
-          dinoHead.traverse (obj) ->
+        trailHead.position.z -= CUBE_DECREMENTS
+        if trailHead.position.z < -CUBE_DISTANCE_LIMIT
+          trailHead.traverse (obj) ->
             obj.visible = false
-      dinoIndex += 1
+      headIndex += 1
 
     for sprite, spriteIndex in @sprites
       if not sprite.active
