@@ -54,6 +54,7 @@ Template.controller.rendered = ->
                                       window.innerHeight)
     pubSub.on MESSAGE_RECIEVED, webGLVis.updateCube
     pubSub.on MIDI_NOTE_ON, webGLVis.updateSprite
+    pubSub.on MIDI_NOTE_ON, webGLVis.updateFoxHeads
 
   else
     keyboardCanvas = @find '.keyboard'

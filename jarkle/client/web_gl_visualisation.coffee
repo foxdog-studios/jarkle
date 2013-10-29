@@ -10,6 +10,10 @@ NUM_SPRITES = 20
 TRAIL_HEAD_OBJ = 'pug.obj'
 TRAIL_HEAD_MTL = 'pug.mtl'
 NUM_TRAIL_HEADS = 5
+FOX_HEAD_OBJ = 'fox.obj'
+FOX_HEAD_MTL = 'fox.mtl'
+NUM_FOX_HEADS = 5
+OBJ_SCALE_MULTIPLER = 0.15
 
 class @WebGLVisualisation
   constructor: (@el, @width, @height) ->
@@ -117,13 +121,26 @@ class @WebGLVisualisation
     loader = new THREE.OBJMTLLoader(manager)
     loader.load TRAIL_HEAD_OBJ, TRAIL_HEAD_MTL, (object) =>
       object.position.z = -10
-      object.scale.multiplyScalar(0.15)
+      object.scale.multiplyScalar OBJ_SCALE_MULTIPLER
       for i in [0...NUM_TRAIL_HEADS]
         head = object.clone()
         head.traverse (obj) ->
           obj.visible = false
         @trailHeads.push head
         @scene.add head
+
+    @foxHeads = []
+    @foxHeadIndex = 0
+
+    loader.load FOX_HEAD_OBJ, FOX_HEAD_MTL, (object) =>
+      object.scale.multiplyScalar OBJ_SCALE_MULTIPLER
+      for i in [0...NUM_FOX_HEADS]
+        head = object.clone()
+        head.traverse (obj) ->
+          obj.visible = false
+        @foxHeads.push head
+        @scene.add head
+
 
 
   updateCube: (message) =>
@@ -173,6 +190,16 @@ class @WebGLVisualisation
     if addSpriteToScene
       @scene.add sprite
 
+  updateFoxHeads: (message) =>
+    foxHead = @foxHeads[@foxHeadIndex]
+    @foxHeadIndex = (@foxHeadIndex + 1) % @foxHeads.length
+    foxHead.position.x = Math.random() * 20 - 10
+    foxHead.position.y = Math.random() * 20 - 10
+    foxHead.position.z = 0
+    foxHead.active = true
+    foxHead.traverse (object) ->
+      object.visible = true
+
   render: =>
     requestAnimationFrame @render
     @controls.update()
@@ -216,4 +243,16 @@ class @WebGLVisualisation
       if sprite.position.z < -CUBE_DISTANCE_LIMIT
         @scene.remove sprite
         sprite.active = false
+
+    for foxHead, foxHeadIndex in @foxHeads
+      if not foxHead.active
+        continue
+      foxHead.position.z -= CUBE_DECREMENTS
+      if foxHead.position.z < -CUBE_DISTANCE_LIMIT
+        foxHead.traverse (object) ->
+          object.visible = false
+        foxHead.active = false
+
+
+
 
