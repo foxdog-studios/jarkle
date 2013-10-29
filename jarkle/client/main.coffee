@@ -13,6 +13,7 @@ $ ->
 MESSAGE_RECIEVED = 'message-recieved'
 MIDI_NOTE_ON = 'midi-note-on'
 RESTART_BLACKEN = 'restart-blacken'
+SKELETON = 'skeleton'
 
 audioContext = null
 canvasContext = null
@@ -56,6 +57,7 @@ Template.controller.rendered = ->
                                       window.innerHeight)
     pubSub.on MESSAGE_RECIEVED, webGLVis.updateCube
     pubSub.on MIDI_NOTE_ON, webGLVis.updateFoxHeads
+    pubSub.on SKELETON, webGLVis.updateSkeleton
 
   else
     keyboardCanvas = @find '.keyboard'
@@ -88,4 +90,9 @@ Template.controller.rendered = ->
 
   chatStream.on 'midiNoteOn', (noteNumber) ->
     pubSub.trigger MIDI_NOTE_ON, noteNumber
+
+  if useWebGL()
+    chatStream.on 'skeleton', (skeleton) ->
+      pubSub.trigger SKELETON, skeleton
+
 

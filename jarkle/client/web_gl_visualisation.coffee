@@ -77,6 +77,8 @@ class @WebGLVisualisation
     @_initParticles()
     @_initObj()
 
+    @skeleton = new Skeleton @scene
+
     ambientLight = new THREE.AmbientLight(0x888888)
     @scene.add ambientLight
 
@@ -221,6 +223,10 @@ class @WebGLVisualisation
     foxHead.active = true
     foxHead.traverse (object) ->
       object.visible = true
+
+
+  updateSkeleton: (skeletons) =>
+    @skeleton.update skeletons[0].skeleton
 
   render: =>
     requestAnimationFrame @render
