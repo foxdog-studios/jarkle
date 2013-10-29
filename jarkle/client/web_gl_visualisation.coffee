@@ -40,8 +40,16 @@ class @WebGLVisualisation
     @el.appendChild @renderer.domElement
     @camera.position.z = 5
 
+    window.addEventListener 'resize', @_resizeToWindow, false
+
     @render()
 
+  _resizeToWindow: =>
+    @width = window.innerWidth
+    @height = window.innerHeight
+    @renderer.setSize @width, @height
+    @camera.aspect = @width / @height
+    @camera.updateProjectionMatrix()
 
   _initCubes: ->
     @cubes = []
