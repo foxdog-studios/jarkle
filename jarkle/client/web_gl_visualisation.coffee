@@ -9,9 +9,12 @@ NUM_CUBES = 50
 NUM_SPRITES = 20
 DINO_HEAD_OBJ = 'dino-head.obj'
 DINO_HEAD_MTL = 'dino-head.mtl'
+NUM_DINO_HEADS = 5
 
 class @WebGLVisualisation
   constructor: (@el, @width, @height) ->
+
+    @touchMap = {}
 
     @scene = new THREE.Scene()
 
@@ -20,10 +23,8 @@ class @WebGLVisualisation
     @_initParticles()
     @_initObj()
 
-    ambientLight = new THREE.AmbientLight(0xFFFFFF)
+    ambientLight = new THREE.AmbientLight(0x888888)
     @scene.add ambientLight
-
-
 
     directionalLight = new THREE.DirectionalLight( 0xffeedd )
     directionalLight.position.set( 0, 0, 1 ).normalize()
@@ -50,7 +51,9 @@ class @WebGLVisualisation
       cubeGeometry = new THREE.CubeGeometry(1, 1, 1)
       cubeMaterial = new THREE.MeshBasicMaterial(color: 0x00FF00)
       cube = new THREE.Mesh(cubeGeometry, cubeMaterial)
+      cube.visible = false
       @cubes.push cube
+      @scene.add cube
 
 
   _initParticles: ->
@@ -98,29 +101,51 @@ class @WebGLVisualisation
 
 
   _initObj: ->
+    @dinoHeads = []
+    @dinoIndex = 0
     manager = new THREE.LoadingManager()
     manager.onProgress = (item, loaded, total) ->
       console.log item, loaded, total
     loader = new THREE.OBJMTLLoader(manager)
     loader.load DINO_HEAD_OBJ, DINO_HEAD_MTL, (object) =>
       object.position.z = -10
-      object.scale.multiplyScalar(0.2)
-      @dinoHead = object
-      @scene.add object
+      object.scale.multiplyScalar(0.15)
+      for i in [0...NUM_DINO_HEADS]
+        dino = object.clone()
+        dino.traverse (obj) ->
+          obj.visible = false
+        @dinoHeads.push dino
+        @scene.add dino
 
 
   updateCube: (message) =>
-    cartesianX = message.x - 0.5
-    cartesianY = (-message.y) + 0.5
+
+    screenScale = 10
+    cartesianX = (message.x - 0.5) * screenScale
+    cartesianY = ((-message.y) + 0.5) * screenScale
+
+    cube = @_cycleCube(cartesianX, cartesianY)
+
+    switch message.type
+      when 'touchstart', 'touchmove'
+        @touchMap[message.identifier] =
+          on: true
+          x: cartesianX
+          y: cartesianY
+          cube: cube
+      when 'touchend'
+        @touchMap[message.identifier].on = false
+
+
+  _cycleCube: (x, y) ->
     cube = @cubes[@cubeIndex]
     @cubeIndex = (@cubeIndex + 1) % @cubes.length
-    addCubeToScene = not cube.active
     cube.active = true
-    cube.position.x = cartesianX * 10
-    cube.position.y = cartesianY * 10
+    cube.position.x = x
+    cube.position.y = y
     cube.position.z = 0
-    if addCubeToScene
-      @scene.add cube
+    cube.visible = true
+    cube
 
 
   updateSprite: (message) =>
@@ -158,10 +183,24 @@ class @WebGLVisualisation
         maxCubePosition = cube.position.clone()
       cube.position.z -= CUBE_DECREMENTS
       if cube.position.z < -CUBE_DISTANCE_LIMIT
-        @scene.remove cube
+        cube.visible = false
         cube.active = false
-    if maxCubeZ > -Infinity and @dinoHead?
-      @dinoHead.position.copy(maxCubePosition)
+
+    dinoIndex = 0
+    for id, touchData of @touchMap
+      dinoHead = @dinoHeads[dinoIndex]
+      if touchData.on
+        cube = @_cycleCube(touchData.x, touchData.y)
+        dinoHead.position.copy(cube.position)
+        dinoHead.traverse (obj) ->
+          obj.visible = true
+      else
+        dinoHead.position.z -= CUBE_DECREMENTS
+        if dinoHead.position.z < -CUBE_DISTANCE_LIMIT
+          dinoHead.traverse (obj) ->
+            obj.visible = false
+      dinoIndex += 1
+
     for sprite, spriteIndex in @sprites
       if not sprite.active
         continue

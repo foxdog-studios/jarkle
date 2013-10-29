@@ -15,6 +15,7 @@
     evt.preventDefault()
     touches = evt.changedTouches
     for touch in touches
+      touch.type = evt.type
       @onGoingTouches.push(@_copyTouch(touch))
       @pubSub.trigger TouchController.TOUCH_START, touch
 
@@ -23,6 +24,7 @@
     touches = evt.changedTouches
     for touch in touches
       index = @_ongoingTouchIndexById(touch.identifier)
+      touch.type = evt.type
       @pubSub.trigger TouchController.TOUCH_END, touch
       unless index >= 0
         # could not find the touch to end
@@ -37,6 +39,7 @@
     evt.preventDefault()
     touches = evt.changedTouches
     for touch in touches
+      touch.type = evt.type
       index = @_ongoingTouchIndexById(touch.identifier)
       @pubSub.trigger TouchController.TOUCH_MOVE, touch
       unless index >= 0
