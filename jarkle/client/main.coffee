@@ -39,7 +39,8 @@ Template.controller.rendered = ->
   pubSub = new PubSub
 
   window.AudioContext = window.AudioContext or window.webkitAudioContext
-  noteMap = new MajorKeyNoteMap NUM_KEYBOARD_NOTES, KEYBOARD_START, 'C'
+  noteMap = new MajorKeyNoteMap(NUM_KEYBOARD_NOTES, KEYBOARD_START, 'A',
+                                PENTATONIC_INTERVALS)
   #noteMap = new ChromaticNoteMap NUM_KEYBOARD_NOTES, KEYBOARD_START
   if window.AudioContext? and isSupportedSynthDevice()
     synth = new Synth(new AudioContext(), noteMap, pubSub, MESSAGE_RECIEVED)

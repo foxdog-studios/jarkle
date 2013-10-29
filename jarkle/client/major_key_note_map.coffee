@@ -1,6 +1,6 @@
 TONE = 2
 SEMI_TONE = 1
-MAJOR_KEY_INTERVALS = [
+@MAJOR_KEY_INTERVALS = [
   TONE
   TONE
   SEMI_TONE
@@ -8,6 +8,14 @@ MAJOR_KEY_INTERVALS = [
   TONE
   TONE
   SEMI_TONE
+]
+
+@PENTATONIC_INTERVALS = [
+  TONE + SEMI_TONE
+  TONE
+  TONE
+  TONE + SEMI_TONE
+  TONE
 ]
 
 KEY_MAP =
@@ -27,7 +35,7 @@ KEY_MAP =
 MAX_NOTES = 127
 
 class @MajorKeyNoteMap
-  constructor: (@numNotes, @startNote, @key) ->
+  constructor: (@numNotes, @startNote, @key, @intervals) ->
     @noteMap = []
     currentNoteNumber = KEY_MAP[@key]
     while currentNoteNumber < @startNote
@@ -35,9 +43,9 @@ class @MajorKeyNoteMap
     intervals_index = 0
     while currentNoteNumber < @numNotes
       @noteMap.push currentNoteNumber
-      interval = MAJOR_KEY_INTERVALS[intervals_index]
+      interval = @intervals[intervals_index]
       currentNoteNumber += interval
-      intervals_index = (intervals_index + 1) % MAJOR_KEY_INTERVALS.length
+      intervals_index = (intervals_index + 1) % @intervals.length
 
   getNote: (index) ->
     @noteMap[Math.round(index * @noteMap.length)]
