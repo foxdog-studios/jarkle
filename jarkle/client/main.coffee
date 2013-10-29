@@ -47,13 +47,11 @@ Template.controller.rendered = ->
   canvas.width = window.innerWidth
   canvas.height = window.innerHeight
 
-
   if useWebGL()
     webGLDiv = @find '.webGLcontainer'
     webGLVis = new WebGLVisualisation(webGLDiv, window.innerWidth,
                                       window.innerHeight)
     pubSub.on MESSAGE_RECIEVED, webGLVis.updateCube
-    pubSub.on MIDI_NOTE_ON, webGLVis.updateSprite
     pubSub.on MIDI_NOTE_ON, webGLVis.updateFoxHeads
 
   else

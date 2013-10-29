@@ -6,13 +6,12 @@ X_DRAW_INCREMENTS = DRAW_DISTANCE / 100
 CUBE_DECREMENTS = DRAW_DISTANCE / 1000
 CUBE_DISTANCE_LIMIT = 100
 NUM_CUBES = 50
-NUM_SPRITES = 20
 TRAIL_HEAD_OBJ = 'pug.obj'
 TRAIL_HEAD_MTL = 'pug.mtl'
 NUM_TRAIL_HEADS = 5
 FOX_HEAD_OBJ = 'fox.obj'
 FOX_HEAD_MTL = 'fox.mtl'
-NUM_FOX_HEADS = 5
+NUM_FOX_HEADS = 20
 OBJ_SCALE_MULTIPLER = 0.15
 
 class @WebGLVisualisation
@@ -23,7 +22,6 @@ class @WebGLVisualisation
     @scene = new THREE.Scene()
 
     @_initCubes()
-    @_initSprites(['face.png', 'advocaat.png', 'grapes.png'], NUM_SPRITES)
     @_initParticles()
     @_initObj()
 
@@ -97,21 +95,6 @@ class @WebGLVisualisation
       @scene.add particleGroup
 
 
-  _initSprites: (spriteUrls, numberOfSprites) ->
-    @sprites = []
-    @spriteIndex = 0
-    for i in [0...numberOfSprites]
-      spriteUrl = spriteUrls[i % spriteUrls.length]
-      map = THREE.ImageUtils.loadTexture spriteUrl
-      material = new THREE.SpriteMaterial
-        map: map
-        useScreenCoordinates: false
-        color: 0xffffff
-        fog: true
-      sprite = new THREE.Sprite material
-      @sprites.push sprite
-
-
   _initObj: ->
     @trailHeads = []
     @headIndex = 0
@@ -172,24 +155,6 @@ class @WebGLVisualisation
     cube.visible = true
     cube
 
-
-  updateSprite: (message) =>
-    r = Math.floor(Math.random() * 255)
-    g = Math.floor(Math.random() * 255)
-    b = Math.floor(Math.random() * 255)
-    sprite = @sprites[@spriteIndex]
-    message = (message  / 127) * 10
-    sprite.scale.set(message, message, message)
-    sprite.material.color = new THREE.Color("rgb(#{r},#{g},#{b})")
-    @spriteIndex = (@spriteIndex + 1) % @sprites.length
-    addSpriteToScene = not sprite.active
-    sprite.active = true
-    sprite.position.x = Math.random() * 20 - 10
-    sprite.position.y = Math.random() * 20 - 10
-    sprite.position.z = 0
-    if addSpriteToScene
-      @scene.add sprite
-
   updateFoxHeads: (message) =>
     foxHead = @foxHeads[@foxHeadIndex]
     @foxHeadIndex = (@foxHeadIndex + 1) % @foxHeads.length
@@ -235,14 +200,6 @@ class @WebGLVisualisation
           trailHead.traverse (obj) ->
             obj.visible = false
       headIndex += 1
-
-    for sprite, spriteIndex in @sprites
-      if not sprite.active
-        continue
-      sprite.position.z -= CUBE_DECREMENTS
-      if sprite.position.z < -CUBE_DISTANCE_LIMIT
-        @scene.remove sprite
-        sprite.active = false
 
     for foxHead, foxHeadIndex in @foxHeads
       if not foxHead.active
