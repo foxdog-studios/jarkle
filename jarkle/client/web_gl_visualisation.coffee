@@ -13,6 +13,58 @@ FOX_HEAD_OBJ = 'fox.obj'
 FOX_HEAD_MTL = 'fox.mtl'
 NUM_FOX_HEADS = 20
 OBJ_SCALE_MULTIPLER = 0.15
+FOX_HEAD_START_X = 15
+FOX_HEAD_START_Y = 10
+FOX_START_Z = -2
+
+BASS_DRUM_1 = 33
+BASS_DRUM_2 = 36
+SNARE_DRUM_1 = 31
+HI_HAT_CLOSED = 42
+LOW_TOM_1 = 43
+HI_HAT_PEDAL = 44
+HI_HAT_OPEN = 46
+MID_TOM_1 = 47
+CRASH_CYMBAL_1 = 49
+HIGH_TOM_1 = 48
+RIDE_CYMBAL_1 = 51
+
+POSTION_SCALE = 5
+POSITIONS = {}
+POSITIONS[BASS_DRUM_1] =
+  x: 0
+  y: -1
+POSITIONS[BASS_DRUM_2] =
+  x: 1
+  y: 1
+POSITIONS[SNARE_DRUM_1] =
+  x: -1
+  y: 0
+POSITIONS[HI_HAT_CLOSED] =
+  x: -1
+  y: 1
+POSITIONS[LOW_TOM_1] =
+  x: 1
+  y: -1
+POSITIONS[HI_HAT_PEDAL] =
+  x: 0.25
+  y: 0.25
+POSITIONS[HI_HAT_OPEN] =
+  x: -1
+  y: -1
+POSITIONS[MID_TOM_1] =
+  x: 1
+  y: 0.5
+POSITIONS[CRASH_CYMBAL_1] =
+  x: -1
+  y: 1
+POSITIONS[HIGH_TOM_1] =
+  x: 0
+  y: 0.25
+POSITIONS[RIDE_CYMBAL_1] =
+  x: 0.5
+  y: 1
+
 
 class @WebGLVisualisation
   constructor: (@el, @width, @height) ->
@@ -130,7 +182,7 @@ class @WebGLVisualisation
 
     screenScale = 10
     cartesianX = (message.x - 0.5) * screenScale
-    cartesianY = ((-message.y) + 0.5) * screenScale
+    cartesianY = ((message.y) - 0.5) * screenScale
 
     cube = @_cycleCube(cartesianX, cartesianY)
 
@@ -157,10 +209,15 @@ class @WebGLVisualisation
 
   updateFoxHeads: (message) =>
     foxHead = @foxHeads[@foxHeadIndex]
+    unless foxHead?
+      return
     @foxHeadIndex = (@foxHeadIndex + 1) % @foxHeads.length
-    foxHead.position.x = Math.random() * 20 - 10
-    foxHead.position.y = Math.random() * 20 - 10
-    foxHead.position.z = 0
+    position = POSITIONS[message]
+    unless position?
+      return
+    foxHead.position.x = position.x * POSTION_SCALE
+    foxHead.position.y = position.y * POSTION_SCALE
+    foxHead.position.z = FOX_START_Z
     foxHead.active = true
     foxHead.traverse (object) ->
       object.visible = true
