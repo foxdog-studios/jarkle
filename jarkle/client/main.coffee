@@ -2,6 +2,7 @@ IMAGE_SIZE = 64
 FACE_SIZE = 128
 NUM_KEYBOARD_NOTES = 127
 KEYBOARD_START = 0
+TIME_OUT = 1000
 
 sendChat = (message) ->
   chatStream.emit 'message', message
@@ -11,6 +12,7 @@ $ ->
 
 MESSAGE_RECIEVED = 'message-recieved'
 MIDI_NOTE_ON = 'midi-note-on'
+RESTART_BLACKEN = 'restart-blacken'
 
 audioContext = null
 canvasContext = null
@@ -70,13 +72,15 @@ Template.controller.rendered = ->
   touchMessage = new TouchMessager chatStream, pubSub
 
   dinoImage = new ImageCanvas IMAGE_SIZE, IMAGE_SIZE, 'fatterdino.gif'
-  dinoImageCanvasComposer = new ImageCanvasComposer controller, dinoImage, pubSub, \
-    TouchMessager.MESSAGE_SENT
+  dinoImageCanvasComposer = new ImageCanvasComposer controller, dinoImage, \
+    pubSub, TouchMessager.MESSAGE_SENT
 
   unless useWebGL()
     faceImage = new ImageCanvas FACE_SIZE, FACE_SIZE, 'face.png'
     faceImageCanvasComposer = new ImageCanvasComposer controller, faceImage, \
       pubSub, MESSAGE_RECIEVED
+    blackenScreenTimeout = new BlackScreenTimeout(controller, TIME_OUT)
+    pubSub.on TouchMessager.MESSAGE_SENT, blackenScreenTimeout.restartTimeout
 
   chatStream.on 'message', (message) ->
     pubSub.trigger MESSAGE_RECIEVED, message
