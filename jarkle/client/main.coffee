@@ -14,6 +14,7 @@ MESSAGE_RECIEVED = 'message-recieved'
 MIDI_NOTE_ON = 'midi-note-on'
 RESTART_BLACKEN = 'restart-blacken'
 SKELETON = 'skeleton'
+@PAIRS_TOUCHING = 'pairs-touching'
 
 audioContext = null
 canvasContext = null
@@ -42,9 +43,8 @@ Template.controller.rendered = ->
   window.AudioContext = window.AudioContext or window.webkitAudioContext
   noteMap = new MajorKeyNoteMap(NUM_KEYBOARD_NOTES, KEYBOARD_START, 'A',
                                 PENTATONIC_INTERVALS)
-  #noteMap = new ChromaticNoteMap NUM_KEYBOARD_NOTES, KEYBOARD_START
   if window.AudioContext? and isSupportedSynthDevice()
-    synth = new Synth(new AudioContext(), noteMap)
+    synth = new Synth(new AudioContext(), noteMap, pubSub)
     pubSub.on MESSAGE_RECIEVED, synth.handleMessage
     pubSub.on SKELETON, synth.playSkeletons
 
@@ -60,6 +60,7 @@ Template.controller.rendered = ->
     pubSub.on MESSAGE_RECIEVED, webGLVis.updateCube
     pubSub.on MIDI_NOTE_ON, webGLVis.updateFoxHeads
     pubSub.on SKELETON, webGLVis.updateSkeleton
+    pubSub.on PAIRS_TOUCHING, webGLVis.onPairsTouching
 
   else
     keyboardCanvas = @find '.keyboard'

@@ -26,7 +26,7 @@ PROXIMITY_PAIRS =
   ]
 
 class @Synth
-  constructor: (@audioContext, @noteMap) ->
+  constructor: (@audioContext, @noteMap, @pubSub) ->
     @voices = {}
 
   handleMessage: (message) =>
@@ -56,14 +56,19 @@ class @Synth
           pointB = skeleton[pairB]
           id = "#{pairA}#{pairB}"
           if @_pointsInProximity(pointA, pointB)
+            @pubSub.trigger PAIRS_TOUCHING, pairA, pairB, true
             @playNote(pairData.note, id)
           else
+            if @voices[id]? and @voices[id].vca.gain.value > 0
+              @pubSub.trigger PAIRS_TOUCHING, pairA, pairB, false
             @stopPad(id)
     else
       for pairA, pairs of PROXIMITY_PAIRS
         for pairData in pairs
           pairB = pairData.pairPoint
           id = "#{pairA}#{pairB}"
+          if @voices[id]? and @voices[id].vca.gain.value > 0
+            @pubSub.trigger PAIRS_TOUCHING, pairA, pairB, false
           @stopPad(id)
 
   _pointsInProximity: (pointA, pointB) ->

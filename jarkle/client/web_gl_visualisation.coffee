@@ -225,6 +225,9 @@ class @WebGLVisualisation
       object.visible = true
 
 
+  onPairsTouching: (partA, partB, isTouching) =>
+    @skeleton.pointsTouching partA, partB, isTouching
+
   updateSkeleton: (skeletons) =>
     if skeletons.length > 0
       @skeleton.update skeletons[0].skeleton

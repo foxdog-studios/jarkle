@@ -80,6 +80,20 @@ class @Skeleton
     for line in @lines
       line.visible = false
 
+  pointsTouching: (bodyPartNameA, bodyPartNameB, isTouching) ->
+    bodyPartA = @bodyMap[bodyPartNameA]
+    bodyPartB = @bodyMap[bodyPartNameB]
+    if isTouching
+      bodyPartA.material.color = new THREE.Color 0xFFFFFF
+      bodyPartB.material.color = new THREE.Color 0xFFFFFF
+      bodyPartA.scaleMultiplier = 10
+      bodyPartB.scaleMultiplier = 10
+    else
+      bodyPartA.material.color = new THREE.Color 0xFF0000
+      bodyPartB.material.color = new THREE.Color 0xFF0000
+      bodyPartA.scaleMultiplier = 1
+      bodyPartB.scaleMultiplier = 1
+
   updateBodyPart: (bodyPart, points) ->
     unless bodyPart?
       # obj may not have loaded
@@ -87,6 +101,10 @@ class @Skeleton
     bodyPart.position.x = points.x * SKELETON_SCALE
     bodyPart.position.y = points.y * SKELETON_SCALE
     bodyPart.position.z = points.z * -SKELETON_SCALE
+    if bodyPart.scaleMultiplier?
+      bodyPart.scale.set(bodyPart.scaleMultiplier,
+                         bodyPart.scaleMultiplier,
+                         bodyPart.scaleMultiplier)
     bodyPart.traverse (obj) ->
       obj.visible = true
 
