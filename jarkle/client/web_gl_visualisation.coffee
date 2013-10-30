@@ -226,7 +226,8 @@ class @WebGLVisualisation
 
 
   updateSkeleton: (skeletons) =>
-    @skeleton.update skeletons[0].skeleton
+    if skeletons.length > 0
+      @skeleton.update skeletons[0].skeleton
 
   render: =>
     requestAnimationFrame @render
