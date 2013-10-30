@@ -69,8 +69,7 @@ class @Skeleton
         color: 0x00ff00
         linewidth: 1000
       line = new THREE.Line geometry, material
-      line.traverse (obj) ->
-        obj.visisble = false
+      line.visisble = false
       @scene.add line
       @lines.push line
 
@@ -79,8 +78,7 @@ class @Skeleton
       bodyPart.traverse (object) ->
         object.visible = false
     for line in @lines
-      line.traverse (obj) ->
-        obj.visisble = false
+      line.visible = false
 
   updateBodyPart: (bodyPart, points) ->
     unless bodyPart?
@@ -100,7 +98,6 @@ class @Skeleton
       bodyPart = @bodyMap[bodyPartName]
       @updateBodyPart(bodyPart, points)
     for line in @lines
-      line.traverse (obj) ->
-        obj.visisble = true
+      line.visible = true
       line.geometry.verticesNeedUpdate = true
 
