@@ -44,14 +44,15 @@ class @Synth
     @playMidiNote(midiNoteNumber, voice)
 
   playSkeletons: (skeletons) =>
+    console.log skeletons
     if skeletons.length > 0
       skeleton = skeletons[0].skeleton
       for pairA, pairs of PROXIMITY_PAIRS
         for pairData in pairs
-          id = "#{pairA}#{pairB}"
           pairB = pairData.pairPoint
           pointA = skeleton[pairA]
           pointB = skeleton[pairB]
+          id = "#{pairA}#{pairB}"
           if @_pointsInProximity(pointA, pointB)
             @playNote(pairData.note, id)
           else
@@ -59,9 +60,9 @@ class @Synth
     else
       for pairA, pairs of PROXIMITY_PAIRS
         for pairData in pairs
+          pairB = pairData.pairPoint
           id = "#{pairA}#{pairB}"
           @stopPad(id)
-
 
   _pointsInProximity: (pointA, pointB) ->
     return Math.abs(pointA.x - pointB.x) < X_THRESHOLD \
