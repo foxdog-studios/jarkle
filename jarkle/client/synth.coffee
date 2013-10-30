@@ -44,7 +44,7 @@ class @Synth
     @playMidiNote(midiNoteNumber, voice)
 
   playSkeletons: (skeletons) =>
-    if skeletons.length == 0
+    if skeletons.length > 0
       skeleton = skeletons[0].skeleton
       for pairA, pairs of PROXIMITY_PAIRS
         for pairData in pairs
