@@ -11,7 +11,10 @@ def jarkle(device, client):
             func, note, vel = e[0][:3]
             # Ignore Yamaha DTXPLORER click and 0 velocity second notes
             # and high hat pedal
-            if func != 248 and func != 185 and vel != 0:
+            if func != 248 \
+               and func != 185 \
+               and note != 44 \
+               and vel != 0:
                 print(e)
                 client.method_async('midiNoteOn', [note])
         else:
