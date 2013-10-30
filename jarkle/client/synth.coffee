@@ -6,20 +6,23 @@ Z_THRESHOLD = THRESHOLD
 PROXIMITY_PAIRS =
   leftHand: [
     pairPoint: 'rightHand'
-    note: 62
+    note: 56
   ,
     pairPoint: 'leftShoulder'
-    note: 64
+    note: 58
   ,
     pairPoint: 'leftHip'
-    note: 67
+    note: 65
   ]
   rightHand: [
     pairPoint: 'rightShoulder'
-    note: 66
+    note: 63
   ,
     pairPoint: 'rightHip'
-    note: 69
+    note: 62
+  ,
+    pairPoint: 'leftShoulder'
+    note: 60
   ]
 
 class @Synth
