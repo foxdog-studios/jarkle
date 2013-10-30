@@ -44,7 +44,9 @@ Template.controller.rendered = ->
                                 PENTATONIC_INTERVALS)
   #noteMap = new ChromaticNoteMap NUM_KEYBOARD_NOTES, KEYBOARD_START
   if window.AudioContext? and isSupportedSynthDevice()
-    synth = new Synth(new AudioContext(), noteMap, pubSub, MESSAGE_RECIEVED)
+    synth = new Synth(new AudioContext(), noteMap)
+    pubSub.on MESSAGE_RECIEVED, synth.handleMessage
+    pubSub.on SKELETON, synth.playSkeletons
 
   canvas = @find '.controller'
   canvasContext = canvas.getContext '2d'
