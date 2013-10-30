@@ -72,6 +72,11 @@ class @Skeleton
       @scene.add line
       @lines.push line
 
+  hide: ->
+    for bodyPartName, bodyPart of @bodyMap
+      bodyPart.traverse (object) ->
+        object.visible = false
+
   updateBodyPart: (bodyPart, points) ->
     unless bodyPart?
       # obj may not have loaded

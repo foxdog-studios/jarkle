@@ -228,6 +228,8 @@ class @WebGLVisualisation
   updateSkeleton: (skeletons) =>
     if skeletons.length > 0
       @skeleton.update skeletons[0].skeleton
+    else
+      @skeleton.hide()
 
   render: =>
     requestAnimationFrame @render
