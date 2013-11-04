@@ -71,6 +71,8 @@ class @WebGLVisualisation
 
     @touchMap = {}
 
+    @currentHeadIndex = 0
+
     @scene = new THREE.Scene()
 
     @_initCubes()
@@ -188,16 +190,20 @@ class @WebGLVisualisation
 
     cube = @_cycleCube(cartesianX, cartesianY)
 
+    userId = message.userId
+    unless @touchMap[userId]?
+      @currentHeadIndex = (@currentHeadIndex + 1) % 2
+      @touchMap[userId] =
+        heads: if @currentHeadIndex % 2 == 0 then @trailHeads else @foxHeads
     switch message.type
       when NoteMessenger.NOTE_START, NoteMessenger.NOTE_CONTINUE
-        @touchMap[message.identifier] =
+        @touchMap[userId][message.identifier] =
           on: true
           x: cartesianX
           y: cartesianY
           cube: cube
-          userId: message.userId
       when NoteMessenger.NOTE_END
-        @touchMap[message.identifier].on = false
+        @touchMap[userId][message.identifier].on = false
 
 
   _cycleCube: (x, y) ->
@@ -256,25 +262,26 @@ class @WebGLVisualisation
         cube.visible = false
         cube.active = false
 
-    headIndex = 0
     update = new Date().getTime()
-    for id, touchData of @touchMap
-      trailHead = @trailHeads[headIndex]
-      # Trail heads may have not loaded.
-      unless trailHead?
-        continue
-      if touchData.on
-        cube = @_cycleCube(touchData.x, touchData.y)
-        trailHead.position.copy(cube.position)
-        trailHead.traverse (obj) ->
-          obj.visible = true
-      else if trailHead.updatedOn != update
-        trailHead.position.z -= CUBE_DECREMENTS
-        trailHead.updatedOn = update
-        if trailHead.position.z < -CUBE_DISTANCE_LIMIT
+    for userId, touches of @touchMap
+      headIndex = 0
+      for id, touchData of touches
+        trailHead = touches.heads[headIndex]
+        # Trail heads may have not loaded.
+        unless trailHead?
+          continue
+        if touchData.on
+          cube = @_cycleCube(touchData.x, touchData.y)
+          trailHead.position.copy(cube.position)
           trailHead.traverse (obj) ->
-            obj.visible = false
-      headIndex = (headIndex + 1) % @trailHeads.length
+            obj.visible = true
+        else if trailHead.updatedOn != update
+          trailHead.position.z -= CUBE_DECREMENTS
+          trailHead.updatedOn = update
+          if trailHead.position.z < -CUBE_DISTANCE_LIMIT
+            trailHead.traverse (obj) ->
+              obj.visible = false
+        headIndex = (headIndex + 1) % touches.heads.length
 
     for foxHead, foxHeadIndex in @foxHeads
       if not foxHead.active
