@@ -8,7 +8,7 @@ CUBE_DISTANCE_LIMIT = 100
 NUM_CUBES = 50
 TRAIL_HEAD_OBJ = 'pug.obj'
 TRAIL_HEAD_MTL = 'pug.mtl'
-NUM_TRAIL_HEADS = 20
+NUM_TRAIL_HEADS = 5
 @FOX_HEAD_OBJ = 'fox.obj'
 @FOX_HEAD_MTL = 'fox.mtl'
 NUM_FOX_HEADS = 20
@@ -16,6 +16,17 @@ NUM_FOX_HEADS = 20
 FOX_HEAD_START_X = 15
 FOX_HEAD_START_Y = 10
 FOX_START_Z = -2
+
+TRAIL_HEAD_CONF = [
+  obj: 'pug.obj'
+  mtl: 'pug.mtl'
+,
+  obj: 'godchilla.obj'
+  mtl: 'godchilla.mtl'
+,
+  obj: 'fox.obj'
+  mtl: 'fox.mtl'
+]
 
 BASS_DRUM_1 = 33
 BASS_DRUM_2 = 36
@@ -158,15 +169,21 @@ class @WebGLVisualisation
     manager.onProgress = (item, loaded, total) ->
       console.log item, loaded, total
     loader = new THREE.OBJMTLLoader(manager)
-    loader.load TRAIL_HEAD_OBJ, TRAIL_HEAD_MTL, (object) =>
-      object.position.z = -10
-      object.scale.multiplyScalar OBJ_SCALE_MULTIPLER
-      for i in [0...NUM_TRAIL_HEADS]
-        head = object.clone()
-        head.traverse (obj) ->
-          obj.visible = false
-        @trailHeads.push head
-        @scene.add head
+
+
+    for trailHeadInfo in TRAIL_HEAD_CONF
+      console.log trailHeadInfo
+      loader.load trailHeadInfo.obj, trailHeadInfo.mtl, (object) =>
+        heads = []
+        object.position.z = -10
+        object.scale.multiplyScalar OBJ_SCALE_MULTIPLER
+        for i in [0...NUM_TRAIL_HEADS]
+          head = object.clone()
+          head.traverse (obj) ->
+            obj.visible = false
+          heads.push head
+          @scene.add head
+        @trailHeads.push heads
 
     @foxHeads = []
     @foxHeadIndex = 0
@@ -192,9 +209,10 @@ class @WebGLVisualisation
 
     userId = message.userId
     unless @touchMap[userId]?
-      @currentHeadIndex = (@currentHeadIndex + 1) % 2
+      @currentHeadIndex = (@currentHeadIndex + 1) % @trailHeads.length
+      console.log @trailHeads[@currentHeadIndex], @trailHeads
       @touchMap[userId] =
-        heads: if @currentHeadIndex % 2 == 0 then @trailHeads else @foxHeads
+        heads: @trailHeads[@currentHeadIndex]
     switch message.type
       when NoteMessenger.NOTE_START, NoteMessenger.NOTE_CONTINUE
         @touchMap[userId][message.identifier] =
