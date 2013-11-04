@@ -195,6 +195,7 @@ class @WebGLVisualisation
           x: cartesianX
           y: cartesianY
           cube: cube
+          userId: message.userId
       when NoteMessenger.NOTE_END
         @touchMap[message.identifier].on = false
 

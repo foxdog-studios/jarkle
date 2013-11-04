@@ -23,6 +23,7 @@
       noteOn: noteOn
       identifier: evt.identifier
       type: type
+      userId: UID
 
   sendNoteStartMessage: (evt) =>
     @sendNoteMessage evt, true, NoteMessenger.NOTE_START
