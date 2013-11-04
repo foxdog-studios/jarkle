@@ -89,7 +89,7 @@ class @WebGLVisualisation
     @camera = new THREE.PerspectiveCamera(75, @width / @height, 0.1,
       DRAW_DISTANCE)
 
-    @controls = new THREE.TrackballControls @camera
+    @controls = new CtrlTrackBallControls @camera
 
     @renderer = new THREE.WebGLRenderer()
     @renderer.setSize @width, @height
@@ -184,18 +184,18 @@ class @WebGLVisualisation
 
     screenScale = 10
     cartesianX = (message.x - 0.5) * screenScale
-    cartesianY = ((message.y) - 0.5) * screenScale
+    cartesianY = ((-message.y) + 0.5) * screenScale
 
     cube = @_cycleCube(cartesianX, cartesianY)
 
     switch message.type
-      when 'touchstart', 'touchmove'
+      when NoteMessenger.NOTE_START, NoteMessenger.NOTE_CONTINUE
         @touchMap[message.identifier] =
           on: true
           x: cartesianX
           y: cartesianY
           cube: cube
-      when 'touchend'
+      when NoteMessenger.NOTE_END
         @touchMap[message.identifier].on = false
 
 
@@ -258,6 +258,9 @@ class @WebGLVisualisation
     headIndex = 0
     for id, touchData of @touchMap
       trailHead = @trailHeads[headIndex]
+      # Trail heads may have not loaded.
+      unless trailHead?
+        continue
       if touchData.on
         cube = @_cycleCube(touchData.x, touchData.y)
         trailHead.position.copy(cube.position)
@@ -269,6 +272,7 @@ class @WebGLVisualisation
           trailHead.traverse (obj) ->
             obj.visible = false
       headIndex += 1
+      #headIndex = (headIndex + 1) % @trailHeads.length
 
     for foxHead, foxHeadIndex in @foxHeads
       if not foxHead.active
@@ -278,7 +282,4 @@ class @WebGLVisualisation
         foxHead.traverse (object) ->
           object.visible = false
         foxHead.active = false
-
-
-
 

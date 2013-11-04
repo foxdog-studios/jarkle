@@ -36,7 +36,7 @@ class @Synth
       @stopPad(message.identifier)
 
   playPad: (x, y, identifier) ->
-    midiNoteNumber = @noteMap.getNote(y)
+    midiNoteNumber = @noteMap.getNote(1 - y)
     @playNote(midiNoteNumber, identifier)
 
   playNote: (midiNoteNumber, identifier) ->
@@ -89,4 +89,3 @@ class @Synth
 
   stop: (voice) ->
     voice.vca.gain.value = 0
-

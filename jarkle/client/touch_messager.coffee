@@ -1,28 +1,30 @@
-@TouchMessager = class TouchMessager
+@NoteMessenger = class NoteMessenger
   @MESSAGE_SENT = 'message-sent'
+  @NOTE_START = 'start'
+  @NOTE_CONTINUE = 'continue'
+  @NOTE_END = 'end'
 
-  constructor: (@messageStream, @pubSub) ->
-    @pubSub.on TouchController.TOUCH_START, @sendTouchNoteOnMessage
-    @pubSub.on TouchController.TOUCH_MOVE, @sendTouchNoteOnMessage
-    @pubSub.on TouchController.TOUCH_END, @sendTouchNoteOffMessage
+  constructor: (@messageStream, @pubSub, @eventName) ->
 
   sendMessage: (message) ->
-    @pubSub.trigger TouchMessager.MESSAGE_SENT, message
-    @messageStream.emit 'message', message
+    @pubSub.trigger @eventName, message
 
-  sendTouchMessage: (touch, noteOn) ->
-    x = touch.pageX / window.innerWidth
-    y = touch.pageY / window.innerHeight
+
+  sendNoteMessage: (evt, noteOn, type) ->
+    x = evt.pageX / window.innerWidth
+    y = evt.pageY / window.innerHeight
     @sendMessage
       x: x
       y: y
       noteOn: noteOn
-      identifier: touch.identifier
-      type: touch.type
+      identifier: evt.identifier
+      type: type
 
-  sendTouchNoteOnMessage: (touch) =>
-    @sendTouchMessage touch, true
+  sendNoteStartMessage: (evt) =>
+    @sendNoteMessage evt, true, NoteMessenger.NOTE_START
 
-  sendTouchNoteOffMessage: (touch) =>
-    @sendTouchMessage touch, false
+  sendNoteContinueMessage: (evt) =>
+    @sendNoteMessage evt, true, NoteMessenger.NOTE_CONTINUE
 
+  sendNoteEndMessage: (evt) =>
+    @sendNoteMessage evt, false, NoteMessenger.NOTE_END

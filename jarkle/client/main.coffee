@@ -75,18 +75,30 @@ Template.controller.rendered = ->
 
   controller = @find '.controller'
   touchController = new TouchController controller, pubSub
-  touchMessage = new TouchMessager chatStream, pubSub
+  noteMessenger = new NoteMessenger chatStream, pubSub, NoteMessenger.MESSAGE_SENT
+  pubSub.on NoteMessenger.MESSAGE_SENT, (message) ->
+    chatStream.emit 'message', message
+  pubSub.on TouchController.TOUCH_START, noteMessenger.sendNoteStartMessage
+  pubSub.on TouchController.TOUCH_MOVE, noteMessenger.sendNoteContinueMessage
+  pubSub.on TouchController.TOUCH_END, noteMessenger.sendNoteEndMessage
+
+  localNoteMessenger = new NoteMessenger chatStream, pubSub, MESSAGE_RECIEVED
+  mouseController = new MouseController controller, pubSub
+
+  pubSub.on MouseController.START, localNoteMessenger.sendNoteStartMessage
+  pubSub.on MouseController.MOVE, localNoteMessenger.sendNoteContinueMessage
+  pubSub.on MouseController.END, localNoteMessenger.sendNoteEndMessage
 
   dinoImage = new ImageCanvas IMAGE_SIZE, IMAGE_SIZE, 'fatterdino.gif'
   dinoImageCanvasComposer = new ImageCanvasComposer controller, dinoImage, \
-    pubSub, TouchMessager.MESSAGE_SENT
+    pubSub, NoteMessenger.MESSAGE_SENT
 
   unless useWebGL()
     faceImage = new ImageCanvas FACE_SIZE, FACE_SIZE, 'face.png'
     faceImageCanvasComposer = new ImageCanvasComposer controller, faceImage, \
       pubSub, MESSAGE_RECIEVED
     blackenScreenTimeout = new BlackScreenTimeout(controller, TIME_OUT)
-    pubSub.on TouchMessager.MESSAGE_SENT, blackenScreenTimeout.restartTimeout
+    pubSub.on NoteMessenger.MESSAGE_SENT, blackenScreenTimeout.restartTimeout
 
   chatStream.on 'message', (message) ->
     pubSub.trigger MESSAGE_RECIEVED, message
@@ -97,5 +109,3 @@ Template.controller.rendered = ->
   if useWebGL()
     chatStream.on 'skeleton', (skeleton) ->
       pubSub.trigger SKELETON, skeleton
-
-
