@@ -8,7 +8,7 @@ CUBE_DISTANCE_LIMIT = 100
 NUM_CUBES = 50
 TRAIL_HEAD_OBJ = 'pug.obj'
 TRAIL_HEAD_MTL = 'pug.mtl'
-NUM_TRAIL_HEADS = 5
+NUM_TRAIL_HEADS = 20
 @FOX_HEAD_OBJ = 'fox.obj'
 @FOX_HEAD_MTL = 'fox.mtl'
 NUM_FOX_HEADS = 20
@@ -256,6 +256,7 @@ class @WebGLVisualisation
         cube.active = false
 
     headIndex = 0
+    update = new Date().getTime()
     for id, touchData of @touchMap
       trailHead = @trailHeads[headIndex]
       # Trail heads may have not loaded.
@@ -266,13 +267,13 @@ class @WebGLVisualisation
         trailHead.position.copy(cube.position)
         trailHead.traverse (obj) ->
           obj.visible = true
-      else
+      else if trailHead.updatedOn != update
         trailHead.position.z -= CUBE_DECREMENTS
+        trailHead.updatedOn = update
         if trailHead.position.z < -CUBE_DISTANCE_LIMIT
           trailHead.traverse (obj) ->
             obj.visible = false
-      headIndex += 1
-      #headIndex = (headIndex + 1) % @trailHeads.length
+      headIndex = (headIndex + 1) % @trailHeads.length
 
     for foxHead, foxHeadIndex in @foxHeads
       if not foxHead.active

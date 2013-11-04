@@ -6,7 +6,11 @@
 
   constructor: (@messageStream, @pubSub, @eventName) ->
 
+  _addUidToMessage: (message) ->
+    message.identifier = "#{UID}-#{message.identifier}"
+
   sendMessage: (message) ->
+    @_addUidToMessage(message)
     @pubSub.trigger @eventName, message
 
 

@@ -37,6 +37,8 @@ hasWebGL = ->
 useWebGL = ->
   isSupportedSynthDevice() and hasWebGL()
 
+@UID = Random.hexString(24)
+
 Template.controller.rendered = ->
   pubSub = new PubSub
 
@@ -109,3 +111,4 @@ Template.controller.rendered = ->
   if useWebGL()
     chatStream.on 'skeleton', (skeleton) ->
       pubSub.trigger SKELETON, skeleton
+
