@@ -3,14 +3,20 @@ TRAIL_HEAD_CONF =
     vis:
       obj: 'pug.obj'
       mtl: 'pug.mtl'
+    synth:
+      oscillatorType: 'SINE'
   player2:
     vis:
       obj: 'godchilla.obj'
       mtl: 'godchilla.mtl'
+    synth:
+      oscillatorType: 'SAWTOOTH'
   player3:
     vis:
       obj: 'fox.obj'
       mtl: 'fox.mtl'
+    synth:
+      oscillatorType: 'SQUARE'
 
 
 NUM_KEYBOARD_NOTES = 127

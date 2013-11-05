@@ -25,24 +25,30 @@ PROXIMITY_PAIRS =
     note: 60
   ]
 
+DEFAULT_OSCILLATOR_TYPE = 'SQUARE'
+
 class @Synth
-  constructor: (@audioContext, @noteMap, @pubSub) ->
+  constructor: (@audioContext, @noteMap, @pubSub, @schema) ->
     @voices = {}
 
-  handleMessage: (message) =>
+  handleMessage: (message, playerId) =>
     if message.noteOn
-      @playPad(message.x, message.y, message.identifier)
+      @playPad(message.x, message.y, message.identifier, playerId)
     else
       @stopPad(message.identifier)
 
-  playPad: (x, y, identifier) ->
+  playPad: (x, y, identifier, playerId) ->
     midiNoteNumber = @noteMap.getNote(1 - y)
-    @playNote(midiNoteNumber, identifier)
+    @playNote(midiNoteNumber, identifier, playerId)
 
-  playNote: (midiNoteNumber, identifier) ->
+  playNote: (midiNoteNumber, identifier, playerId) ->
     voice = @voices[identifier]
     unless voice?
-      voice = new Voice @audioContext
+      if playerId?
+        oscillatorType = @schema[playerId].synth.oscillatorType
+      else
+        oscillatorType = DEFAULT_OSCILLATOR_TYPE
+      voice = new Voice @audioContext, oscillatorType
       @voices[identifier] = voice
     @playMidiNote(midiNoteNumber, voice)
 
