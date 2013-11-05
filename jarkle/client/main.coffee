@@ -1,5 +1,18 @@
-IMAGE_SIZE = 64
-FACE_SIZE = 128
+TRAIL_HEAD_CONF =
+  player1:
+    vis:
+      obj: 'pug.obj'
+      mtl: 'pug.mtl'
+  player2:
+    vis:
+      obj: 'godchilla.obj'
+      mtl: 'godchilla.mtl'
+  player3:
+    vis:
+      obj: 'fox.obj'
+      mtl: 'fox.mtl'
+
+
 NUM_KEYBOARD_NOTES = 127
 KEYBOARD_START = 0
 TIME_OUT = 1000
@@ -21,36 +34,38 @@ hasWebGL = ->
   window.WebGLRenderingContext \
     and (canvas.getContext('webgl') or canvas.getContext('experimental-webgl'))
 
+hasWebAudio = ->
+  window.AudioContext or window.webkitAudioContext
+
 isViewer = ->
-  isSupportedSynthDevice() and hasWebGL()
+  isSupportedSynthDevice() and hasWebGL() and hasWebAudio()
 
 @UID = Random.hexString(24)
 
 Template.controller.rendered = ->
   pubSub = new PubSub
 
-  window.AudioContext = window.AudioContext or window.webkitAudioContext
-  noteMap = new MajorKeyNoteMap(NUM_KEYBOARD_NOTES, KEYBOARD_START, 'A',
-                                PENTATONIC_INTERVALS)
-  if window.AudioContext? and isSupportedSynthDevice()
-    synth = new Synth(new AudioContext(), noteMap, pubSub)
-    pubSub.on MESSAGE_RECIEVED, synth.handleMessage
-    pubSub.on SKELETON, synth.playSkeletons
-
   canvas = @find '.controller'
   canvasContext = canvas.getContext '2d'
   canvas.width = window.innerWidth
   canvas.height = window.innerHeight
 
+  noteMap = new MajorKeyNoteMap(NUM_KEYBOARD_NOTES, KEYBOARD_START, 'A',
+                                  PENTATONIC_INTERVALS)
+
   if isViewer()
     webGLDiv = @find '.webGLcontainer'
-    webGLVis = new WebGLVisualisation(webGLDiv, window.innerWidth,
-                                      window.innerHeight)
-    pubSub.on MESSAGE_RECIEVED, webGLVis.updateCube
-    pubSub.on MIDI_NOTE_ON, webGLVis.updateFoxHeads
-    pubSub.on SKELETON, webGLVis.updateSkeleton
-    pubSub.on PAIRS_TOUCHING, webGLVis.onPairsTouching
+    webGLSynth = new WebGlSynth(TRAIL_HEAD_CONF, webGLDiv, noteMap, pubSub)
 
+    pubSub.on MESSAGE_RECIEVED, webGLSynth.handleNoteMessage
+
+    # Synth events
+    pubSub.on SKELETON, webGLSynth.synth.playSkeletons
+
+    # Visualisation events
+    pubSub.on MIDI_NOTE_ON, webGLSynth.webGLVis.updateFoxHeads
+    pubSub.on SKELETON, webGLSynth.webGLVis.updateSkeleton
+    pubSub.on PAIRS_TOUCHING, webGLSynth.webGLVis.onPairsTouching
   else
     keyboardCanvas = @find '.keyboard'
     keyboard = new Keyboard(keyboardCanvas, window.innerWidth,
@@ -64,7 +79,8 @@ Template.controller.rendered = ->
 
   controller = @find '.controller'
   touchController = new TouchController controller, pubSub
-  noteMessenger = new NoteMessenger chatStream, pubSub, NoteMessenger.MESSAGE_SENT
+  noteMessenger = new NoteMessenger(chatStream, pubSub,
+                                    NoteMessenger.MESSAGE_SENT)
   pubSub.on NoteMessenger.MESSAGE_SENT, (message) ->
     chatStream.emit 'message', message
   pubSub.on TouchController.TOUCH_START, noteMessenger.sendNoteStartMessage
@@ -80,10 +96,10 @@ Template.controller.rendered = ->
 
   if isViewer()
     chatStream.on 'midiNoteOn', (noteNumber) ->
-        pubSub.trigger MIDI_NOTE_ON, noteNumber
+      pubSub.trigger MIDI_NOTE_ON, noteNumber
 
     chatStream.on 'message', (message) ->
-        pubSub.trigger MESSAGE_RECIEVED, message
+      pubSub.trigger MESSAGE_RECIEVED, message
 
     chatStream.on 'skeleton', (skeleton) ->
       pubSub.trigger SKELETON, skeleton

@@ -17,17 +17,6 @@ FOX_HEAD_START_X = 15
 FOX_HEAD_START_Y = 10
 FOX_START_Z = -2
 
-TRAIL_HEAD_CONF = [
-  obj: 'pug.obj'
-  mtl: 'pug.mtl'
-,
-  obj: 'godchilla.obj'
-  mtl: 'godchilla.mtl'
-,
-  obj: 'fox.obj'
-  mtl: 'fox.mtl'
-]
-
 BASS_DRUM_1 = 33
 BASS_DRUM_2 = 36
 SNARE_DRUM_1 = 31
@@ -78,7 +67,7 @@ POSITIONS[RIDE_CYMBAL_1] =
 
 
 class @WebGLVisualisation
-  constructor: (@el, @width, @height) ->
+  constructor: (@el, @width, @height, @schema) ->
 
     @touchMap = {}
 
@@ -163,7 +152,7 @@ class @WebGLVisualisation
 
 
   _initObj: ->
-    @trailHeads = []
+    @trailHeads = {}
     @headIndex = 0
     manager = new THREE.LoadingManager()
     manager.onProgress = (item, loaded, total) ->
@@ -171,19 +160,21 @@ class @WebGLVisualisation
     loader = new THREE.OBJMTLLoader(manager)
 
 
-    for trailHeadInfo in TRAIL_HEAD_CONF
-      console.log trailHeadInfo
-      loader.load trailHeadInfo.obj, trailHeadInfo.mtl, (object) =>
-        heads = []
-        object.position.z = -10
-        object.scale.multiplyScalar OBJ_SCALE_MULTIPLER
-        for i in [0...NUM_TRAIL_HEADS]
-          head = object.clone()
-          head.traverse (obj) ->
-            obj.visible = false
-          heads.push head
-          @scene.add head
-        @trailHeads.push heads
+    for playerId, playerInfo of @schema
+      obj = playerInfo.vis.obj
+      mtl = playerInfo.vis.mtl
+      do (playerId) =>
+        loader.load obj, mtl, (object) =>
+          heads = []
+          object.position.z = -10
+          object.scale.multiplyScalar OBJ_SCALE_MULTIPLER
+          for i in [0...NUM_TRAIL_HEADS]
+            head = object.clone()
+            head.traverse (obj) ->
+              obj.visible = false
+            heads.push head
+            @scene.add head
+          @trailHeads[playerId] = heads
 
     @foxHeads = []
     @foxHeadIndex = 0
@@ -199,7 +190,7 @@ class @WebGLVisualisation
 
 
 
-  updateCube: (message) =>
+  updateCube: (message, playerId) =>
 
     screenScale = 10
     cartesianX = (message.x - 0.5) * screenScale
@@ -209,10 +200,12 @@ class @WebGLVisualisation
 
     userId = message.userId
     unless @touchMap[userId]?
-      @currentHeadIndex = (@currentHeadIndex + 1) % @trailHeads.length
-      console.log @trailHeads[@currentHeadIndex], @trailHeads
+      heads = @trailHeads[playerId]
+      unless heads?
+        # Heads may have not loaded yet.
+        return
       @touchMap[userId] =
-        heads: @trailHeads[@currentHeadIndex]
+        heads: heads
     switch message.type
       when NoteMessenger.NOTE_START, NoteMessenger.NOTE_CONTINUE
         @touchMap[userId][message.identifier] =
@@ -221,6 +214,8 @@ class @WebGLVisualisation
           y: cartesianY
           cube: cube
       when NoteMessenger.NOTE_END
+        unless @touchMap[userId][message.identifier]?
+          break
         @touchMap[userId][message.identifier].on = false
 
 
@@ -284,6 +279,9 @@ class @WebGLVisualisation
     for userId, touches of @touchMap
       headIndex = 0
       for id, touchData of touches
+        # The heads data may have yet to load.
+        unless touches.heads?
+          continue
         trailHead = touches.heads[headIndex]
         # Trail heads may have not loaded.
         unless trailHead?
