@@ -7,23 +7,25 @@
   constructor: (@messageStream, @pubSub, @eventName) ->
 
   _addUidToMessage: (message) ->
-    message.identifier = "#{UID}-#{message.identifier}"
+    message.identifier = "#{Meteor.userId()}-#{message.identifier}"
 
-  sendMessage: (message) ->
+  _sendMessage: (message) ->
     @_addUidToMessage(message)
     @pubSub.trigger @eventName, message
-
 
   sendNoteMessage: (evt, noteOn, type) ->
     x = evt.pageX / window.innerWidth
     y = evt.pageY / window.innerHeight
-    @sendMessage
+    userId = Meteor.userId()
+    unless userId?
+      return
+    @_sendMessage
       x: x
       y: y
       noteOn: noteOn
       identifier: evt.identifier
       type: type
-      userId: UID
+      userId: userId
 
   sendNoteStartMessage: (evt) =>
     @sendNoteMessage evt, true, NoteMessenger.NOTE_START

@@ -53,6 +53,18 @@ isViewer = ->
   isSupportedSynthDevice() and hasWebGL() and hasWebAudio()
 
 @UID = Random.hexString(24)
+PASSWORD = 'thisDoesNotMatter'
+
+Meteor.startup ->
+  Deps.autorun ->
+    if Meteor.loggingIn() or Meteor.user()?
+      return
+    Accounts.createUser
+      username: UID
+      password: PASSWORD
+    , (error) ->
+      if error?
+        alert error
 
 Template.controller.rendered = ->
   pubSub = new PubSub
@@ -66,6 +78,8 @@ Template.controller.rendered = ->
                                   PENTATONIC_INTERVALS)
 
   if isViewer()
+    Meteor.subscribe 'userStatus'
+
     webGLDiv = @find '.webGLcontainer'
     webGLSynth = new WebGlSynth(TRAIL_HEAD_CONF, webGLDiv, noteMap, pubSub)
 

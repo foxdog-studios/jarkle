@@ -13,3 +13,5 @@ coffeescript
 fastclick
 device-detection
 backbone
+user-status
+accounts-password

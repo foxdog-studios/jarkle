@@ -2,6 +2,7 @@
   "packages": {
     "streams": {},
     "fastclick": {},
-    "device-detection": {}
+    "device-detection": {},
+    "user-status": {}
   }
 }
