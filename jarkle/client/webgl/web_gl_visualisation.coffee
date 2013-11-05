@@ -293,10 +293,10 @@ class @WebGLVisualisation
             obj.visible = true
         else if trailHead.updatedOn != update
           trailHead.position.z -= CUBE_DECREMENTS
-          trailHead.updatedOn = update
           if trailHead.position.z < -CUBE_DISTANCE_LIMIT
             trailHead.traverse (obj) ->
               obj.visible = false
+        trailHead.updatedOn = update
         headIndex = (headIndex + 1) % touches.heads.length
 
     for foxHead, foxHeadIndex in @foxHeads
