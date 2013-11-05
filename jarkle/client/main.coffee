@@ -4,9 +4,6 @@ NUM_KEYBOARD_NOTES = 127
 KEYBOARD_START = 0
 TIME_OUT = 1000
 
-sendChat = (message) ->
-  chatStream.emit 'message', message
-
 $ ->
   FastClick.attach(document.body)
 
@@ -16,16 +13,6 @@ RESTART_BLACKEN = 'restart-blacken'
 SKELETON = 'skeleton'
 @PAIRS_TOUCHING = 'pairs-touching'
 
-audioContext = null
-canvasContext = null
-canvas = null
-dinoImage = null
-pubSub = null
-
-faceImage = null
-
-synth = null
-
 isSupportedSynthDevice = ->
   Meteor.Device.isDesktop() or Meteor.Device.isTV()
 
@@ -34,7 +21,7 @@ hasWebGL = ->
   window.WebGLRenderingContext \
     and (canvas.getContext('webgl') or canvas.getContext('experimental-webgl'))
 
-useWebGL = ->
+isViewer = ->
   isSupportedSynthDevice() and hasWebGL()
 
 @UID = Random.hexString(24)
@@ -55,7 +42,7 @@ Template.controller.rendered = ->
   canvas.width = window.innerWidth
   canvas.height = window.innerHeight
 
-  if useWebGL()
+  if isViewer()
     webGLDiv = @find '.webGLcontainer'
     webGLVis = new WebGLVisualisation(webGLDiv, window.innerWidth,
                                       window.innerHeight)
@@ -91,24 +78,16 @@ Template.controller.rendered = ->
   pubSub.on MouseController.MOVE, localNoteMessenger.sendNoteContinueMessage
   pubSub.on MouseController.END, localNoteMessenger.sendNoteEndMessage
 
-  dinoImage = new ImageCanvas IMAGE_SIZE, IMAGE_SIZE, 'fatterdino.gif'
-  dinoImageCanvasComposer = new ImageCanvasComposer controller, dinoImage, \
-    pubSub, NoteMessenger.MESSAGE_SENT
+  if isViewer()
+    chatStream.on 'midiNoteOn', (noteNumber) ->
+        pubSub.trigger MIDI_NOTE_ON, noteNumber
 
-  unless useWebGL()
-    faceImage = new ImageCanvas FACE_SIZE, FACE_SIZE, 'face.png'
-    faceImageCanvasComposer = new ImageCanvasComposer controller, faceImage, \
-      pubSub, MESSAGE_RECIEVED
-    blackenScreenTimeout = new BlackScreenTimeout(controller, TIME_OUT)
-    pubSub.on NoteMessenger.MESSAGE_SENT, blackenScreenTimeout.restartTimeout
+    chatStream.on 'message', (message) ->
+        pubSub.trigger MESSAGE_RECIEVED, message
 
-  chatStream.on 'message', (message) ->
-    pubSub.trigger MESSAGE_RECIEVED, message
-
-  chatStream.on 'midiNoteOn', (noteNumber) ->
-    pubSub.trigger MIDI_NOTE_ON, noteNumber
-
-  if useWebGL()
     chatStream.on 'skeleton', (skeleton) ->
       pubSub.trigger SKELETON, skeleton
+  else
+    blackenScreenTimeout = new BlackScreenTimeout(controller, TIME_OUT)
+    pubSub.on NoteMessenger.MESSAGE_SENT, blackenScreenTimeout.restartTimeout
 
