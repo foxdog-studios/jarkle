@@ -3,7 +3,7 @@ NOTES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
 NOTE_ON_MIDI_NUMBER = 144
 
 class @WebGlSynth
-  constructor: (@schema, el, noteMap, pubSub) ->
+  constructor: (@schema, el, noteMap, @pubSub) ->
     window.AudioContext = window.AudioContext or window.webkitAudioContext
     @synth = new Synth(new AudioContext(), noteMap, pubSub, @schema)
     @webGLVis = new WebGLVisualisation(el, window.innerWidth,
@@ -31,8 +31,10 @@ class @WebGlSynth
         nextPlayer = @playerManager.getNextActivePlayerId()
         if nextPlayer?
           Session.set 'infoMessage', nextPlayer.profile.userAgent
+          @pubSub.trigger CURRENT_PLAYER, nextPlayer
         @currentPlayerId = nextPlayer
       when 'D'
         @currentPlayerId = null
         Session.set 'infoMessage', null
+        @pubSub.trigger CURRENT_PLAYER, nextPlayer
 

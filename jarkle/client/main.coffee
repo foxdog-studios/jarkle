@@ -38,6 +38,7 @@ MIDI_DRUM_NOTE_ON = 'midi-drum-note-on'
 RESTART_BLACKEN = 'restart-blacken'
 SKELETON = 'skeleton'
 @PAIRS_TOUCHING = 'pairs-touching'
+@CURRENT_PLAYER = 'current-player'
 
 isSupportedSynthDevice = ->
   Meteor.Device.isDesktop() or Meteor.Device.isTV()
@@ -136,7 +137,25 @@ Template.controller.rendered = ->
 
     chatStream.on 'skeleton', (skeleton) ->
       pubSub.trigger SKELETON, skeleton
+
+    pubSub.on CURRENT_PLAYER, (player) ->
+      chatStream.emit 'currentPlayer', player
+
   else
     blackenScreenTimeout = new BlackScreenTimeout(controller, TIME_OUT)
-    pubSub.on NoteMessenger.MESSAGE_SENT, blackenScreenTimeout.restartTimeout
+    pubSub.on NoteMessenger.MESSAGE_SENT, =>
+      unless Session.get('isCurrentPlayer') == 'off'
+        blackenScreenTimeout.restartTimeout()
+    chatStream.on 'currentPlayer', (player) =>
+      if player?
+        if player._id == Meteor.userId()
+          Session.set('isCurrentPlayer', 'on')
+          blackenScreenTimeout.stopTimeout()
+        else
+          Session.set('isCurrentPlayer', 'off')
+          blackenScreenTimeout.stopTimeout()
+          blackenScreenTimeout.blackenScreen()
+      else
+        Session.set('isCurrentPlayer', 'touch')
+        blackenScreenTimeout.restartTimeout()
 
