@@ -4,7 +4,7 @@ from __future__ import print_function
 
 import time
 
-def jarkle(device, client):
+def jarkle(device, client, method_name):
     while True:
         e = device.try_read()
         if e:
@@ -16,7 +16,7 @@ def jarkle(device, client):
                and note != 44 \
                and vel != 0:
                 print(e)
-                client.method_async('midiNoteOn', [{
+                client.method_async(method_name, [{
                     "func": func,
                     "note": note,
                     "vel": vel,

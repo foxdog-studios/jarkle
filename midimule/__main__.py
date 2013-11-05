@@ -31,6 +31,7 @@ def build_argument_parser():
                         default=LOG_LEVEL_TO_NAMES[logging.INFO])
     parser.add_argument('-d', '--device-id', type=int)
     parser.add_argument('-m', '--meteor', default='127.0.0.1:3000')
+    parser.add_argument('method_name')
     return parser
 
 
@@ -62,7 +63,7 @@ def main(argv=None):
             device_id = util.request_input_device_id()
 
         with manager.get_input_device(device_id) as device:
-            jarkle(device, client)
+            jarkle(device, client, args.method_name)
 
     return 0
 

@@ -29,7 +29,8 @@ class @WebGlSynth
     switch noteLetter
       when 'C'
         nextPlayer = @playerManager.getNextActivePlayerId()
-        Session.set 'infoMessage', nextPlayer.profile.userAgent
+        if nextPlayer?
+          Session.set 'infoMessage', nextPlayer.profile.userAgent
         @currentPlayerId = nextPlayer
       when 'D'
         @currentPlayerId = null

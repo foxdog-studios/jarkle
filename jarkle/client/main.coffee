@@ -34,6 +34,7 @@ $ ->
 
 MESSAGE_RECIEVED = 'message-recieved'
 MIDI_NOTE_ON = 'midi-note-on'
+MIDI_DRUM_NOTE_ON = 'midi-drum-note-on'
 RESTART_BLACKEN = 'restart-blacken'
 SKELETON = 'skeleton'
 @PAIRS_TOUCHING = 'pairs-touching'
@@ -92,7 +93,7 @@ Template.controller.rendered = ->
     pubSub.on SKELETON, webGLSynth.synth.playSkeletons
 
     # Visualisation events
-    pubSub.on MIDI_NOTE_ON, webGLSynth.webGLVis.updateFoxHeads
+    pubSub.on MIDI_DRUM_NOTE_ON, webGLSynth.webGLVis.updateFoxHeads
     pubSub.on SKELETON, webGLSynth.webGLVis.updateSkeleton
     pubSub.on PAIRS_TOUCHING, webGLSynth.webGLVis.onPairsTouching
   else
@@ -124,8 +125,11 @@ Template.controller.rendered = ->
   pubSub.on MouseController.END, localNoteMessenger.sendNoteEndMessage
 
   if isViewer()
-    chatStream.on 'midiNoteOn', (noteNumber) ->
-      pubSub.trigger MIDI_NOTE_ON, noteNumber
+    chatStream.on 'midiNoteOn', (noteInfo) ->
+      pubSub.trigger MIDI_NOTE_ON, noteInfo
+
+    chatStream.on 'midiDrumsNoteOn', (noteInfo) ->
+      pubSub.trigger MIDI_DRUM_NOTE_ON, noteInfo
 
     chatStream.on 'message', (message) ->
       pubSub.trigger MESSAGE_RECIEVED, message
