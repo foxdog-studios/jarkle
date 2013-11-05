@@ -37,4 +37,7 @@ class @WebGlSynth
         @currentPlayerId = null
         Session.set 'infoMessage', null
         @pubSub.trigger CURRENT_PLAYER, nextPlayer
+      when 'E'
+        @synth.stopAll()
+        @webGLVis.stopAll()
 

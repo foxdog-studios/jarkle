@@ -218,6 +218,10 @@ class @WebGLVisualisation
           break
         @touchMap[userId][message.identifier].on = false
 
+  stopAll: ->
+    for userId, touches of @touchMap
+      for id, touch of touches
+        touch.on = false
 
   _cycleCube: (x, y) ->
     cube = @cubes[@cubeIndex]

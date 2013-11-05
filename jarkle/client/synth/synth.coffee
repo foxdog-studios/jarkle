@@ -95,3 +95,8 @@ class @Synth
 
   stop: (voice) ->
     voice.vca.gain.value = 0
+
+  stopAll: ->
+    for identifier, voice of @voices
+      @stop(voice)
+
