@@ -16,7 +16,11 @@ def jarkle(device, client):
                and note != 44 \
                and vel != 0:
                 print(e)
-                client.method_async('midiNoteOn', [note])
+                client.method_async('midiNoteOn', [{
+                    "func": func,
+                    "note": note,
+                    "vel": vel,
+                }])
         else:
             time.sleep(0.1)
 

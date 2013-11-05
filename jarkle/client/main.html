@@ -6,6 +6,7 @@
 
 <body>
   {{> controller}}
+  {{> info}}
 </body>
 
 <template name="controller">
@@ -14,3 +15,8 @@
   <canvas class="keys"></canvas>
   <canvas class="controller"></canvas>
 </template>
+
+<template name="info">
+  <p>{{message}}</p>
+</template>
+

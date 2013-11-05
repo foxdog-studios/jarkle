@@ -1,3 +1,7 @@
+NOTES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
+
+NOTE_ON_MIDI_NUMBER = 144
+
 class @WebGlSynth
   constructor: (@schema, el, noteMap, pubSub) ->
     window.AudioContext = window.AudioContext or window.webkitAudioContext
@@ -5,10 +9,29 @@ class @WebGlSynth
     @webGLVis = new WebGLVisualisation(el, window.innerWidth,
                                       window.innerHeight, @schema)
     @playerManager = new PlayerManager(@schema)
+    @currentPlayerId = null
 
   handleNoteMessage: (noteMessage) =>
     userId = noteMessage.userId
-    playerId = @playerManager.getPlayerIdFromUserId(userId)
-    @synth.handleMessage noteMessage, playerId
-    @webGLVis.updateCube noteMessage, playerId
+    player = @playerManager.getPlayerFromUserId(userId)
+    if not @currentPlayerId? or @currentPlayerId._id == userId
+      @synth.handleMessage noteMessage, player.id
+      @webGLVis.updateCube noteMessage, player.id
+
+  _midiNoteNumberToNoteLetter: (midiNoteNumber) ->
+    noteIndex = midiNoteNumber % NOTES.length
+    return NOTES[noteIndex]
+
+  handleMidiMessage: (noteInfo) =>
+    unless noteInfo.func != NOTE_ON_MIDI_NUMBER
+      return
+    noteLetter = @_midiNoteNumberToNoteLetter(noteInfo.note)
+    switch noteLetter
+      when 'C'
+        nextPlayer = @playerManager.getNextActivePlayerId()
+        Session.set 'infoMessage', nextPlayer.profile.userAgent
+        @currentPlayerId = nextPlayer
+      when 'D'
+        @currentPlayerId = null
+        Session.set 'infoMessage', null
 

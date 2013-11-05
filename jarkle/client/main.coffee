@@ -62,6 +62,8 @@ Meteor.startup ->
     Accounts.createUser
       username: UID
       password: PASSWORD
+      profile:
+        userAgent: navigator.userAgent
     , (error) ->
       if error?
         alert error
@@ -84,6 +86,7 @@ Template.controller.rendered = ->
     webGLSynth = new WebGlSynth(TRAIL_HEAD_CONF, webGLDiv, noteMap, pubSub)
 
     pubSub.on MESSAGE_RECIEVED, webGLSynth.handleNoteMessage
+    pubSub.on MIDI_NOTE_ON, webGLSynth.handleMidiMessage
 
     # Synth events
     pubSub.on SKELETON, webGLSynth.synth.playSkeletons

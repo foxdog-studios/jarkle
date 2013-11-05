@@ -229,12 +229,12 @@ class @WebGLVisualisation
     cube.visible = true
     cube
 
-  updateFoxHeads: (message) =>
+  updateFoxHeads: (noteInfo) =>
     foxHead = @foxHeads[@foxHeadIndex]
     unless foxHead?
       return
     @foxHeadIndex = (@foxHeadIndex + 1) % @foxHeads.length
-    position = POSITIONS[message]
+    position = POSITIONS[noteInfo.note]
     unless position?
       return
     foxHead.position.x = position.x * POSTION_SCALE
