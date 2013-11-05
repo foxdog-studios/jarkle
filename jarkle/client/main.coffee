@@ -17,6 +17,12 @@ TRAIL_HEAD_CONF =
       mtl: 'fox.mtl'
     synth:
       oscillatorType: 'SQUARE'
+  player4:
+    vis:
+      obj: 'dino-head.obj'
+      mtl: 'dino-head.mtl'
+    synth:
+      oscillatorType: 'TRIANGLE'
 
 
 NUM_KEYBOARD_NOTES = 127
