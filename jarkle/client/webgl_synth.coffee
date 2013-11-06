@@ -4,6 +4,7 @@ NOTE_ON_MIDI_NUMBER = 144
 
 class @WebGlSynth
   constructor: (@schema, el, noteMap, @pubSub) ->
+    Session.set 'infoMessage', null
     window.AudioContext = window.AudioContext or window.webkitAudioContext
     @synth = new Synth(new AudioContext(), noteMap, pubSub, @schema)
     @webGLVis = new WebGLVisualisation(el, window.innerWidth,
@@ -40,6 +41,11 @@ class @WebGlSynth
         Session.set 'infoMessage', null
         @pubSub.trigger CURRENT_PLAYER, nextPlayer
       when 'E'
+        Session.set 'infoMessage', null
+        @currentPlayerId = 'only masters'
+        @pubSub.trigger CURRENT_PLAYER,
+          _id: @currentPlayerId
+      when 'F'
         @synth.stopAll()
         @webGLVis.stopAll()
 
