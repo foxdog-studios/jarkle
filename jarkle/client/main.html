@@ -5,11 +5,22 @@
 </head>
 
 <body>
-  {{> controller}}
-  {{> info}}
 </body>
 
+<template name="main">
+  {{> controller}}
+  {{> info}}
+</template>
+
 <template name="controller">
+  {{> controls}}
+</template>
+
+<template name="master">
+  {{> controls}}
+</template>
+
+<template name="controls">
   <canvas class="keyboard"></canvas>
   <div class="webGLcontainer"></div>
   <canvas class="keys"></canvas>

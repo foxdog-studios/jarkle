@@ -3,6 +3,7 @@
     "streams": {},
     "fastclick": {},
     "device-detection": {},
-    "user-status": {}
+    "user-status": {},
+    "iron-router": {}
   }
 }

@@ -71,9 +71,15 @@ Meteor.startup ->
         alert error
 
 Template.controller.rendered = ->
+  setup(@, false)
+
+Template.master.rendered  = ->
+  setup(@, true)
+
+setup = (template, isMaster) ->
   pubSub = new PubSub
 
-  canvas = @find '.controller'
+  canvas = template.find '.controller'
   canvasContext = canvas.getContext '2d'
   canvas.width = window.innerWidth
   canvas.height = window.innerHeight
@@ -84,7 +90,7 @@ Template.controller.rendered = ->
   if isViewer()
     Meteor.subscribe 'userStatus'
 
-    webGLDiv = @find '.webGLcontainer'
+    webGLDiv = template.find '.webGLcontainer'
     webGLSynth = new WebGlSynth(TRAIL_HEAD_CONF, webGLDiv, noteMap, pubSub)
 
     pubSub.on MESSAGE_RECIEVED, webGLSynth.handleNoteMessage
@@ -98,21 +104,22 @@ Template.controller.rendered = ->
     pubSub.on SKELETON, webGLSynth.webGLVis.updateSkeleton
     pubSub.on PAIRS_TOUCHING, webGLSynth.webGLVis.onPairsTouching
   else
-    keyboardCanvas = @find '.keyboard'
+    keyboardCanvas = template.find '.keyboard'
     keyboard = new Keyboard(keyboardCanvas, window.innerWidth,
                             window.innerHeight, noteMap.getNumberOfNotes(),
                             pubSub, MIDI_NOTE_ON)
     keyboard.drawKeys()
 
-  keysCanvas = @find '.keys'
+  keysCanvas = template.find '.keys'
   keys = new Keys(keysCanvas, window.innerWidth, window.innerHeight,
                   noteMap.getNumberOfNotes(), pubSub)
 
-  controller = @find '.controller'
+  controller = template.find '.controller'
   touchController = new TouchController controller, pubSub
   noteMessenger = new NoteMessenger(chatStream, pubSub,
                                     NoteMessenger.MESSAGE_SENT)
-  pubSub.on NoteMessenger.MESSAGE_SENT, (message) ->
+  pubSub.on NoteMessenger.MESSAGE_SENT, (message) =>
+    message.isMaster = isMaster
     chatStream.emit 'message', message
   pubSub.on TouchController.TOUCH_START, noteMessenger.sendNoteStartMessage
   pubSub.on TouchController.TOUCH_MOVE, noteMessenger.sendNoteContinueMessage
@@ -146,16 +153,17 @@ Template.controller.rendered = ->
     pubSub.on NoteMessenger.MESSAGE_SENT, =>
       unless Session.get('isCurrentPlayer') == 'off'
         blackenScreenTimeout.restartTimeout()
-    chatStream.on 'currentPlayer', (player) =>
-      if player?
-        if player._id == Meteor.userId()
-          Session.set('isCurrentPlayer', 'on')
-          blackenScreenTimeout.stopTimeout()
+    unless isMaster
+      chatStream.on 'currentPlayer', (player) =>
+        if player?
+          if player._id == Meteor.userId()
+            Session.set('isCurrentPlayer', 'on')
+            blackenScreenTimeout.stopTimeout()
+          else
+            Session.set('isCurrentPlayer', 'off')
+            blackenScreenTimeout.stopTimeout()
+            blackenScreenTimeout.blackenScreen()
         else
-          Session.set('isCurrentPlayer', 'off')
-          blackenScreenTimeout.stopTimeout()
-          blackenScreenTimeout.blackenScreen()
-      else
-        Session.set('isCurrentPlayer', 'touch')
-        blackenScreenTimeout.restartTimeout()
+          Session.set('isCurrentPlayer', 'touch')
+          blackenScreenTimeout.restartTimeout()
 

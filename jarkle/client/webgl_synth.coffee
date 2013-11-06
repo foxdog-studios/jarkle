@@ -14,7 +14,9 @@ class @WebGlSynth
   handleNoteMessage: (noteMessage) =>
     userId = noteMessage.userId
     player = @playerManager.getPlayerFromUserId(userId)
-    if not @currentPlayerId? or @currentPlayerId._id == userId
+    if not @currentPlayerId? \
+        or @currentPlayerId._id == userId \
+        or noteMessage.isMaster
       @synth.handleMessage noteMessage, player.id
       @webGLVis.updateCube noteMessage, player.id
 

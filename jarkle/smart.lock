@@ -5,7 +5,8 @@
       "streams": {},
       "fastclick": {},
       "device-detection": {},
-      "user-status": {}
+      "user-status": {},
+      "iron-router": {}
     },
     "packages": {
       "streams": {
@@ -27,6 +28,11 @@
         "git": "https://github.com/mizzao/meteor-user-status.git",
         "tag": "v0.1.5",
         "commit": "0169a468e57155f1d61fc2b1cd76bc9ca51c7313"
+      },
+      "iron-router": {
+        "git": "https://github.com/EventedMind/iron-router.git",
+        "tag": "v0.6.1",
+        "commit": "4e1ee0581d68bff422a915dacb0bd30eae10fe08"
       }
     }
   }
