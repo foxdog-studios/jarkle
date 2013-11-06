@@ -13,7 +13,7 @@ class @WebGlSynth
 
   handleNoteMessage: (noteMessage) =>
     userId = noteMessage.userId
-    player = @playerManager.getPlayerFromUserId(userId)
+    player = @playerManager.getPlayerFromUserId(userId, noteMessage.isMaster)
     if not @currentPlayerId? \
         or @currentPlayerId._id == userId \
         or noteMessage.isMaster

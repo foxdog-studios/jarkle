@@ -1,8 +1,8 @@
 TRAIL_HEAD_CONF =
   player1:
     vis:
-      obj: 'pug.obj'
-      mtl: 'pug.mtl'
+      obj: 'fox.obj'
+      mtl: 'fox.mtl'
     synth:
       oscillatorType: 'SINE'
   player2:
@@ -12,9 +12,10 @@ TRAIL_HEAD_CONF =
     synth:
       oscillatorType: 'SAWTOOTH'
   player3:
+    isMaster: true
     vis:
-      obj: 'fox.obj'
-      mtl: 'fox.mtl'
+      obj: 'pug.obj'
+      mtl: 'pug.mtl'
     synth:
       oscillatorType: 'SQUARE'
   player4:
@@ -77,6 +78,15 @@ Template.master.rendered  = ->
   setup(@, true)
 
 setup = (template, isMaster) ->
+  unless isMaster
+    # XXX: For the desktop viewer set it to be a master as well.
+    isMaster = isViewer()
+  Deps.autorun =>
+    if Meteor.user()
+      Meteor.users.update Meteor.userId(),
+        $set:
+          isMaster: isMaster
+
   pubSub = new PubSub
 
   canvas = template.find '.controller'

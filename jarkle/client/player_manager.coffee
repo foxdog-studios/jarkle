@@ -2,16 +2,23 @@ class @PlayerManager
   constructor: (@schema) ->
     @userIdToPlayerIdMap = {}
     @playerIds = []
+    @masterIds = []
     @currentPlayerIdIndex = 0
     @currentPlayerIndex = 0
     for playerId, playerData of @schema
-      @playerIds.push playerId
+      if playerData.isMaster
+        @masterIds.push playerId
+      else
+        @playerIds.push playerId
 
-  getPlayerFromUserId: (userId) ->
+  getPlayerFromUserId: (userId, isMaster) ->
     player = @userIdToPlayerIdMap[userId]
     if player?
       return player
-    playerId = @playerIds[@currentPlayerIdIndex]
+    if isMaster
+      playerId = @masterIds[0]
+    else
+      playerId = @playerIds[@currentPlayerIdIndex]
     @currentPlayerIdIndex = (@currentPlayerIdIndex + 1) % @playerIds.length
     player =
       id: playerId
@@ -20,7 +27,7 @@ class @PlayerManager
     return player
 
   getNextActivePlayerId: ->
-    users = Meteor.users.find({}, {sort: _id: 1})
+    users = Meteor.users.find({isMaster: false}, {sort: _id: 1})
     if users.count() > 0
       nextUser = users.fetch()[@currentPlayerIdIndex]
       @currentPlayerIdIndex = (@currentPlayerIdIndex + 1) % users.count()
