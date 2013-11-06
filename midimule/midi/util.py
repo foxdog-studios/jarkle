@@ -33,6 +33,13 @@ def get_input_midi_devices_info():
             yield device_info
 
 
+def find_input_midi_device_info(name):
+    for device_info in get_input_midi_devices_info():
+        if device_info.name == name:
+            return device_info
+    raise ValueError('%r not found' % (name,))
+
+
 def get_output_midi_devices_info():
     for device_info in get_midi_devices_info():
         if device_info.is_output:
