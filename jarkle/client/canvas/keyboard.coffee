@@ -7,6 +7,14 @@ class @Keyboard
     @canvas.height = @height
     @canvasContext = canvas.getContext '2d'
     @pubSub.on @eventType, @drawRandomKeys
+    $(window).resize @setCanvasSize
+
+  setCanvasSize: =>
+    @width = window.innerWidth
+    @height = window.innerHeight
+    @canvas.width = @width
+    @canvas.height = @height
+    @drawRandomKeys()
 
   _getRandomPhaseIncrement: ->
     Math.random() * 2
