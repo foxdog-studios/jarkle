@@ -29,7 +29,7 @@ def build_argument_parser():
     parser = ArgumentParser()
     parser.add_argument('-l', '--log-level', choices=LOG_NAME_TO_LEVEL.keys(),
                         default=LOG_LEVEL_TO_NAMES[logging.INFO])
-    parser.add_argument('-d', '--device-id', type=int)
+    parser.add_argument('-d', '--device')
     parser.add_argument('-m', '--meteor', default='127.0.0.1:3000')
     parser.add_argument('method_name')
     return parser
@@ -56,9 +56,9 @@ def main(argv=None):
     from midimule.midi import util
 
     with get_midi_manager() as manager:
-
-        if args.device_id:
-            device_id = args.device_id
+        if args.device:
+            device_info = util.find_input_midi_device_info(args.device)
+            device_id = device_info.device_id
         else:
             device_id = util.request_input_device_id()
 
