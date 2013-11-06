@@ -25,27 +25,36 @@ class @WebGlSynth
     noteIndex = midiNoteNumber % NOTES.length
     return NOTES[noteIndex]
 
+  stopAll: ->
+    @synth.stopAll()
+    @webGLVis.stopAll()
+
+
   handleMidiMessage: (noteInfo) =>
     unless noteInfo.func != NOTE_ON_MIDI_NUMBER
       return
     noteLetter = @_midiNoteNumberToNoteLetter(noteInfo.note)
     switch noteLetter
       when 'C'
+        # Next player
+        @stopAll()
         nextPlayer = @playerManager.getNextActivePlayerId()
         if nextPlayer?
           Session.set 'infoMessage', nextPlayer.profile.userAgent
           @pubSub.trigger CURRENT_PLAYER, nextPlayer
         @currentPlayerId = nextPlayer
       when 'D'
+        # All players
         @currentPlayerId = null
         Session.set 'infoMessage', null
         @pubSub.trigger CURRENT_PLAYER, nextPlayer
       when 'E'
+        # No players (apart from masters)
         Session.set 'infoMessage', null
         @currentPlayerId = 'only masters'
         @pubSub.trigger CURRENT_PLAYER,
           _id: @currentPlayerId
       when 'F'
-        @synth.stopAll()
-        @webGLVis.stopAll()
+        # Clear sounds
+        @stopAll()
 
