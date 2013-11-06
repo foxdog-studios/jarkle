@@ -105,6 +105,7 @@ setup = (template, isMaster) ->
 
     pubSub.on MESSAGE_RECIEVED, webGLSynth.handleNoteMessage
     pubSub.on MIDI_NOTE_ON, webGLSynth.handleMidiMessage
+    pubSub.on MIDI_DRUM_NOTE_ON, webGLSynth.handleDrumMidiMessage
 
     # Synth events
     pubSub.on SKELETON, webGLSynth.synth.playSkeletons

@@ -29,6 +29,17 @@ class @WebGlSynth
     @synth.stopAll()
     @webGLVis.stopAll()
 
+  handleDrumMidiMessage: (noteInfo) =>
+    if noteInfo.note == RIDE_CYMBAL_1
+      @nextPlayer()
+
+  nextPlayer: ->
+    @stopAll()
+    nextPlayer = @playerManager.getNextActivePlayerId()
+    if nextPlayer?
+      Session.set 'infoMessage', nextPlayer.profile.userAgent
+      @pubSub.trigger CURRENT_PLAYER, nextPlayer
+    @currentPlayerId = nextPlayer
 
   handleMidiMessage: (noteInfo) =>
     unless noteInfo.func != NOTE_ON_MIDI_NUMBER
@@ -39,12 +50,7 @@ class @WebGlSynth
         Session.set 'infoMessage', 'Go to http://fds'
       when 'C'
         # Next player
-        @stopAll()
-        nextPlayer = @playerManager.getNextActivePlayerId()
-        if nextPlayer?
-          Session.set 'infoMessage', nextPlayer.profile.userAgent
-          @pubSub.trigger CURRENT_PLAYER, nextPlayer
-        @currentPlayerId = nextPlayer
+        @nextPlayer()
       when 'D'
         # All players
         @currentPlayerId = null
