@@ -37,7 +37,22 @@ class @WebGlSynth
     @stopAll()
     nextPlayer = @playerManager.getNextActivePlayerId()
     if nextPlayer?
-      Session.set 'infoMessage', nextPlayer.profile.userAgent
+      ua = nextPlayer.profile.userAgent
+      if ua.match(/Android/i)
+        ua = 'Android'
+      if ua.match(/Blackberry/i)
+        ua = 'Blackberry'
+      if ua.match(/iPhone/i)
+        ua = 'iPhone'
+      if ua.match(/iPad/i)
+        ua = 'iPad'
+      if ua.match(/iPod/i)
+        ua = 'iPod'
+      if ua.match(/IEMobile/i)
+        ua = 'Windows phone'
+      Session.set 'infoMessage', """
+        #{nextPlayer.username} on a #{ua}
+      """
       @pubSub.trigger CURRENT_PLAYER, nextPlayer
     @currentPlayerId = nextPlayer
 

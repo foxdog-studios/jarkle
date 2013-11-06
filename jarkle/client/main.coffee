@@ -55,21 +55,22 @@ hasWebAudio = ->
 isViewer = ->
   isSupportedSynthDevice() and hasWebGL() and hasWebAudio()
 
-@UID = Random.hexString(24)
 PASSWORD = 'thisDoesNotMatter'
 
 Meteor.startup ->
   Deps.autorun ->
+    if Meteor.user() and not isViewer()
+      Session.set 'infoMessage', Meteor.user().username
     if Meteor.loggingIn() or Meteor.user()?
       return
     Accounts.createUser
-      username: UID
+      username: generateName()
       password: PASSWORD
       profile:
         userAgent: navigator.userAgent
     , (error) ->
       if error?
-        alert error
+        alert error + 'Hold on'
 
 Template.controller.rendered = ->
   setup(@, false)
@@ -160,7 +161,8 @@ setup = (template, isMaster) ->
       chatStream.emit 'currentPlayer', player
 
   else
-    blackenScreenTimeout = new BlackScreenTimeout(controller, TIME_OUT)
+    blacken = template.find '.blacken'
+    blackenScreenTimeout = new BlackScreenTimeout(blacken, TIME_OUT)
     pubSub.on NoteMessenger.MESSAGE_SENT, =>
       unless Session.get('isCurrentPlayer') == 'off'
         blackenScreenTimeout.restartTimeout()

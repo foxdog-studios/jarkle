@@ -17,6 +17,7 @@ body {
 .controller,
 .keys,
 .webGLcontainer,
+.blacken,
 .keyboard {
   position: absolute;
   top: 0;
@@ -29,12 +30,19 @@ body {
   z-index: -1;
 }
 
-.controller {
+.blacken {
   z-index: 1000;
+  width: 100%;
+  height: 100%;
+}
+
+.controller {
+  z-index: 1002;
 }
 
 .info {
   text-align: center;
   font-size: 40px;
+  z-index: 1001;
 }
 
