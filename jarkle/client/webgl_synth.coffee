@@ -35,6 +35,8 @@ class @WebGlSynth
       return
     noteLetter = @_midiNoteNumberToNoteLetter(noteInfo.note)
     switch noteLetter
+      when 'B'
+        Session.set 'infoMessage', 'Go to http://fds'
       when 'C'
         # Next player
         @stopAll()

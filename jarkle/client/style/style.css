@@ -34,3 +34,9 @@ body {
 .controller {
   z-index: 1000;
 }
+
+.info {
+  text-align: center;
+  font-size: 40px;
+}
+
