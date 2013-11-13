@@ -30,6 +30,8 @@ body {
   position: absolute;
   top: 0;
   left: 0;
+  width: 300px;
+  margin-left: 10px;
 }
 
 .webGLcontainer canvas {

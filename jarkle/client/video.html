@@ -1,0 +1,13 @@
+<template name="video">
+  <div class="video">
+    <h1>G FUNK</h1>
+    <iframe width="300" height="200" src="{{videoSrc}}" frameborder="0" allowfullscreen></iframe>
+    <select class="video-select">
+      {{#each videoSrcs}}
+        <option {{selected}} value="{{src}}">{{name}}</option>
+      {{/each}}
+    </select>
+    <p>The rhythm is the bass and the bass is the treble</p>
+    <p>Open a mobile device at the same address to control the jarkle via touch!</p>
+  </div>
+</template>
