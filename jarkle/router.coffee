@@ -7,8 +7,12 @@ Router.map ->
     template: 'master'
   @route 'reroute',
     path: '/'
-    action: ->
-      @redirect("/#{generateName(2)}")
+    template: 'main'
+    before: ->
+      if Meteor.settings.public.automaticRoomIds
+        @redirect("/#{generateName(2)}")
+      else
+        Session.set 'roomId', 'main'
   @route 'main',
     path: '/:roomId'
     template: 'main'

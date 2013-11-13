@@ -1,4 +1,7 @@
 {
+  "public": {
+    "automaticRoomIds": true
+  },
   "site": {
     "domain": "",
     "password": ""
