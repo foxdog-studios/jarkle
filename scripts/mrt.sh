@@ -9,9 +9,9 @@ $repo/scripts/bower-install.sh
 
 cd "$repo/jarkle"
 
-if [[ ! -v METEOR_SETINGS ]]; then
-    METEOR_SETINGS=$repo/conf/site/development-settings.json
+if [[ ! -v METEOR_SETTINGS ]]; then
+    METEOR_SETTINGS=$repo/conf/site/development-settings.json
 fi
 
-mrt --settings "$METEOR_SETINGS" $@
+mrt --settings "$METEOR_SETTINGS" $@
 
