@@ -3,12 +3,10 @@ NOTES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
 NOTE_ON_MIDI_NUMBER = 144
 
 class @WebGlSynth
-  constructor: (@schema, el, noteMap, @pubSub) ->
+  constructor: (@schema, @vis, noteMap, @pubSub) ->
     Session.set 'infoMessage', null
     window.AudioContext = window.AudioContext or window.webkitAudioContext
     @synth = new Synth(new AudioContext(), noteMap, pubSub, @schema)
-    @webGLVis = new WebGLVisualisation(el, window.innerWidth,
-                                      window.innerHeight, @schema)
     @playerManager = new PlayerManager(@schema)
     @currentPlayerId = null
 
@@ -19,7 +17,7 @@ class @WebGlSynth
         or @currentPlayerId._id == userId \
         or noteMessage.isMaster
       @synth.handleMessage noteMessage, player.id
-      @webGLVis.updateCube noteMessage, player.id
+      @vis.handleMessage noteMessage, player.id
 
   _midiNoteNumberToNoteLetter: (midiNoteNumber) ->
     noteIndex = midiNoteNumber % NOTES.length
@@ -27,10 +25,10 @@ class @WebGlSynth
 
   stopAll: ->
     @synth.stopAll()
-    @webGLVis.stopAll()
+    @vis.stopAll()
 
   pause: ->
-    @webGLVis.paused = not @webGLVis.paused
+    @vis.paused = not @vis.paused
 
   handleDrumMidiMessage: (noteInfo) =>
     if noteInfo.note == RIDE_CYMBAL_1

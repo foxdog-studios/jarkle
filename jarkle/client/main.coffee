@@ -1,6 +1,8 @@
 NUM_KEYBOARD_NOTES = 127
 KEYBOARD_START = 0
 TIME_OUT = 1000
+IMAGE_SIZE = 64
+IMAGE_SRC = 'finaldino.gif'
 
 $ ->
   FastClick.attach(document.body)
@@ -35,7 +37,7 @@ PASSWORD = 'thisDoesNotMatter'
 Meteor.startup ->
   Deps.autorun ->
     if Meteor.user() and not isViewer()
-      Session.set 'infoMessage', Meteor.user().profile.name
+      Session.set 'infoMessage', "#{Meteor.user().profile.name} touch me"
     if Meteor.loggingIn() or Meteor.user()?
       return
     Accounts.createUser
@@ -75,12 +77,28 @@ setup = (template, isMaster) ->
   noteMap = new MajorKeyNoteMap(NUM_KEYBOARD_NOTES, KEYBOARD_START, 'A',
                                   PENTATONIC_INTERVALS)
 
-  if isViewer()
+  controller = template.find '.controller'
+  if isSupportedSynthDevice() and hasWebAudio()
     Meteor.subscribe 'userStatus'
 
-    webGLDiv = template.find '.webGLcontainer'
-    webGLSynth = new WebGlSynth(Meteor.settings.public.trailHeadConf,  webGLDiv,
-                                noteMap, pubSub)
+
+    config = Meteor.settings.public.trailHeadConf
+
+    if false#hasWebGL()
+      webGLDiv = template.find '.webGLcontainer'
+
+      vis = new WebGLVisualisation(webGLDiv, window.innerWidth,
+                                        window.innerHeight, config)
+
+      # Visualisation events
+      pubSub.on MIDI_DRUM_NOTE_ON, vis.updateFoxHeads
+      pubSub.on SKELETON, vis.updateSkeleton
+      pubSub.on PAIRS_TOUCHING, vis.onPairsTouching
+    else
+      faceImage = new ImageCanvas IMAGE_SIZE, IMAGE_SIZE, IMAGE_SRC
+      vis = new ImageCanvasComposer controller, faceImage
+
+    webGLSynth = new WebGlSynth(config, vis, noteMap, pubSub)
     keyboardController = new KeyboardController window, pubSub
 
     pubSub.on KeyboardController.KEY_UP, ->
@@ -92,11 +110,6 @@ setup = (template, isMaster) ->
 
     # Synth events
     pubSub.on SKELETON, webGLSynth.synth.playSkeletons
-
-    # Visualisation events
-    pubSub.on MIDI_DRUM_NOTE_ON, webGLSynth.webGLVis.updateFoxHeads
-    pubSub.on SKELETON, webGLSynth.webGLVis.updateSkeleton
-    pubSub.on PAIRS_TOUCHING, webGLSynth.webGLVis.onPairsTouching
   else
     keyboardCanvas = template.find '.keyboard'
     keyboard = new Keyboard(keyboardCanvas, window.innerWidth,
@@ -108,7 +121,6 @@ setup = (template, isMaster) ->
   keys = new Keys(keysCanvas, window.innerWidth, window.innerHeight,
                   noteMap.getNumberOfNotes(), pubSub)
 
-  controller = template.find '.controller'
   touchController = new TouchController controller, pubSub
   noteMessenger = new NoteMessenger(chatStream, pubSub,
                                     NoteMessenger.MESSAGE_SENT)

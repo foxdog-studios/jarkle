@@ -192,7 +192,7 @@ class @WebGLVisualisation
 
 
 
-  updateCube: (message, playerId) =>
+  handleMessage: (message, playerId) =>
 
     screenScale = 10
     cartesianX = (message.x - 0.5) * screenScale
