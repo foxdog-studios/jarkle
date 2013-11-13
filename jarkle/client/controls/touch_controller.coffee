@@ -1,4 +1,4 @@
-@TouchController = class TouchController
+class @TouchController
   @TOUCH_START = 'touchstart'
   @TOUCH_MOVE = 'touchmove'
   @TOUCH_END = 'touchend'

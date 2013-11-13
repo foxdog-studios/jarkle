@@ -59,6 +59,7 @@ PASSWORD = 'thisDoesNotMatter'
 
 Meteor.startup ->
   Deps.autorun ->
+    return
     if Meteor.user() and not isViewer()
       Session.set 'infoMessage', Meteor.user().username
     if Meteor.loggingIn() or Meteor.user()?
@@ -103,6 +104,10 @@ setup = (template, isMaster) ->
 
     webGLDiv = template.find '.webGLcontainer'
     webGLSynth = new WebGlSynth(TRAIL_HEAD_CONF, webGLDiv, noteMap, pubSub)
+    keyboardController = new KeyboardController window, pubSub
+
+    pubSub.on KeyboardController.KEY_UP, ->
+      webGLSynth.pause()
 
     pubSub.on MESSAGE_RECIEVED, webGLSynth.handleNoteMessage
     pubSub.on MIDI_NOTE_ON, webGLSynth.handleMidiMessage

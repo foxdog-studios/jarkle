@@ -71,6 +71,8 @@ class @WebGLVisualisation
 
     @touchMap = {}
 
+    @paused = false
+
     @currentHeadIndex = 0
 
     @scene = new THREE.Scene()
@@ -260,6 +262,8 @@ class @WebGLVisualisation
 
   render: =>
     requestAnimationFrame @render
+    if @paused
+      return
     @controls.update()
     @renderer.render @scene, @camera
     for particleGroup in @particleGroups

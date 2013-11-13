@@ -29,6 +29,9 @@ class @WebGlSynth
     @synth.stopAll()
     @webGLVis.stopAll()
 
+  pause: ->
+    @webGLVis.paused = not @webGLVis.paused
+
   handleDrumMidiMessage: (noteInfo) =>
     if noteInfo.note == RIDE_CYMBAL_1
       @nextPlayer()
