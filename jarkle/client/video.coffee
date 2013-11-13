@@ -20,6 +20,9 @@ Template.video.helpers
   selected: ->
     if @src == Session.get 'videoSrc'
       return 'selected'
+  jarkleUrl: ->
+    "#{Meteor.absoluteUrl()}#{Router.current().path[1..]}"
+
 
 Template.video.events
   'change .video-select': (e) ->
