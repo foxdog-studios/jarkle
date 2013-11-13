@@ -1,31 +1,3 @@
-TRAIL_HEAD_CONF =
-  player1:
-    vis:
-      obj: 'fox.obj'
-      mtl: 'fox.mtl'
-    synth:
-      oscillatorType: 'SINE'
-  player2:
-    vis:
-      obj: 'godchilla.obj'
-      mtl: 'godchilla.mtl'
-    synth:
-      oscillatorType: 'SAWTOOTH'
-  player3:
-    isMaster: true
-    vis:
-      obj: 'pug.obj'
-      mtl: 'pug.mtl'
-    synth:
-      oscillatorType: 'SQUARE'
-  player4:
-    vis:
-      obj: 'dino-head.obj'
-      mtl: 'dino-head.mtl'
-    synth:
-      oscillatorType: 'TRIANGLE'
-
-
 NUM_KEYBOARD_NOTES = 127
 KEYBOARD_START = 0
 TIME_OUT = 1000
@@ -107,7 +79,8 @@ setup = (template, isMaster) ->
     Meteor.subscribe 'userStatus'
 
     webGLDiv = template.find '.webGLcontainer'
-    webGLSynth = new WebGlSynth(TRAIL_HEAD_CONF, webGLDiv, noteMap, pubSub)
+    webGLSynth = new WebGlSynth(Meteor.settings.public.trailHeadConf,  webGLDiv,
+                                noteMap, pubSub)
     keyboardController = new KeyboardController window, pubSub
 
     pubSub.on KeyboardController.KEY_UP, ->
