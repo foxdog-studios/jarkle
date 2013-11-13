@@ -55,6 +55,9 @@ hasWebAudio = ->
 isViewer = ->
   isSupportedSynthDevice() and hasWebGL() and hasWebAudio()
 
+@createRoomEventName = (eventName) ->
+  "#{Session.get('roomId')}-#{eventName}"
+
 PASSWORD = 'thisDoesNotMatter'
 
 Meteor.startup ->
@@ -138,7 +141,7 @@ setup = (template, isMaster) ->
                                     NoteMessenger.MESSAGE_SENT)
   pubSub.on NoteMessenger.MESSAGE_SENT, (message) =>
     message.isMaster = isMaster
-    chatStream.emit 'message', message
+    chatStream.emit createRoomEventName('message'), message
   pubSub.on TouchController.TOUCH_START, noteMessenger.sendNoteStartMessage
   pubSub.on TouchController.TOUCH_MOVE, noteMessenger.sendNoteContinueMessage
   pubSub.on TouchController.TOUCH_END, noteMessenger.sendNoteEndMessage
@@ -151,20 +154,20 @@ setup = (template, isMaster) ->
   pubSub.on MouseController.END, localNoteMessenger.sendNoteEndMessage
 
   if isViewer()
-    chatStream.on 'midiNoteOn', (noteInfo) ->
+    chatStream.on createRoomEventName('midiNoteOn'), (noteInfo) ->
       pubSub.trigger MIDI_NOTE_ON, noteInfo
 
-    chatStream.on 'midiDrumsNoteOn', (noteInfo) ->
+    chatStream.on createRoomEventName('midiDrumsNoteOn'), (noteInfo) ->
       pubSub.trigger MIDI_DRUM_NOTE_ON, noteInfo
 
-    chatStream.on 'message', (message) ->
+    chatStream.on createRoomEventName('message'), (message) ->
       pubSub.trigger MESSAGE_RECIEVED, message
 
-    chatStream.on 'skeleton', (skeleton) ->
+    chatStream.on createRoomEventName('skeleton'), (skeleton) ->
       pubSub.trigger SKELETON, skeleton
 
     pubSub.on CURRENT_PLAYER, (player) ->
-      chatStream.emit 'currentPlayer', player
+      chatStream.emit createRoomEventName('currentPlayer'), player
 
   else
     blacken = template.find '.blacken'
@@ -173,7 +176,7 @@ setup = (template, isMaster) ->
       unless Session.get('isCurrentPlayer') == 'off'
         blackenScreenTimeout.restartTimeout()
     unless isMaster
-      chatStream.on 'currentPlayer', (player) =>
+      chatStream.on createRoomEventName('currentPlayer'), (player) =>
         if player?
           if player._id == Meteor.userId()
             Session.set('isCurrentPlayer', 'on')
