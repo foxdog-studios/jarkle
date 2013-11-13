@@ -60,14 +60,15 @@ PASSWORD = 'thisDoesNotMatter'
 Meteor.startup ->
   Deps.autorun ->
     if Meteor.user() and not isViewer()
-      Session.set 'infoMessage', Meteor.user().username
+      Session.set 'infoMessage', Meteor.user().profile.name
     if Meteor.loggingIn() or Meteor.user()?
       return
     Accounts.createUser
-      username: generateName()
+      username: Random.hexString(32)
       password: PASSWORD
       profile:
         userAgent: navigator.userAgent
+        name: generateName()
     , (error) ->
       if error?
         alert error + 'Hold on'

@@ -54,7 +54,7 @@ class @WebGlSynth
       if ua.match(/IEMobile/i)
         ua = 'Windows phone'
       Session.set 'infoMessage', """
-        #{nextPlayer.username} on a #{ua}
+        #{nextPlayer.profile.name} on a #{ua}
       """
       @pubSub.trigger CURRENT_PLAYER, nextPlayer
     @currentPlayerId = nextPlayer
