@@ -27,7 +27,7 @@ hasWebAudio = ->
   window.AudioContext or window.webkitAudioContext
 
 @isViewer = ->
-  isSupportedSynthDevice() and hasWebGL() and hasWebAudio()
+  isSupportedSynthDevice() and hasWebAudio()
 
 @createRoomEventName = (eventName) ->
   "#{Session.get('roomId')}-#{eventName}"
@@ -84,7 +84,7 @@ setup = (template, isMaster) ->
 
     config = Meteor.settings.public.trailHeadConf
 
-    if false#hasWebGL()
+    if hasWebGL()
       webGLDiv = template.find '.webGLcontainer'
 
       vis = new WebGLVisualisation(webGLDiv, window.innerWidth,
