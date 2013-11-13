@@ -59,7 +59,6 @@ PASSWORD = 'thisDoesNotMatter'
 
 Meteor.startup ->
   Deps.autorun ->
-    return
     if Meteor.user() and not isViewer()
       Session.set 'infoMessage', Meteor.user().username
     if Meteor.loggingIn() or Meteor.user()?
@@ -83,11 +82,12 @@ setup = (template, isMaster) ->
   unless isMaster
     # XXX: For the desktop viewer set it to be a master as well.
     isMaster = isViewer()
-  Deps.autorun =>
+  Deps.autorun (computation) =>
     if Meteor.user()
       Meteor.users.update Meteor.userId(),
         $set:
           isMaster: isMaster
+      computation.stop()
 
   pubSub = new PubSub
 
