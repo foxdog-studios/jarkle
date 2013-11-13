@@ -15,7 +15,11 @@ Router.map ->
         Session.set 'roomId', 'main'
   @route 'main',
     path: '/:roomId'
-    template: 'main'
     before: ->
       Session.set 'roomId', @params.roomId
+    action: ->
+      if isViewer()
+        @render('viewer')
+      else
+        @render('main')
 

@@ -26,8 +26,18 @@ body {
   right: 0;
 }
 
+.video {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.webGLcontainer canvas {
+  z-index: -10;
+}
+
 .keyboard {
-  z-index: -1;
+  z-index: -9;
 }
 
 .blacken {
@@ -44,5 +54,9 @@ body {
   text-align: center;
   font-size: 40px;
   z-index: 1001;
+}
+
+.video {
+  z-index: 1030;
 }
 

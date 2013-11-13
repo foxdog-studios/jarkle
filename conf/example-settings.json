@@ -1,6 +1,7 @@
 {
   "public": {
-    "automaticRoomIds": true
+    "automaticRoomIds": true,
+    "isInGFunkMode": true
   },
   "site": {
     "domain": "",

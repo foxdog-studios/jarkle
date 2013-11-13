@@ -86,7 +86,7 @@ class @Synth
   playMidiNote: (midiNoteNumber, voice) ->
     noteFrequencyHz = 27.5 * Math.pow(2, (midiNoteNumber - 21) / 12)
     voice.vco.frequency.value = noteFrequencyHz
-    voice.vca.gain.value = 1
+    voice.vca.gain.value = 0.3
 
   stopPad: (identifier) ->
     voice = @voices[identifier]

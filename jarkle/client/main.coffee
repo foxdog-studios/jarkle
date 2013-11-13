@@ -52,7 +52,7 @@ hasWebGL = ->
 hasWebAudio = ->
   window.AudioContext or window.webkitAudioContext
 
-isViewer = ->
+@isViewer = ->
   isSupportedSynthDevice() and hasWebGL() and hasWebAudio()
 
 @createRoomEventName = (eventName) ->
