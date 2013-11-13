@@ -31,7 +31,7 @@ if [[ $# != 2 ]]; then
 fi
 
 meteor_setings=$(realpath -- "$1")
-export METEOR_SETTINGS="${meteor_setings}"
+export METEOR_SETINGS="${meteor_setings}"
 action=$2
 
 
