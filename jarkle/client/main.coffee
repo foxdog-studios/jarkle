@@ -57,6 +57,9 @@ Template.master.rendered  = ->
   setup(@, true)
 
 setup = (template, isMaster) ->
+  if Meteor.loggingIn() or not Meteor.user()?
+    return
+  $('#myModal').modal()
   unless isMaster
     # XXX: For the desktop viewer set it to be a master as well.
     isMaster = isViewer()
@@ -110,7 +113,6 @@ setup = (template, isMaster) ->
 
     # Synth events
     pubSub.on SKELETON, webGLSynth.synth.playSkeletons
-    $('#myModal').modal()
   else
     keyboardCanvas = template.find '.keyboard'
     keyboard = new Keyboard(keyboardCanvas, window.innerWidth,
