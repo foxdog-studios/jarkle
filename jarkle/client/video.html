@@ -2,11 +2,18 @@
   <div class="video">
     <h1>The Jarkle</h1>
     <iframe width="300" height="200" src="{{videoSrc}}" frameborder="0" allowfullscreen></iframe>
-    <select class="video-select">
+    <label for="video-select">Select a synth classic</label>
+    <select name="video-select" class="video-select">
       {{#each videoSrcs}}
         <option {{selected}} value="{{src}}">{{name}}</option>
       {{/each}}
     </select>
+    <form class="youtube-id form-inline" role="form">
+      <div class="form-group">
+        <label for="youtube-id-field">Or paste in a youtube URL</label>
+        <input id="youtube-id-field" class="form-control" type="text" placeholder="Custom youtube URL in here">
+      </div>
+    </form>
     <div class="left">
       <p>Be a G Funk super star, click play on the video and click the screen to play the synth</p>
     </div>

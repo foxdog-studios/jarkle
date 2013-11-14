@@ -31,9 +31,21 @@ Template.video.helpers
     if @src == Session.get 'videoSrc'
       return 'selected'
 
+getYoutubeId = (url) ->
+  regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+  match = url.match(regExp);
+  if match? and match[2].length == 11
+    return match[2]
+
 Template.video.events
   'change .video-select': (e) ->
     videoSrc = $(e.target).val()
     console.log videoSrc
     Session.set 'videoSrc', videoSrc
+  'submit .youtube-id': (e) ->
+    e.preventDefault()
+    url = $('#youtube-id-field').val()
+    id = getYoutubeId url
+    if id?
+      Session.set 'videoSrc', "//www.youtube-nocookie.com/embed/#{id}?wmode=transparent&fs=0"
 
