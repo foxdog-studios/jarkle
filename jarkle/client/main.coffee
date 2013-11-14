@@ -37,7 +37,11 @@ PASSWORD = 'thisDoesNotMatter'
 Meteor.startup ->
   Deps.autorun ->
     if Meteor.user() and not isViewer()
-      Session.set 'infoMessage', "#{Meteor.user().profile.name} touch me"
+      if Meteor.settings.public.isInGFunkMode?
+        Session.set('infoMessage',
+          "Open #{jarkleDomainAndPath()} on a laptop/desktop then touch me")
+      else
+        Session.set 'infoMessage', "#{Meteor.user().profile.name}"
     if Meteor.loggingIn() or Meteor.user()?
       return
     Accounts.createUser
