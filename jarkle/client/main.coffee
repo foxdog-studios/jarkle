@@ -65,7 +65,7 @@ Template.master.rendered  = ->
     setup(@, true)
 
 setup = (template, isMaster) ->
-  $('#myModal').modal()
+  console.log 'setting up'
   unless isMaster
     # XXX: For the desktop viewer set it to be a master as well.
     isMaster = isViewer()
@@ -88,6 +88,7 @@ setup = (template, isMaster) ->
 
   controller = template.find '.controller'
   if isSupportedSynthDevice() and hasWebAudio()
+    $('#myModal').modal()
     Meteor.subscribe 'userStatus'
 
 

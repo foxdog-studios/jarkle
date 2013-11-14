@@ -6,13 +6,6 @@
 </head>
 
 <body>
-</body>
-
-<template name="viewer">
-  {{> main}}
-  {{#if isInGFunkMode}}
-    {{#constant}}
-    {{> video}}
     <!-- Modal -->
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
       <div class="modal-dialog">
@@ -51,6 +44,14 @@
         </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
+
+</body>
+
+<template name="viewer">
+  {{> main}}
+  {{#if isInGFunkMode}}
+    {{#constant}}
+    {{> video}}
     {{/constant}}
   {{/if}}
 </template>
