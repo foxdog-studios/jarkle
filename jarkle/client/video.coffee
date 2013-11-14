@@ -1,9 +1,9 @@
-NUTTIN_BUT_A_G_THANG = '//www.youtube-nocookie.com/embed/0AeAbSpr0bU?wmode=transparent'
-JUST_BE_GOOD_TO_ME  = '//www.youtube-nocookie.com/embed/UHDPMIFwIKA?wmode=transparent'
+NUTTIN_BUT_A_G_THANG = '//www.youtube-nocookie.com/embed/0AeAbSpr0bU?wmode=transparent&fs=0'
+JUST_BE_GOOD_TO_ME  = '//www.youtube-nocookie.com/embed/UHDPMIFwIKA?wmode=transparent&fs=0'
 
-HIP_HOP  = '//www.youtube-nocookie.com/embed/4jNyr6BJZuI?wmode=transparent'
+HIP_HOP  = '//www.youtube-nocookie.com/embed/4jNyr6BJZuI?wmode=transparent&fs=0'
 
-SUMMERTIME  = '//www.youtube-nocookie.com/embed/Kr0tTbTbmVA?wmode=transparent'
+SUMMERTIME  = '//www.youtube-nocookie.com/embed/Kr0tTbTbmVA?wmode=transparent&fs=0'
 
 VIDEO_SRCS = [
   src: NUTTIN_BUT_A_G_THANG
