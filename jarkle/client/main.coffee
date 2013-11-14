@@ -84,7 +84,7 @@ setup = (template, isMaster) ->
 
     config = Meteor.settings.public.trailHeadConf
 
-    if hasWebGL()
+    if hasWebGL() and not Router.current().params.disableWebGL
       webGLDiv = template.find '.webGLcontainer'
 
       vis = new WebGLVisualisation(webGLDiv, window.innerWidth,
@@ -110,6 +110,7 @@ setup = (template, isMaster) ->
 
     # Synth events
     pubSub.on SKELETON, webGLSynth.synth.playSkeletons
+    $('#myModal').modal()
   else
     keyboardCanvas = template.find '.keyboard'
     keyboard = new Keyboard(keyboardCanvas, window.innerWidth,
