@@ -51,15 +51,18 @@ Meteor.startup ->
         alert error + 'Hold on'
 
 Template.controller.rendered = ->
-  setup(@, false)
+  if not @renderedOnce
+    @renderedOnce = true
+    setup(@, false)
 
 Template.master.rendered  = ->
-  setup(@, true)
+  if not @renderedOnce
+    @renderedOnce = true
+    setup(@, true)
 
 setup = (template, isMaster) ->
-  if Meteor.loggingIn() or not Meteor.user()?
-    return
   $('#myModal').modal()
+  console.log 'agga'
   unless isMaster
     # XXX: For the desktop viewer set it to be a master as well.
     isMaster = isViewer()
