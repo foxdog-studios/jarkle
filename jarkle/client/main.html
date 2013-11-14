@@ -11,6 +11,7 @@
 <template name="viewer">
   {{> main}}
   {{#if isInGFunkMode}}
+    {{#constant}}
     {{> video}}
     <!-- Modal -->
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -51,6 +52,7 @@
         </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
+    {{/constant}}
   {{/if}}
 </template>
 
@@ -68,11 +70,13 @@
 </template>
 
 <template name="controls">
+  {{#constant}}
   <canvas class="keyboard"></canvas>
   <div class="webGLcontainer"></div>
   <canvas class="keys"></canvas>
   <canvas class="blacken"></canvas>
   <canvas class="controller"></canvas>
+  {{/constant}}
 </template>
 
 <template name="info">

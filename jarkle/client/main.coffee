@@ -62,7 +62,6 @@ Template.master.rendered  = ->
 
 setup = (template, isMaster) ->
   $('#myModal').modal()
-  console.log 'agga'
   unless isMaster
     # XXX: For the desktop viewer set it to be a master as well.
     isMaster = isViewer()
