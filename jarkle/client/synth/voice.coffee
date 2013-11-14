@@ -1,5 +1,5 @@
 @Voice = class Voice
-  constructor: (@audioContext, @oscillatorType) ->
+  constructor: (@audioContext, @oscillatorType, @gainOnValue) ->
     @vco = @_createVco()
     @vca = @_createVca()
     @vco.connect @vca

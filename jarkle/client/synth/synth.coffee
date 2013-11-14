@@ -26,6 +26,7 @@ PROXIMITY_PAIRS =
   ]
 
 DEFAULT_OSCILLATOR_TYPE = 'SQUARE'
+DEFAULT_GAIN_ON_VALUE = 0.7
 
 class @Synth
   constructor: (@audioContext, @noteMap, @pubSub, @schema) ->
@@ -45,10 +46,13 @@ class @Synth
     voice = @voices[identifier]
     unless voice?
       if playerId?
-        oscillatorType = @schema[playerId].synth.oscillatorType
+        synthData = @schema[playerId].synth
+        oscillatorType = synthData.oscillatorType
+        gainOnValue = synthData.gainOnValue
       else
         oscillatorType = DEFAULT_OSCILLATOR_TYPE
-      voice = new Voice @audioContext, oscillatorType
+        gainOnValue = DEFAULT_GAIN_ON_VALUE
+      voice = new Voice @audioContext, oscillatorType, gainOnValue
       @voices[identifier] = voice
     @playMidiNote(midiNoteNumber, voice)
 
@@ -86,7 +90,7 @@ class @Synth
   playMidiNote: (midiNoteNumber, voice) ->
     noteFrequencyHz = 27.5 * Math.pow(2, (midiNoteNumber - 21) / 12)
     voice.vco.frequency.value = noteFrequencyHz
-    voice.vca.gain.value = 0.3
+    voice.vca.gain.value = voice.gainOnValue
 
   stopPad: (identifier) ->
     voice = @voices[identifier]
