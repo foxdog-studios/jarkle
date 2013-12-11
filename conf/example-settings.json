@@ -1,4 +1,8 @@
 {
+  "public": {
+    "automaticRoomIds": true,
+    "isInGFunkMode": true
+  },
   "site": {
     "domain": "",
     "password": ""

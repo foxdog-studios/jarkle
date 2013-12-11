@@ -46,9 +46,11 @@ _randomElFromArray = (array) ->
     index = array.length -1
   array[index]
 
-@generateName = ->
-  first = _randomElFromArray(FIRST_WORDS)
-  second = _randomElFromArray(SECOND_WORDS)
-  third = _randomElFromArray(THIRD_WORDS)
+@generateName = (limit) ->
+  unless limit?
+    limit = -1
+  first = _randomElFromArray(FIRST_WORDS)[0..limit]
+  second = _randomElFromArray(SECOND_WORDS)[0..limit]
+  third = _randomElFromArray(THIRD_WORDS)[0..limit]
   "#{first}-#{second}-#{third}"
 

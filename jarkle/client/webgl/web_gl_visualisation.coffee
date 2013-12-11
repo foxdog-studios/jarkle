@@ -71,6 +71,8 @@ class @WebGLVisualisation
 
     @touchMap = {}
 
+    @paused = false
+
     @currentHeadIndex = 0
 
     @scene = new THREE.Scene()
@@ -190,7 +192,7 @@ class @WebGLVisualisation
 
 
 
-  updateCube: (message, playerId) =>
+  handleMessage: (message, playerId) =>
 
     screenScale = 10
     cartesianX = (message.x - 0.5) * screenScale
@@ -260,6 +262,8 @@ class @WebGLVisualisation
 
   render: =>
     requestAnimationFrame @render
+    if @paused
+      return
     @controls.update()
     @renderer.render @scene, @camera
     for particleGroup in @particleGroups
