@@ -3,33 +3,11 @@ X_THRESHOLD = THRESHOLD
 Y_THRESHOLD = THRESHOLD
 Z_THRESHOLD = THRESHOLD
 
-PROXIMITY_PAIRS =
-  leftHand: [
-    pairPoint: 'rightHand'
-    note: 56
-  ,
-    pairPoint: 'leftShoulder'
-    note: 58
-  ,
-    pairPoint: 'leftHip'
-    note: 65
-  ]
-  rightHand: [
-    pairPoint: 'rightShoulder'
-    note: 63
-  ,
-    pairPoint: 'rightHip'
-    note: 62
-  ,
-    pairPoint: 'leftShoulder'
-    note: 60
-  ]
-
 DEFAULT_OSCILLATOR_TYPE = 'SQUARE'
 DEFAULT_GAIN_ON_VALUE = 0.7
 
 class @Synth
-  constructor: (@audioContext, @noteMap, @pubSub, @schema) ->
+  constructor: (@audioContext, @noteMap, @pubSub, @schema, @skeletonConfig) ->
     @voices = {}
 
   handleMessage: (message, playerId) =>
@@ -59,7 +37,7 @@ class @Synth
   playSkeletons: (skeletons) =>
     if skeletons.length > 0
       skeleton = skeletons[0].skeleton
-      for pairA, pairs of PROXIMITY_PAIRS
+      for pairA, pairs of @skeletonConfig
         for pairData in pairs
           pairB = pairData.pairPoint
           pointA = skeleton[pairA]
@@ -73,7 +51,7 @@ class @Synth
               @pubSub.trigger PAIRS_TOUCHING, pairA, pairB, false
             @stopPad(id)
     else
-      for pairA, pairs of PROXIMITY_PAIRS
+      for pairA, pairs of @skeletonConfig
         for pairData in pairs
           pairB = pairData.pairPoint
           id = "#{pairA}#{pairB}"

@@ -101,13 +101,13 @@ setup = (template, isMaster) ->
     Meteor.subscribe 'userStatus'
 
 
-    config = Meteor.settings.public.trailHeadConf
+    trailHeadConfig = Meteor.settings.public.trailHeadConf
 
     if hasWebGL() and not Router.current().params.disableWebGL
       webGLDiv = template.find '.webGLcontainer'
 
       vis = new WebGLVisualisation(webGLDiv, window.innerWidth,
-                                        window.innerHeight, config)
+                                        window.innerHeight, trailHeadConfig)
 
       # Visualisation events
       pubSub.on MIDI_DRUM_NOTE_ON, vis.updateFoxHeads
@@ -117,7 +117,10 @@ setup = (template, isMaster) ->
       faceImage = new ImageCanvas IMAGE_SIZE, IMAGE_SIZE, IMAGE_SRC
       vis = new ImageCanvasComposer controller, faceImage
 
-    webGLSynth = new WebGlSynth(config, vis, noteMap, pubSub)
+    skeletonConfig = Meteor.settings.public.skeletonConf
+
+    webGLSynth = new WebGlSynth(trailHeadConfig, skeletonConfig, vis, noteMap,
+                                pubSub)
     keyboardController = new KeyboardController window, pubSub
 
     pubSub.on KeyboardController.KEY_UP, ->

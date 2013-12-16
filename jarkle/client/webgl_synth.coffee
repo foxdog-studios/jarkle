@@ -3,10 +3,10 @@ NOTES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
 NOTE_ON_MIDI_NUMBER = 144
 
 class @WebGlSynth
-  constructor: (@schema, @vis, noteMap, @pubSub) ->
+  constructor: (@schema, @skeletonConfig, @vis, noteMap, @pubSub) ->
     Session.set 'infoMessage', null
     window.AudioContext = window.AudioContext or window.webkitAudioContext
-    @synth = new Synth(new AudioContext(), noteMap, pubSub, @schema)
+    @synth = new Synth(new AudioContext(), noteMap, pubSub, @schema, skeletonConfig)
     @playerManager = new PlayerManager(@schema)
     @currentPlayerId = null
 
