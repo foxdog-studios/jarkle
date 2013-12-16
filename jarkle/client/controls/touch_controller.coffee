@@ -33,7 +33,7 @@ class @TouchController
 
   handleCancel: (evt) =>
     evt.preventDefault()
-    handleEnd(evt)
+    @handleEnd(evt)
 
   handleMove: (evt) =>
     evt.preventDefault()

@@ -24,7 +24,11 @@ hasWebGL = ->
     and (canvas.getContext('webgl') or canvas.getContext('experimental-webgl'))
 
 hasWebAudio = ->
-  window.AudioContext or window.webkitAudioContext
+  unless window.AudioContext or window.webkitAudioContext
+    return false
+  window.AudioContext = window.AudioContext or window.webkitAudioContext
+  a = new window.AudioContext
+  return a.createOscillator?
 
 @isViewer = ->
   isSupportedSynthDevice() and hasWebAudio()
@@ -65,6 +69,8 @@ Template.master.rendered  = ->
     setup(@, true)
 
 setup = (template, isMaster) ->
+  window.onerror = (m,u,l) ->
+    alert(m+"\n"+u+":"+l)
   console.log 'setting up'
   unless isMaster
     # XXX: For the desktop viewer set it to be a master as well.
@@ -137,12 +143,15 @@ setup = (template, isMaster) ->
   pubSub.on NoteMessenger.MESSAGE_SENT, (message) =>
     message.isMaster = isMaster
     chatStream.emit createRoomEventName('message'), message
-  pubSub.on TouchController.TOUCH_START, noteMessenger.sendNoteStartMessage
-  pubSub.on TouchController.TOUCH_MOVE, noteMessenger.sendNoteContinueMessage
-  pubSub.on TouchController.TOUCH_END, noteMessenger.sendNoteEndMessage
+
 
   localNoteMessenger = new NoteMessenger chatStream, pubSub, MESSAGE_RECIEVED
   mouseController = new MouseController controller, pubSub
+
+  for messenger in [noteMessenger, localNoteMessenger]
+    pubSub.on TouchController.TOUCH_START, messenger.sendNoteStartMessage
+    pubSub.on TouchController.TOUCH_MOVE, messenger.sendNoteContinueMessage
+    pubSub.on TouchController.TOUCH_END, messenger.sendNoteEndMessage
 
   pubSub.on MouseController.START, localNoteMessenger.sendNoteStartMessage
   pubSub.on MouseController.MOVE, localNoteMessenger.sendNoteContinueMessage
@@ -158,7 +167,7 @@ setup = (template, isMaster) ->
     chatStream.on createRoomEventName('message'), (message) ->
       pubSub.trigger MESSAGE_RECIEVED, message
 
-    chatStream.on createRoomEventName('skeleton'), (skeleton) ->
+    chatStream.on 'skeleton', (skeleton) ->
       pubSub.trigger SKELETON, skeleton
 
     pubSub.on CURRENT_PLAYER, (player) ->
