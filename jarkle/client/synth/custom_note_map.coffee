@@ -1,8 +1,8 @@
 class @CustomNoteMap
-  constructor: (@notes) ->
+  constructor: (@notes, @noteOffset) ->
 
   getNote: (ratio) ->
-    @notes[Math.floor(ratio * @notes.length)]
+    @notes[Math.floor(ratio * @notes.length)] + @noteOffset
 
   getNumberOfNotes: ->
     @notes.length

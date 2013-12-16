@@ -90,7 +90,8 @@ setup = (template, isMaster) ->
   canvas.height = window.innerHeight
 
   if Meteor.settings.public.useCustomNoteMap
-    noteMap = new CustomNoteMap(Meteor.settings.public.customNoteMap)
+    noteMap = new CustomNoteMap(Meteor.settings.public.customNoteMap,
+                                Meteor.settings.public.customNoteMapOffset)
   else
     noteMap = new MajorKeyNoteMap(NUM_KEYBOARD_NOTES, KEYBOARD_START, 'A',
                                   PENTATONIC_INTERVALS)
