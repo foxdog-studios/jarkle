@@ -31,7 +31,7 @@ class @WebGlSynth
     @vis.paused = not @vis.paused
 
   handleDrumMidiMessage: (noteInfo) =>
-    if noteInfo.note == RIDE_CYMBAL_1
+    if noteInfo.note == RIDE_CYMBAL_1 and noteInfo.vel >= 120
       @nextPlayer()
 
   nextPlayer: ->
