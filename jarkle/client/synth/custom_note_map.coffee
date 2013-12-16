@@ -2,7 +2,7 @@ class @CustomNoteMap
   constructor: (@notes) ->
 
   getNote: (ratio) ->
-    @notes[Math.round(ratio * @notes.length)]
+    @notes[Math.floor(ratio * @notes.length)]
 
   getNumberOfNotes: ->
     @notes.length

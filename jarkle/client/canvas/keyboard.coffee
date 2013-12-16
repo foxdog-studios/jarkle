@@ -30,7 +30,7 @@ class @Keyboard
 
   drawKeys: (options) =>
     # Draws a rainbow keyboard
-    freq = 0.05
+    freq = 1 / @numNotes * 2
     freqR = freq
     freqG = freq
     freqB = freq
@@ -40,7 +40,7 @@ class @Keyboard
     width = 128
     center = 127
     yInc = @height / @numNotes
-    for i in [0...@numNotes]
+    for i in [0..@numNotes]
       r = Math.round(Math.sin(freqR * i + phaseR) * width + center)
       g = Math.round(Math.sin(freqG * i + phaseG) * width + center)
       b = Math.round(Math.sin(freqB * i + phaseB) * width + center)
