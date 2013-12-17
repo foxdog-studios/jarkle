@@ -2,7 +2,7 @@ NUM_PARTICLES = 20000
 PARTICLES_DIAMETER = 2000
 PARTICLES_RADIUS = PARTICLES_DIAMETER / 2
 DRAW_DISTANCE = 1000
-X_DRAW_INCREMENTS = DRAW_DISTANCE / 100
+X_DRAW_INCREMENTS = DRAW_DISTANCE / 1000
 CUBE_DECREMENTS = DRAW_DISTANCE / 1000
 CUBE_DISTANCE_LIMIT = 100
 NUM_CUBES = 50
@@ -67,7 +67,8 @@ POSITIONS[RIDE_CYMBAL_1] =
 
 
 class @WebGLVisualisation
-  constructor: (@el, @width, @height, @schema) ->
+  constructor: (@el, @width, @height, @schema, @particleTexture, @inc,
+                @incAxis) ->
 
     @touchMap = {}
 
@@ -134,20 +135,20 @@ class @WebGLVisualisation
       vertex.z = Math.random() * PARTICLES_DIAMETER - PARTICLES_RADIUS
       geometry.vertices.push vertex
 
-    particalMap = THREE.ImageUtils.loadTexture 'particle.png'
+    particalMap = THREE.ImageUtils.loadTexture @particleTexture
 
     @particalMaterial = new THREE.ParticleSystemMaterial
       blending: THREE.AdditiveBlending
       size: 5
-      color: 0xAAAAFF
+      color: 0xFFFFFF
       map: particalMap
       transparent: true
 
-    @particalMaterial.color = new THREE.Color(0x7777FF)
+    @particalMaterial.color = new THREE.Color(0xFFFFFF)
 
     particlesA = new THREE.ParticleSystem(geometry, @particalMaterial)
     particlesB = new THREE.ParticleSystem(geometry, @particalMaterial)
-    particlesB.position.z = DRAW_DISTANCE
+    particlesB.position[@incAxis] = DRAW_DISTANCE
     @particleGroups = [particlesA, particlesB]
     for particleGroup in @particleGroups
       @scene.add particleGroup
@@ -267,9 +268,9 @@ class @WebGLVisualisation
     @controls.update()
     @renderer.render @scene, @camera
     for particleGroup in @particleGroups
-      particleGroup.position.z -= X_DRAW_INCREMENTS
-      if particleGroup.position.z < -PARTICLES_DIAMETER
-        particleGroup.position.z = DRAW_DISTANCE
+      particleGroup.position[@incAxis] += @inc
+      if particleGroup.position[@incAxis] < -PARTICLES_RADIUS
+        particleGroup.position[@incAxis] = DRAW_DISTANCE
     maxCubeZ = -Infinity
     maxCubePosition = null
     for cube in @cubes

@@ -116,7 +116,10 @@ setup = (template, isMaster) ->
       webGLDiv = template.find '.webGLcontainer'
 
       vis = new WebGLVisualisation(webGLDiv, window.innerWidth,
-                                        window.innerHeight, trailHeadConfig)
+                                        window.innerHeight, trailHeadConfig,
+                                  Meteor.settings.public.particleTexture,
+                                  Meteor.settings.public.inc,
+                                  Meteor.settings.public.incAxis)
 
       # Visualisation events
       pubSub.on MIDI_DRUM_NOTE_ON, vis.updateFoxHeads
