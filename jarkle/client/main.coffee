@@ -30,6 +30,12 @@ hasWebAudio = ->
   a = new window.AudioContext
   return a.createOscillator?
 
+setBackground = ->
+  bgImage = new Image()
+  $(bgImage).addClass('bg-image')
+  $('body').append(bgImage)
+  bgImage.src = Meteor.settings.public.background
+
 @isViewer = ->
   isSupportedSynthDevice() and hasWebAudio()
 
@@ -98,6 +104,8 @@ setup = (template, isMaster) ->
 
   controller = template.find '.controller'
   if isSupportedSynthDevice() and hasWebAudio()
+    setBackground()
+
     $('#myModal').modal()
     Meteor.subscribe 'userStatus'
 
