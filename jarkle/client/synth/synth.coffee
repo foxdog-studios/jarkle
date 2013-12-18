@@ -17,7 +17,7 @@ class @Synth
       @stopPad(message.identifier)
 
   playPad: (x, y, identifier, playerId) ->
-    midiNoteNumber = @noteMap.getNote(1 - y)
+    midiNoteNumber = @noteMap.getNote(1 - y, x)
     @playNote(midiNoteNumber, identifier, playerId)
 
   playNote: (midiNoteNumber, identifier, playerId) ->

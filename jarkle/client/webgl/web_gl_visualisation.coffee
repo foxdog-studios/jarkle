@@ -195,9 +195,9 @@ class @WebGLVisualisation
 
   handleMessage: (message, playerId) =>
 
-    screenScale = 10
-    cartesianX = (message.x - 0.5) * screenScale
-    cartesianY = ((-message.y) + 0.5) * screenScale
+    screenScale = 5
+    cartesianX = (message.y - 0.5) * screenScale
+    cartesianY = ((message.x) - 0.5) * screenScale
 
     cube = @_cycleCube(cartesianX, cartesianY)
 

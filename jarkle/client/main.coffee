@@ -47,7 +47,7 @@ PASSWORD = 'thisDoesNotMatter'
 Meteor.startup ->
   Deps.autorun ->
     if Meteor.user() and not isViewer()
-      if Meteor.settings.public.isInGFunkMode?
+      if Meteor.settings.public.isInGFunkMode
         Session.set('infoMessage',
           "Open #{jarkleDomainAndPath()} on a laptop/desktop then touch me")
       else
