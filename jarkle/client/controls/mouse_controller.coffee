@@ -12,7 +12,6 @@ class @MouseController
     evt.ctrlKey
 
   handleStart: (evt) =>
-    evt.preventDefault()
     @el.addEventListener 'mousemove', @handleMove, false
     if @testCtrl(evt)
       return
@@ -21,7 +20,6 @@ class @MouseController
     @isOn = true
 
   handleMove: (evt) =>
-    evt.preventDefault()
     if @testCtrl(evt)
       return
     evt.identifier = 'mouse'
@@ -34,7 +32,6 @@ class @MouseController
     @pubSub.trigger eventType, evt
 
   handleEnd: (evt) =>
-    evt.preventDefault()
     @el.removeEventListener 'mousemove', @handleMove, false
     evt.identifier = 'mouse'
     @pubSub.trigger MouseController.END, evt

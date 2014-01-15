@@ -13,6 +13,7 @@ node_global_packages=(
 )
 
 python_packages=(
+    'fabric==1.8.0'
     'ws4py==0.3.2'
     'git+https://github.com/foxdog-studios/conf.git@v2.0.2'
     'git+https://github.com/foxdog-studios/pyddp.git'

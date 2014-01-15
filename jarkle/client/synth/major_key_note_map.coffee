@@ -47,8 +47,8 @@ class @MajorKeyNoteMap
       currentNoteNumber += interval
       intervals_index = (intervals_index + 1) % @intervals.length
 
-  getNote: (index) ->
-    @noteMap[Math.round(index * @noteMap.length)]
+  getNote: (ratio) ->
+    @noteMap[Math.round(ratio * @noteMap.length)]
 
   getNumberOfNotes: ->
     @noteMap.length

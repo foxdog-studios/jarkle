@@ -1,34 +1,8 @@
-TRAIL_HEAD_CONF =
-  player1:
-    vis:
-      obj: 'fox.obj'
-      mtl: 'fox.mtl'
-    synth:
-      oscillatorType: 'SINE'
-  player2:
-    vis:
-      obj: 'godchilla.obj'
-      mtl: 'godchilla.mtl'
-    synth:
-      oscillatorType: 'SAWTOOTH'
-  player3:
-    isMaster: true
-    vis:
-      obj: 'pug.obj'
-      mtl: 'pug.mtl'
-    synth:
-      oscillatorType: 'SQUARE'
-  player4:
-    vis:
-      obj: 'dino-head.obj'
-      mtl: 'dino-head.mtl'
-    synth:
-      oscillatorType: 'TRIANGLE'
-
-
 NUM_KEYBOARD_NOTES = 127
 KEYBOARD_START = 0
 TIME_OUT = 1000
+IMAGE_SIZE = 64
+IMAGE_SRC = 'finaldino.gif'
 
 $ ->
   FastClick.attach(document.body)
@@ -50,43 +24,69 @@ hasWebGL = ->
     and (canvas.getContext('webgl') or canvas.getContext('experimental-webgl'))
 
 hasWebAudio = ->
-  window.AudioContext or window.webkitAudioContext
+  unless window.AudioContext or window.webkitAudioContext
+    return false
+  window.AudioContext = window.AudioContext or window.webkitAudioContext
+  a = new window.AudioContext
+  return a.createOscillator?
 
-isViewer = ->
-  isSupportedSynthDevice() and hasWebGL() and hasWebAudio()
+setBackground = ->
+  bgImage = new Image()
+  $(bgImage).addClass('bg-image')
+  $('body').append(bgImage)
+  bgImage.src = Meteor.settings.public.background
+
+@isViewer = ->
+  isSupportedSynthDevice() and hasWebAudio()
+
+@createRoomEventName = (eventName) ->
+  "#{Session.get('roomId')}-#{eventName}"
 
 PASSWORD = 'thisDoesNotMatter'
 
 Meteor.startup ->
   Deps.autorun ->
     if Meteor.user() and not isViewer()
-      Session.set 'infoMessage', Meteor.user().username
+      if Meteor.settings.public.isInGFunkMode
+        Session.set('infoMessage',
+          "Open #{jarkleDomainAndPath()} on a laptop/desktop then touch me")
+      else
+        Session.set 'infoMessage', "#{Meteor.user().profile.name}"
     if Meteor.loggingIn() or Meteor.user()?
       return
     Accounts.createUser
-      username: generateName()
+      username: Random.hexString(32)
       password: PASSWORD
       profile:
         userAgent: navigator.userAgent
+        name: generateName()
     , (error) ->
       if error?
         alert error + 'Hold on'
 
 Template.controller.rendered = ->
-  setup(@, false)
+  if not @renderedOnce
+    @renderedOnce = true
+    setup(@, false)
 
 Template.master.rendered  = ->
-  setup(@, true)
+  if not @renderedOnce
+    @renderedOnce = true
+    setup(@, true)
 
 setup = (template, isMaster) ->
+  window.onerror = (m,u,l) ->
+    alert(m+"\n"+u+":"+l)
+  console.log 'setting up'
   unless isMaster
     # XXX: For the desktop viewer set it to be a master as well.
     isMaster = isViewer()
-  Deps.autorun =>
+  Deps.autorun (computation) =>
     if Meteor.user()
       Meteor.users.update Meteor.userId(),
         $set:
           isMaster: isMaster
+      computation.stop()
 
   pubSub = new PubSub
 
@@ -95,14 +95,48 @@ setup = (template, isMaster) ->
   canvas.width = window.innerWidth
   canvas.height = window.innerHeight
 
-  noteMap = new MajorKeyNoteMap(NUM_KEYBOARD_NOTES, KEYBOARD_START, 'A',
+  if Meteor.settings.public.useCustomNoteMap
+    noteMap = new CustomNoteMap(Meteor.settings.public.customNoteMap,
+                                Meteor.settings.public.customNoteMapOffset)
+  else
+    noteMap = new MajorKeyNoteMap(NUM_KEYBOARD_NOTES, KEYBOARD_START, 'A',
                                   PENTATONIC_INTERVALS)
 
-  if isViewer()
+  controller = template.find '.controller'
+  if isSupportedSynthDevice() and hasWebAudio()
+    setBackground()
+
+    $('#myModal').modal()
     Meteor.subscribe 'userStatus'
 
-    webGLDiv = template.find '.webGLcontainer'
-    webGLSynth = new WebGlSynth(TRAIL_HEAD_CONF, webGLDiv, noteMap, pubSub)
+
+    trailHeadConfig = Meteor.settings.public.trailHeadConf
+
+    if hasWebGL() and not Router.current().params.disableWebGL
+      webGLDiv = template.find '.webGLcontainer'
+
+      vis = new WebGLVisualisation(webGLDiv, window.innerWidth,
+                                        window.innerHeight, trailHeadConfig,
+                                  Meteor.settings.public.particleTexture,
+                                  Meteor.settings.public.inc,
+                                  Meteor.settings.public.incAxis)
+
+      # Visualisation events
+      pubSub.on MIDI_DRUM_NOTE_ON, vis.updateFoxHeads
+      pubSub.on SKELETON, vis.updateSkeleton
+      pubSub.on PAIRS_TOUCHING, vis.onPairsTouching
+    else
+      faceImage = new ImageCanvas IMAGE_SIZE, IMAGE_SIZE, IMAGE_SRC
+      vis = new ImageCanvasComposer controller, faceImage
+
+    skeletonConfig = Meteor.settings.public.skeletonConf
+
+    webGLSynth = new WebGlSynth(trailHeadConfig, skeletonConfig, vis, noteMap,
+                                pubSub)
+    keyboardController = new KeyboardController window, pubSub
+
+    pubSub.on KeyboardController.KEY_UP, ->
+      webGLSynth.pause()
 
     pubSub.on MESSAGE_RECIEVED, webGLSynth.handleNoteMessage
     pubSub.on MIDI_NOTE_ON, webGLSynth.handleMidiMessage
@@ -110,11 +144,6 @@ setup = (template, isMaster) ->
 
     # Synth events
     pubSub.on SKELETON, webGLSynth.synth.playSkeletons
-
-    # Visualisation events
-    pubSub.on MIDI_DRUM_NOTE_ON, webGLSynth.webGLVis.updateFoxHeads
-    pubSub.on SKELETON, webGLSynth.webGLVis.updateSkeleton
-    pubSub.on PAIRS_TOUCHING, webGLSynth.webGLVis.onPairsTouching
   else
     keyboardCanvas = template.find '.keyboard'
     keyboard = new Keyboard(keyboardCanvas, window.innerWidth,
@@ -126,39 +155,41 @@ setup = (template, isMaster) ->
   keys = new Keys(keysCanvas, window.innerWidth, window.innerHeight,
                   noteMap.getNumberOfNotes(), pubSub)
 
-  controller = template.find '.controller'
   touchController = new TouchController controller, pubSub
   noteMessenger = new NoteMessenger(chatStream, pubSub,
                                     NoteMessenger.MESSAGE_SENT)
   pubSub.on NoteMessenger.MESSAGE_SENT, (message) =>
     message.isMaster = isMaster
-    chatStream.emit 'message', message
-  pubSub.on TouchController.TOUCH_START, noteMessenger.sendNoteStartMessage
-  pubSub.on TouchController.TOUCH_MOVE, noteMessenger.sendNoteContinueMessage
-  pubSub.on TouchController.TOUCH_END, noteMessenger.sendNoteEndMessage
+    chatStream.emit createRoomEventName('message'), message
+
 
   localNoteMessenger = new NoteMessenger chatStream, pubSub, MESSAGE_RECIEVED
   mouseController = new MouseController controller, pubSub
+
+  for messenger in [noteMessenger, localNoteMessenger]
+    pubSub.on TouchController.TOUCH_START, messenger.sendNoteStartMessage
+    pubSub.on TouchController.TOUCH_MOVE, messenger.sendNoteContinueMessage
+    pubSub.on TouchController.TOUCH_END, messenger.sendNoteEndMessage
 
   pubSub.on MouseController.START, localNoteMessenger.sendNoteStartMessage
   pubSub.on MouseController.MOVE, localNoteMessenger.sendNoteContinueMessage
   pubSub.on MouseController.END, localNoteMessenger.sendNoteEndMessage
 
   if isViewer()
-    chatStream.on 'midiNoteOn', (noteInfo) ->
+    chatStream.on createRoomEventName('midiNoteOn'), (noteInfo) ->
       pubSub.trigger MIDI_NOTE_ON, noteInfo
 
-    chatStream.on 'midiDrumsNoteOn', (noteInfo) ->
+    chatStream.on createRoomEventName('midiDrumsNoteOn'), (noteInfo) ->
       pubSub.trigger MIDI_DRUM_NOTE_ON, noteInfo
 
-    chatStream.on 'message', (message) ->
+    chatStream.on createRoomEventName('message'), (message) ->
       pubSub.trigger MESSAGE_RECIEVED, message
 
     chatStream.on 'skeleton', (skeleton) ->
       pubSub.trigger SKELETON, skeleton
 
     pubSub.on CURRENT_PLAYER, (player) ->
-      chatStream.emit 'currentPlayer', player
+      chatStream.emit createRoomEventName('currentPlayer'), player
 
   else
     blacken = template.find '.blacken'
@@ -167,7 +198,7 @@ setup = (template, isMaster) ->
       unless Session.get('isCurrentPlayer') == 'off'
         blackenScreenTimeout.restartTimeout()
     unless isMaster
-      chatStream.on 'currentPlayer', (player) =>
+      chatStream.on createRoomEventName('currentPlayer'), (player) =>
         if player?
           if player._id == Meteor.userId()
             Session.set('isCurrentPlayer', 'on')

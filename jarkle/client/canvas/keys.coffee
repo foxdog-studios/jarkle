@@ -13,7 +13,7 @@ class @Keys
 
   _getNoteNumber: (message) ->
     y = message.pageY / @height
-    return Math.round(y * @numNotes)
+    return Math.floor(y * @numNotes)
 
   drawCurrentKey: (message) =>
     noteNumber = @_getNoteNumber(message)

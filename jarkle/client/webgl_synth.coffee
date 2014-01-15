@@ -3,12 +3,10 @@ NOTES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
 NOTE_ON_MIDI_NUMBER = 144
 
 class @WebGlSynth
-  constructor: (@schema, el, noteMap, @pubSub) ->
+  constructor: (@schema, @skeletonConfig, @vis, noteMap, @pubSub) ->
     Session.set 'infoMessage', null
     window.AudioContext = window.AudioContext or window.webkitAudioContext
-    @synth = new Synth(new AudioContext(), noteMap, pubSub, @schema)
-    @webGLVis = new WebGLVisualisation(el, window.innerWidth,
-                                      window.innerHeight, @schema)
+    @synth = new Synth(new AudioContext(), noteMap, pubSub, @schema, skeletonConfig)
     @playerManager = new PlayerManager(@schema)
     @currentPlayerId = null
 
@@ -19,7 +17,7 @@ class @WebGlSynth
         or @currentPlayerId._id == userId \
         or noteMessage.isMaster
       @synth.handleMessage noteMessage, player.id
-      @webGLVis.updateCube noteMessage, player.id
+      @vis.handleMessage noteMessage, player.id
 
   _midiNoteNumberToNoteLetter: (midiNoteNumber) ->
     noteIndex = midiNoteNumber % NOTES.length
@@ -27,7 +25,10 @@ class @WebGlSynth
 
   stopAll: ->
     @synth.stopAll()
-    @webGLVis.stopAll()
+    @vis.stopAll()
+
+  pause: ->
+    @vis.paused = not @vis.paused
 
   handleDrumMidiMessage: (noteInfo) =>
     if noteInfo.note == RIDE_CYMBAL_1 and noteInfo.vel >= 120
@@ -51,7 +52,7 @@ class @WebGlSynth
       if ua.match(/IEMobile/i)
         ua = 'Windows phone'
       Session.set 'infoMessage', """
-        #{nextPlayer.username} on a #{ua}
+        #{nextPlayer.profile.name} on a #{ua}
       """
       @pubSub.trigger CURRENT_PLAYER, nextPlayer
     @currentPlayerId = nextPlayer

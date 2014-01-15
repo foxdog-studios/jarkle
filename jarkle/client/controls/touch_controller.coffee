@@ -1,4 +1,4 @@
-@TouchController = class TouchController
+class @TouchController
   @TOUCH_START = 'touchstart'
   @TOUCH_MOVE = 'touchmove'
   @TOUCH_END = 'touchend'
@@ -33,7 +33,7 @@
 
   handleCancel: (evt) =>
     evt.preventDefault()
-    handleEnd(evt)
+    @handleEnd(evt)
 
   handleMove: (evt) =>
     evt.preventDefault()
