@@ -4,7 +4,10 @@
     "basePackages": {
       "streams": {},
       "fastclick": {},
-      "device-detection": {},
+      "device-detection": {
+        "git": "https://github.com/mystor/meteor-device-detection",
+        "branch": "master"
+      },
       "user-status": {},
       "iron-router": {},
       "bootstrap-3": {}
@@ -21,24 +24,24 @@
         "commit": "fcb3bfd34d9f6874e626b4e24e8f54107938db41"
       },
       "device-detection": {
-        "git": "https://github.com/Mystor/meteor-device-detection.git",
-        "tag": "v0.1.4",
-        "commit": "9c8db3c2f7d7bd59b361697ab63f006c05aaf089"
+        "git": "https://github.com/mystor/meteor-device-detection",
+        "branch": "master",
+        "commit": "5470a15e295d05e7e340871337a2ff7c7c59a1d6"
       },
       "user-status": {
         "git": "https://github.com/mizzao/meteor-user-status.git",
-        "tag": "v0.1.5",
-        "commit": "0169a468e57155f1d61fc2b1cd76bc9ca51c7313"
+        "tag": "v0.2.0",
+        "commit": "e18cc48440710d0ac23bd1a578974f9142226bf4"
       },
       "iron-router": {
         "git": "https://github.com/EventedMind/iron-router.git",
-        "tag": "v0.6.1",
-        "commit": "4e1ee0581d68bff422a915dacb0bd30eae10fe08"
+        "tag": "v0.6.2",
+        "commit": "ce56e58b45624dce992490f3a1c10f10d3948bae"
       },
       "bootstrap-3": {
         "git": "https://github.com/mangasocial/meteor-bootstrap-3.git",
-        "tag": "v0.3.6",
-        "commit": "711dbcabe333c8714298b2fd1de97fdcdae6efa7"
+        "tag": "v0.3.7",
+        "commit": "5dd0d142c870647b910be80bc777b96f0dd45e5e"
       }
     }
   }

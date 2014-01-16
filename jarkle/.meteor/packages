@@ -11,10 +11,10 @@ streams
 coffeescript
 
 fastclick
-device-detection
 backbone
 user-status
 accounts-password
 iron-router
 bootstrap-3
 showdown
+device-detection

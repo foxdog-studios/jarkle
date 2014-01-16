@@ -2,7 +2,10 @@
   "packages": {
     "streams": {},
     "fastclick": {},
-    "device-detection": {},
+    "device-detection": {
+      "_comment": "Hack in the real URL until mystor fixes his package",
+      "git": "https://github.com/mystor/meteor-device-detection"
+    },
     "user-status": {},
     "iron-router": {},
     "bootstrap-3": {}
