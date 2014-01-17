@@ -1,6 +1,6 @@
-/streams
-/fastclick
-/device-detection
-/user-status
-/iron-router
 /bootstrap-3
+/device-detection
+/fastclick
+/iron-router
+/streams
+/user-status
