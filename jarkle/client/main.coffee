@@ -77,7 +77,6 @@ Template.master.rendered  = ->
 setup = (template, isMaster) ->
   window.onerror = (m,u,l) ->
     alert(m+"\n"+u+":"+l)
-  console.log 'setting up'
   unless isMaster
     # XXX: For the desktop viewer set it to be a master as well.
     isMaster = isViewer()
@@ -179,7 +178,7 @@ setup = (template, isMaster) ->
     chatStream.on createRoomEventName('midiNoteOn'), (noteInfo) ->
       pubSub.trigger MIDI_NOTE_ON, noteInfo
 
-    chatStream.on createRoomEventName('midiDrumsNoteOn'), (noteInfo) ->
+    chatStream.on 'midiDrumsNoteOn', (noteInfo) ->
       pubSub.trigger MIDI_DRUM_NOTE_ON, noteInfo
 
     chatStream.on createRoomEventName('message'), (message) ->

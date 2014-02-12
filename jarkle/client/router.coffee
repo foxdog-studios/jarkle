@@ -5,6 +5,7 @@ Router.map ->
   @route 'master',
     path: '/master'
     template: 'master'
+
   @route 'reroute',
     path: '/'
     template: 'main'
@@ -13,6 +14,7 @@ Router.map ->
         @redirect("/#{generateName(2)}")
       else
         Session.set 'roomId', 'main'
+
   @route 'main',
     path: '/:roomId'
     before: ->
