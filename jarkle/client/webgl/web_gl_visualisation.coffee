@@ -144,7 +144,9 @@ class @WebGLVisualisation
       map: particalMap
       transparent: true
 
-    @particalMaterial.color = new THREE.Color(0xFFFFFF)
+    color = Meteor.settings.public.particleColor
+    if color?
+      @particalMaterial.color = new THREE.Color parseInt color, 16
 
     particlesA = new THREE.ParticleSystem(geometry, @particalMaterial)
     particlesB = new THREE.ParticleSystem(geometry, @particalMaterial)
