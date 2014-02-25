@@ -209,7 +209,7 @@ setup = (template, isMaster) ->
     unless isMaster
       chatStream.on createRoomEventName('currentPlayer'), (player) =>
         if player?
-          if player._id == Meteor.userId()
+          if player._id == Meteor.userId() or player._id == 'all'
             Session.set('isCurrentPlayer', 'on')
             blackenScreenTimeout.stopTimeout()
           else

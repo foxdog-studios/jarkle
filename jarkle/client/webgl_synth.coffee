@@ -6,7 +6,8 @@ class @WebGlSynth
   constructor: (@schema, @skeletonConfig, @vis, noteMap, @pubSub) ->
     Session.set 'infoMessage', null
     window.AudioContext = window.AudioContext or window.webkitAudioContext
-    @synth = new Synth(new AudioContext(), noteMap, pubSub, @schema, skeletonConfig)
+    @synth = new Synth(new AudioContext(), noteMap, pubSub, @schema,
+                       skeletonConfig)
     @playerManager = new PlayerManager(@schema)
     @currentPlayerId = null
 
@@ -70,7 +71,9 @@ class @WebGlSynth
       when 'D'
         # All players
         @currentPlayerId = null
-        Session.set 'infoMessage', null
+        Session.set 'infoMessage', 'EVERYBODY'
+        @pubSub.trigger CURRENT_PLAYER,
+          _id: 'all'
       when 'E'
         # No players (apart from masters)
         Session.set 'infoMessage', null
