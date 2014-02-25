@@ -98,6 +98,12 @@ setup = (template, isMaster) ->
   canvas.width = window.innerWidth
   canvas.height = window.innerHeight
 
+  # XXX: Every canvas needs this resizing stuff so it should be moved out
+  # somewhere.
+  $(window).resize = ->
+    canvas.width = $(window).width()
+    canvas.height = $(window).height()
+
   if Meteor.settings.public.useCustomNoteMap
     noteMap = new CustomNoteMap(Meteor.settings.public.customNoteMap,
                                 Meteor.settings.public.customNoteMapOffset)

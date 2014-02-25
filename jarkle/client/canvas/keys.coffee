@@ -1,7 +1,6 @@
 class @Keys
   constructor: (@canvas, @width, @height, @numNotes, @pubSub) ->
-    @canvas.width = @width
-    @canvas.height = @height
+    @setCanvasSize()
     @canvasContext = canvas.getContext '2d'
     @pubSub.on TouchController.TOUCH_START, @drawCurrentKey
     @pubSub.on TouchController.TOUCH_MOVE, @moveKey
@@ -10,6 +9,13 @@ class @Keys
     @ids = {}
     for i in [0..@numNotes]
       @keys[i] = 0
+    $(window).resize @setCanvasSize
+
+  setCanvasSize: =>
+    @width = $(window).width()
+    @height = $(window).height()
+    @canvas.width = @width
+    @canvas.height = @height
 
   _getNoteNumber: (message) ->
     y = message.pageY / @height

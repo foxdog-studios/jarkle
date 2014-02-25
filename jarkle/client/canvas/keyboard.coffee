@@ -10,8 +10,8 @@ class @Keyboard
     $(window).resize @setCanvasSize
 
   setCanvasSize: =>
-    @width = window.innerWidth
-    @height = window.innerHeight
+    @width = $(window).width()
+    @height = $(window).height()
     @canvas.width = @width
     @canvas.height = @height
     @drawRandomKeys()
