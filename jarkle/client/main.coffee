@@ -100,7 +100,7 @@ setup = (template, isMaster) ->
 
   # XXX: Every canvas needs this resizing stuff so it should be moved out
   # somewhere.
-  $(window).resize = ->
+  $(window).resize ->
     canvas.width = $(window).width()
     canvas.height = $(window).height()
 
