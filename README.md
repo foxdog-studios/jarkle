@@ -38,3 +38,15 @@ triggered by midi events.
 
     $ ./scripts/midimule.sh
 
+Run the jarkle and connect the midi mule.
+
+The following notes have these effects
+- 'B' show 'Go to http://fds'
+- 'C' Next player
+- 'D' All players
+- 'E' No players (apart from masters)
+- 'F' Clear sounds
+
+Go to `/master` to be a special master player, all other players should go to
+`/`.
+
