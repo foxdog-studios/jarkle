@@ -40,7 +40,10 @@ setBackground = ->
   isSupportedSynthDevice() and hasWebAudio()
 
 @createRoomEventName = (eventName) ->
-  "#{Session.get('roomId')}-#{eventName}"
+  if Meteor.settings.public.rooms
+    "#{Session.get('roomId')}-#{eventName}"
+  else
+    eventName
 
 PASSWORD = 'thisDoesNotMatter'
 
