@@ -1,4 +1,4 @@
-THRESHOLD = Meteor.settings.synthThreshold
+THRESHOLD = Meteor.settings.public.synthThreshold
 X_THRESHOLD = THRESHOLD
 Y_THRESHOLD = THRESHOLD
 Z_THRESHOLD = THRESHOLD
