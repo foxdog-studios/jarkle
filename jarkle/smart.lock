@@ -2,43 +2,43 @@
   "meteor": {},
   "dependencies": {
     "basePackages": {
-      "streams": {},
-      "fastclick": {},
+      "bootstrap-3": {},
       "device-detection": {},
-      "user-status": {},
+      "fastclick": {},
       "iron-router": {},
-      "bootstrap-3": {}
+      "streams": {},
+      "user-status": {}
     },
     "packages": {
-      "streams": {
-        "git": "https://github.com/arunoda/meteor-streams.git",
-        "tag": "v0.1.17",
-        "commit": "9fcbbc9b7bf542827babc92089c19e730892a22f"
+      "bootstrap-3": {
+        "git": "https://github.com/mangasocial/meteor-bootstrap-3.git",
+        "tag": "v3.1.0-1",
+        "commit": "329dccb08bfc18c635676dea600ac9953162cda9"
+      },
+      "device-detection": {
+        "git": "https://github.com/mystor/meteor-device-detection.git",
+        "tag": "v0.1.5",
+        "commit": "4c7c6972aa3568062bb03bc0cabbade8874ce836"
       },
       "fastclick": {
         "git": "https://github.com/percolatestudio/meteor-fastclick",
         "tag": "v0.6.7",
         "commit": "fcb3bfd34d9f6874e626b4e24e8f54107938db41"
       },
-      "device-detection": {
-        "git": "https://github.com/Mystor/meteor-device-detection.git",
-        "tag": "v0.1.4",
-        "commit": "9c8db3c2f7d7bd59b361697ab63f006c05aaf089"
+      "iron-router": {
+        "git": "https://github.com/EventedMind/iron-router.git",
+        "tag": "v0.6.2",
+        "commit": "ce56e58b45624dce992490f3a1c10f10d3948bae"
+      },
+      "streams": {
+        "git": "https://github.com/arunoda/meteor-streams.git",
+        "tag": "v0.1.17",
+        "commit": "9fcbbc9b7bf542827babc92089c19e730892a22f"
       },
       "user-status": {
         "git": "https://github.com/mizzao/meteor-user-status.git",
-        "tag": "v0.1.5",
-        "commit": "0169a468e57155f1d61fc2b1cd76bc9ca51c7313"
-      },
-      "iron-router": {
-        "git": "https://github.com/EventedMind/iron-router.git",
-        "tag": "v0.6.1",
-        "commit": "4e1ee0581d68bff422a915dacb0bd30eae10fe08"
-      },
-      "bootstrap-3": {
-        "git": "https://github.com/mangasocial/meteor-bootstrap-3.git",
-        "tag": "v0.3.6",
-        "commit": "711dbcabe333c8714298b2fd1de97fdcdae6efa7"
+        "tag": "v0.2.0",
+        "commit": "e18cc48440710d0ac23bd1a578974f9142226bf4"
       }
     }
   }

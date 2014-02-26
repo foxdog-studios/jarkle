@@ -1,17 +1,24 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -o errexit
 set -o nounset
 
 repo=$(realpath "$(dirname "$(realpath -- "${BASH_SOURCE[0]}")")/..")
 
-$repo/scripts/bower-install.sh
+"$repo/scripts/bower-install.sh" > /dev/null
 
-cd "$repo/jarkle"
-
-if [[ ! -v METEOR_SETINGS ]]; then
-    METEOR_SETINGS=$repo/conf/site/development-settings.json
+if [[ -v METEOR_SETTINGS ]]; then
+    METEOR_SETTINGS=$(realpath "$METEOR_SETTINGS")
+else
+    METEOR_SETTINGS=$repo/conf/site/development-settings.json
 fi
 
-mrt --settings "$METEOR_SETINGS" $@
+if [[ $# -eq 0 ]]; then
+    args=( --settings "$METEOR_SETTINGS" )
+else
+    args=( "$@" )
+fi
+
+cd "$repo/jarkle"
+exec mrt "${args[@]}"
 

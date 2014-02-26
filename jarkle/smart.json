@@ -1,10 +1,10 @@
 {
   "packages": {
-    "streams": {},
-    "fastclick": {},
+    "bootstrap-3": {},
     "device-detection": {},
-    "user-status": {},
+    "fastclick": {},
     "iron-router": {},
-    "bootstrap-3": {}
+    "streams": {},
+    "user-status": {}
   }
 }
