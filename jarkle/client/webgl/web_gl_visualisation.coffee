@@ -95,7 +95,7 @@ class @WebGLVisualisation
 
     @controls = new CtrlTrackBallControls @camera
 
-    @renderer = new THREE.WebGLRenderer()
+    @renderer = new THREE.WebGLRenderer(alpha: true)
     @renderer.setSize @width, @height
     @el.appendChild @renderer.domElement
     @camera.position.z = 5
