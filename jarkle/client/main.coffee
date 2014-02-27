@@ -65,7 +65,8 @@ Meteor.startup ->
         name: generateName()
     , (error) ->
       if error?
-        alert error + 'Hold on'
+        # XXX: Just log the error
+        console.log "Error creating user #{error}"
 
 Template.controller.rendered = ->
   if not @renderedOnce
