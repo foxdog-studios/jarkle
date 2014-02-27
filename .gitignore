@@ -1,5 +1,4 @@
 *.pyc
-/bower_components/
 /bundle.tar.gz
 /bundle/
 /conf/site/

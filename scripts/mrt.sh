@@ -5,8 +5,6 @@ set -o nounset
 
 repo=$(realpath "$(dirname "$(realpath -- "${BASH_SOURCE[0]}")")/..")
 
-"$repo/scripts/bower-install.sh" > /dev/null
-
 if [[ -v METEOR_SETTINGS ]]; then
     METEOR_SETTINGS=$(realpath "$METEOR_SETTINGS")
 else

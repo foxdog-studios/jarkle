@@ -5,6 +5,9 @@
     "fastclick": {},
     "iron-router": {},
     "streams": {},
-    "user-status": {}
+    "user-status": {},
+    "threejs": {
+      "git": "https://github.com/foxdog-studios/meteor-threejs"
+    }
   }
 }

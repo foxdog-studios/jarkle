@@ -7,7 +7,11 @@
       "fastclick": {},
       "iron-router": {},
       "streams": {},
-      "user-status": {}
+      "user-status": {},
+      "threejs": {
+        "git": "https://github.com/foxdog-studios/meteor-threejs",
+        "branch": "master"
+      }
     },
     "packages": {
       "bootstrap-3": {
@@ -27,8 +31,8 @@
       },
       "iron-router": {
         "git": "https://github.com/EventedMind/iron-router.git",
-        "tag": "v0.6.2",
-        "commit": "ce56e58b45624dce992490f3a1c10f10d3948bae"
+        "tag": "v0.6.4",
+        "commit": "927bbaed1b87894fb6fb70807f74ff3a5bd89f29"
       },
       "streams": {
         "git": "https://github.com/arunoda/meteor-streams.git",
@@ -39,6 +43,11 @@
         "git": "https://github.com/mizzao/meteor-user-status.git",
         "tag": "v0.2.0",
         "commit": "e18cc48440710d0ac23bd1a578974f9142226bf4"
+      },
+      "threejs": {
+        "git": "https://github.com/foxdog-studios/meteor-threejs",
+        "branch": "master",
+        "commit": "adcbb1e7cdd573a0f836791e83f02f2c5c5560f4"
       }
     }
   }

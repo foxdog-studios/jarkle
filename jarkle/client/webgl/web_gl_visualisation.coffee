@@ -87,9 +87,8 @@ class @WebGLVisualisation
     ambientLight = new THREE.AmbientLight(0x888888)
     @scene.add ambientLight
 
-    directionalLight = new THREE.DirectionalLight( 0xffeedd )
-    directionalLight.position.set( 0, 0, 1 ).normalize()
-    @scene.add( directionalLight )
+    hemisphereLight = new THREE.HemisphereLight(0xffeedd, 0xffeedd)
+    @scene.add(hemisphereLight)
 
     @camera = new THREE.PerspectiveCamera(75, @width / @height, 0.1,
       DRAW_DISTANCE)
