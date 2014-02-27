@@ -78,8 +78,6 @@ Template.master.rendered  = ->
     setup(@, true)
 
 setup = (template, isMaster) ->
-  window.onerror = (m,u,l) ->
-    alert(m+"\n"+u+":"+l)
   unless isMaster
     # XXX: For the desktop viewer set it to be a master as well.
     isMaster = isViewer()
