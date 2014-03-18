@@ -16,8 +16,8 @@
     "packages": {
       "bootstrap-3": {
         "git": "https://github.com/mangasocial/meteor-bootstrap-3.git",
-        "tag": "v3.1.0-1",
-        "commit": "329dccb08bfc18c635676dea600ac9953162cda9"
+        "tag": "v3.1.1-1",
+        "commit": "63dd38968828bb8963636df93e9a1c45e2dfe67e"
       },
       "device-detection": {
         "git": "https://github.com/mystor/meteor-device-detection.git",
@@ -41,13 +41,18 @@
       },
       "user-status": {
         "git": "https://github.com/mizzao/meteor-user-status.git",
-        "tag": "v0.2.0",
-        "commit": "e18cc48440710d0ac23bd1a578974f9142226bf4"
+        "tag": "v0.3.4",
+        "commit": "741df5e3304807ba42fbe0aca5b8251c5683e1f7"
       },
       "threejs": {
         "git": "https://github.com/foxdog-studios/meteor-threejs",
         "branch": "master",
         "commit": "adcbb1e7cdd573a0f836791e83f02f2c5c5560f4"
+      },
+      "timesync": {
+        "git": "https://github.com/mizzao/meteor-timesync.git",
+        "tag": "v0.1.3",
+        "commit": "e8c1a76a6c3c10e3d5ec86e4c0b5ec45b7beb230"
       }
     }
   }
