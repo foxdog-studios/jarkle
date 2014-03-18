@@ -11,7 +11,10 @@ class @WebGlSynth
     @synth = new Synth(new AudioContext(), noteMap, pubSub, @schema,
                        skeletonConfig)
     @playerManager = new PlayerManager(@schema)
-    @currentPlayerId = ONLY_MASTERS
+    if Meteor.settings.public.allowAllPlayersOnStart
+      @currentPlayerId = null
+    else
+      @currentPlayerId = ONLY_MASTERS
 
   handleNoteMessage: (noteMessage) =>
     userId = noteMessage.userId
