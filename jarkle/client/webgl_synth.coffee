@@ -2,6 +2,8 @@ NOTES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
 
 NOTE_ON_MIDI_NUMBER = 144
 
+ONLY_MASTERS = 'only masters'
+
 class @WebGlSynth
   constructor: (@schema, @skeletonConfig, @vis, noteMap, @pubSub) ->
     Session.set 'infoMessage', null
@@ -9,7 +11,7 @@ class @WebGlSynth
     @synth = new Synth(new AudioContext(), noteMap, pubSub, @schema,
                        skeletonConfig)
     @playerManager = new PlayerManager(@schema)
-    @currentPlayerId = null
+    @currentPlayerId = ONLY_MASTERS
 
   handleNoteMessage: (noteMessage) =>
     userId = noteMessage.userId
@@ -77,7 +79,7 @@ class @WebGlSynth
       when 'E'
         # No players (apart from masters)
         Session.set 'infoMessage', null
-        @currentPlayerId = 'only masters'
+        @currentPlayerId = ONLY_MASTERS
         @pubSub.trigger CURRENT_PLAYER,
           _id: @currentPlayerId
       when 'F'
