@@ -35,7 +35,7 @@ class @Keys
     @_applyCanvasFunction(noteNumber, func)
 
   _applyCanvasFunction: (noteNumber, func) =>
-    yInc = @height / @numNotes
+    yInc = Math.floor(@height / @numNotes)
     startY = yInc * noteNumber
     @canvasContext[func] 0, startY, @width, yInc
 

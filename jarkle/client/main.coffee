@@ -15,8 +15,11 @@ SKELETON = 'skeleton'
 @PAIRS_TOUCHING = 'pairs-touching'
 @CURRENT_PLAYER = 'current-player'
 
+@isLocalSynth = ->
+  Router.current().params.localSynth
+
 isSupportedSynthDevice = ->
-  Meteor.Device.isDesktop() or Meteor.Device.isTV()
+  isLocalSynth() or Meteor.Device.isDesktop() or Meteor.Device.isTV()
 
 hasWebGL = ->
   canvas = document.createElement('canvas')
@@ -110,7 +113,7 @@ setup = (template, isMaster) ->
                                   PENTATONIC_INTERVALS)
 
   controller = template.find '.controller'
-  if isSupportedSynthDevice() and hasWebAudio()
+  if isViewer()
     setBackground()
 
     $('#myModal').modal()

@@ -10,9 +10,9 @@
 </body>
 
 <template name="viewer">
-  {{> modal}}
   {{> main}}
   {{#if isInGFunkMode}}
+    {{> modal}}
     {{> video}}
   {{/if}}
 </template>
