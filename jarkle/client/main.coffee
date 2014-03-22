@@ -142,8 +142,12 @@ setup = (template, isMaster) ->
                                 pubSub)
     keyboardController = new KeyboardController window, pubSub
 
-    pubSub.on KeyboardController.KEY_UP, ->
-      webGLSynth.pause()
+    pubSub.on KeyboardController.KEY_UP, (key) ->
+      switch key
+        when 'P'
+          webGLSynth.pause()
+        when 1, 2, 3, 4, 5
+          webGLSynth.handleKeyboardMessage(key)
 
     pubSub.on MESSAGE_RECIEVED, webGLSynth.handleNoteMessage
     pubSub.on MIDI_NOTE_ON, webGLSynth.handleMidiMessage
@@ -165,10 +169,13 @@ setup = (template, isMaster) ->
   touchController = new TouchController controller, pubSub
   noteMessenger = new NoteMessenger(chatStream, pubSub,
                                     NoteMessenger.MESSAGE_SENT)
+
+  # Forward note message to the chat stream
   pubSub.on NoteMessenger.MESSAGE_SENT, (message) =>
+    # Don't send unless our controller is "on"
+    return unless isMaster or Session.get('isCurrentPlayer') == 'on'
     message.isMaster = isMaster
     chatStream.emit createRoomEventName('message'), message
-
 
   localNoteMessenger = new NoteMessenger chatStream, pubSub, MESSAGE_RECIEVED
   mouseController = new MouseController controller, pubSub

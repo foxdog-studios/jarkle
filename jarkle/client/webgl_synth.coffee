@@ -43,25 +43,49 @@ class @WebGlSynth
   nextPlayer: ->
     @stopAll()
     nextPlayer = @playerManager.getNextActivePlayerId()
-    if nextPlayer?
-      ua = nextPlayer.profile.userAgent
-      if ua.match(/Android/i)
-        ua = 'Android'
-      if ua.match(/Blackberry/i)
-        ua = 'Blackberry'
-      if ua.match(/iPhone/i)
-        ua = 'iPhone'
-      if ua.match(/iPad/i)
-        ua = 'iPad'
-      if ua.match(/iPod/i)
-        ua = 'iPod'
-      if ua.match(/IEMobile/i)
-        ua = 'Windows phone'
-      Session.set 'infoMessage', """
-        #{nextPlayer.profile.name} on #{ua}
-      """
-      @pubSub.trigger CURRENT_PLAYER, nextPlayer
+    unless nextPlayer?
+      console.log 'no players!'
+      return
+    ua = nextPlayer.profile.userAgent
+    if ua.match(/Android/i)
+      ua = 'Android'
+    if ua.match(/Blackberry/i)
+      ua = 'Blackberry'
+    if ua.match(/iPhone/i)
+      ua = 'iPhone'
+    if ua.match(/iPad/i)
+      ua = 'iPad'
+    if ua.match(/iPod/i)
+      ua = 'iPod'
+    if ua.match(/IEMobile/i)
+      ua = 'Windows phone'
+    Session.set 'infoMessage', """
+      #{nextPlayer.profile.name} on #{ua}
+    """
+    @pubSub.trigger CURRENT_PLAYER, nextPlayer
     @currentPlayerId = nextPlayer
+
+  _showConnectMessage: ->
+    Session.set 'infoMessage', 'Go to http://fds'
+
+  _allowAllPlayers: ->
+    @currentPlayerId = null
+    Session.set 'infoMessage', 'EVERYBODY'
+    @pubSub.trigger CURRENT_PLAYER,
+      _id: 'all'
+
+  _allowMasterPlayersOnly: ->
+    # No players (apart from masters)
+    Session.set 'infoMessage', null
+    @currentPlayerId = ONLY_MASTERS
+    @pubSub.trigger CURRENT_PLAYER,
+      _id: @currentPlayerId
+
+  _masterOnly: ->
+    @_allowMasterPlayersOnly()
+    @_showConnectMessage()
+    @stopAll()
+
 
   handleMidiMessage: (noteInfo) =>
     unless noteInfo.func != NOTE_ON_MIDI_NUMBER
@@ -69,23 +93,18 @@ class @WebGlSynth
     noteLetter = @_midiNoteNumberToNoteLetter(noteInfo.note)
     switch noteLetter
       when 'B'
-        Session.set 'infoMessage', 'Go to http://fds'
+        @_masterOnly()
       when 'C'
-        # Next player
         @nextPlayer()
       when 'D'
-        # All players
-        @currentPlayerId = null
-        Session.set 'infoMessage', 'EVERYBODY'
-        @pubSub.trigger CURRENT_PLAYER,
-          _id: 'all'
-      when 'E'
-        # No players (apart from masters)
-        Session.set 'infoMessage', null
-        @currentPlayerId = ONLY_MASTERS
-        @pubSub.trigger CURRENT_PLAYER,
-          _id: @currentPlayerId
-      when 'F'
-        # Clear sounds
-        @stopAll()
+        @_allowAllPlayers()
+
+  handleKeyboardMessage: (key) ->
+    switch key
+      when 1
+        @_masterOnly()
+      when 2
+        @nextPlayer()
+      when 3
+        @_allowAllPlayers()
 
