@@ -170,12 +170,18 @@ setup = (template, isMaster) ->
   noteMessenger = new NoteMessenger(chatStream, pubSub,
                                     NoteMessenger.MESSAGE_SENT)
 
+  lastMessageReceivedMap = {}
   # Forward note message to the chat stream
   pubSub.on NoteMessenger.MESSAGE_SENT, (message) =>
     # Don't send unless our controller is "on"
     return unless isMaster or Session.get('isCurrentPlayer') == 'on'
     message.isMaster = isMaster
-    chatStream.emit createRoomEventName('message'), message
+    if message.type == 'start' or message.type == 'continue'
+      lastMessageReceived = lastMessageReceivedMap[message.originalIdentifier]
+      return if lastMessageReceived? and not lastMessageReceived
+    lastMessageReceivedMap[message.originalIdentifier] = false
+    Meteor.call 'messageSent', createRoomEventName('message'), message, ->
+      lastMessageReceivedMap[message.originalIdentifier] = true
 
   localNoteMessenger = new NoteMessenger chatStream, pubSub, MESSAGE_RECIEVED
   mouseController = new MouseController controller, pubSub

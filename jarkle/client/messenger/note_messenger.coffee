@@ -7,6 +7,7 @@
   constructor: (@messageStream, @pubSub, @eventName) ->
 
   _addUidToMessage: (message) ->
+    message.originalIdentifier = message.identifier
     message.identifier = "#{Meteor.userId()}-#{message.identifier}"
 
   _sendMessage: (message) ->
