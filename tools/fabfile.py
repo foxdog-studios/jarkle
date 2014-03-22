@@ -117,9 +117,16 @@ def deploy_site():
 def get_conf_from_template(conf_template):
     schema = {
         'public': [
+            'allowAllPlayersOnStart',
             'automaticRoomIds',
+            'background',
+            'inc',
+            'incAxis',
             'isInGFunkMode',
+            'particleTexture',
+            'rooms',
             'trailHeadConf',
+            'useCustomNoteMap',
         ],
     }
     return conf_template % {
