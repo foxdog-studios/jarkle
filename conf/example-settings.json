@@ -1,12 +1,13 @@
 {
   "public": {
+    "waitForReplyBeforeSend": true,
     "rooms": false,
     "automaticRoomIds": false,
     "isInGFunkMode": false,
     "useCustomNoteMap": false,
     "background": "starfield.jpg",
     "particleTexture": "particle.png",
-    "allowAllPlayersOnStart": false,
+    "allowAllPlayersOnStart": true,
     "customNoteMap": [
       59,
       62,
@@ -20,6 +21,7 @@
     "customNoteMapOffset": 12,
     "inc": -1,
     "incAxis": "z",
+    "pitchAxisIsY": true,
     "skeletonConf": {
       "leftHand": [{
         "pairPoint": "rightHand",

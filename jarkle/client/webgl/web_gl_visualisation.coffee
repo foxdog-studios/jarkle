@@ -193,12 +193,21 @@ class @WebGLVisualisation
         @scene.add head
 
 
-
+  #
+  #  Convert a message coming in, i.e., a note someone is playing, into a cube
+  #  to draw on screen.
+  #
   handleMessage: (message, playerId) =>
-
     screenScale = 5
-    cartesianX = (message.y - 0.5) * screenScale
-    cartesianY = ((message.x) - 0.5) * screenScale
+    yValue = 1 - message.y
+    if Meteor.settings.public.pitchAxisIsY
+      messageX = message.x
+      messageY = yValue
+    else
+      messageX = yValue
+      messageY = message.x
+    cartesianX = (messageX - 0.5) * screenScale
+    cartesianY = (messageY - 0.5) * screenScale
 
     cube = @_cycleCube(cartesianX, cartesianY)
 

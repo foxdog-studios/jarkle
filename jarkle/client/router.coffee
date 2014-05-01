@@ -9,7 +9,7 @@ Router.map ->
   @route 'reroute',
     path: '/'
     template: 'main'
-    before: ->
+    onBeforeAction: ->
       if Meteor.settings.public.automaticRoomIds
         @redirect("/#{generateName(2)}")
       else
@@ -17,7 +17,7 @@ Router.map ->
 
   @route 'main',
     path: '/:roomId'
-    before: ->
+    onBeforeAction: ->
       Session.set 'roomId', @params.roomId
     action: ->
       if isViewer()

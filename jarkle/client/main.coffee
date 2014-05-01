@@ -181,7 +181,10 @@ setup = (template, isMaster) ->
     message.isMaster = isMaster
     if message.type == 'start' or message.type == 'continue'
       lastMessageReceived = lastMessageReceivedMap[message.originalIdentifier]
-      return if lastMessageReceived? and not lastMessageReceived
+      if Meteor.settings.public.waitForReplyBeforeSend
+        # Don't play the note if the previous one has not been confirmed as
+        # received.
+        return if lastMessageReceived? and not lastMessageReceived
     lastMessageReceivedMap[message.originalIdentifier] = false
     Meteor.call 'messageSent', createRoomEventName('message'), message, ->
       lastMessageReceivedMap[message.originalIdentifier] = true
@@ -189,11 +192,13 @@ setup = (template, isMaster) ->
   localNoteMessenger = new NoteMessenger chatStream, pubSub, MESSAGE_RECIEVED
   mouseController = new MouseController controller, pubSub
 
+  # Touch for both local and remote messages
   for messenger in [noteMessenger, localNoteMessenger]
     pubSub.on TouchController.TOUCH_START, messenger.sendNoteStartMessage
     pubSub.on TouchController.TOUCH_MOVE, messenger.sendNoteContinueMessage
     pubSub.on TouchController.TOUCH_END, messenger.sendNoteEndMessage
 
+  # Only hook up mouse controls for local messages
   pubSub.on MouseController.START, localNoteMessenger.sendNoteStartMessage
   pubSub.on MouseController.MOVE, localNoteMessenger.sendNoteContinueMessage
   pubSub.on MouseController.END, localNoteMessenger.sendNoteEndMessage
