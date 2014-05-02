@@ -8,6 +8,8 @@
     "background": "starfield.jpg",
     "particleTexture": "particle.png",
     "allowAllPlayersOnStart": true,
+    "noteTimeoutMs": 500,
+    "useWebRTCForMaster": true,
     "customNoteMap": [
       59,
       62,

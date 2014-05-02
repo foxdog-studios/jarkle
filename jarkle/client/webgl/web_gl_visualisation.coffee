@@ -227,9 +227,11 @@ class @WebGLVisualisation
           y: cartesianY
           cube: cube
       when NoteMessenger.NOTE_END
-        unless @touchMap[userId][message.identifier]?
-          break
-        @touchMap[userId][message.identifier].on = false
+        @stopUserNoteWithId(userId, message.identifier)
+
+  stopUserNoteWithId: (userId, identifier) ->
+    return unless @touchMap[userId][identifier]?
+    @touchMap[userId][identifier].on = false
 
   stopAll: ->
     for userId, touches of @touchMap

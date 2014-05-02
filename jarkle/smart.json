@@ -8,6 +8,9 @@
     "user-status": {},
     "threejs": {
       "git": "https://github.com/foxdog-studios/meteor-threejs"
+    },
+    "webrtc-signalling": {
+      "git": "https://github.com/foxdog-studios/meteor-webrtc"
     }
   }
 }

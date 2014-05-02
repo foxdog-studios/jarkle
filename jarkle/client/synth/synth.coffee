@@ -11,10 +11,11 @@ class @Synth
     @voices = {}
 
   handleMessage: (message, playerId) =>
+    id = message.identifier
     if message.noteOn
-      @playPad(message.x, message.y, message.identifier, playerId)
+      @playPad(message.x, message.y, id, playerId)
     else
-      @stopPad(message.identifier)
+      @stopPad(id)
 
   playPad: (x, y, identifier, playerId) ->
     midiNoteNumber = @noteMap.getNote(1 - y, x)

@@ -11,6 +11,10 @@
       "threejs": {
         "git": "https://github.com/foxdog-studios/meteor-threejs",
         "branch": "master"
+      },
+      "webrtc-signalling": {
+        "git": "https://github.com/foxdog-studios/meteor-webrtc",
+        "branch": "master"
       }
     },
     "packages": {
@@ -48,6 +52,11 @@
         "git": "https://github.com/foxdog-studios/meteor-threejs",
         "branch": "master",
         "commit": "adcbb1e7cdd573a0f836791e83f02f2c5c5560f4"
+      },
+      "webrtc-signalling": {
+        "git": "https://github.com/foxdog-studios/meteor-webrtc",
+        "branch": "master",
+        "commit": "617bf37c839444e37b7049b512ae45d7fa0f336e"
       },
       "blaze-layout": {
         "git": "https://github.com/EventedMind/blaze-layout.git",

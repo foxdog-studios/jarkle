@@ -16,7 +16,7 @@ SKELETON = 'skeleton'
 @CURRENT_PLAYER = 'current-player'
 
 @isLocalSynth = ->
-  Router.current().params.localSynth
+  Router.current()?.params.localSynth
 
 isSupportedSynthDevice = ->
   isLocalSynth() or Meteor.Device.isDesktop() or Meteor.Device.isTV()
@@ -81,6 +81,31 @@ Template.master.rendered  = ->
     @renderedOnce = true
     setup(@, true)
 
+setupWebRtc = ->
+  return unless Meteor.settings.public.useWebRTCForMaster
+  # This is the config used to create the RTCPeerConnection
+  servers =
+    iceServers: [
+      url: 'stun:stun.l.google.com:19302'
+    ]
+
+  config = {}
+
+  dataChannelConfig =
+    ordered: false
+    maxRetransmitTime: 0
+
+  # Try and create an RTCPeerConnection if supported
+  if RTCPeerConnection?
+    return webRTCSignaller = new @WebRTCSignaller('webRTCChannel',
+                                                  servers,
+                                                  config,
+                                                  dataChannelConfig)
+  else
+    console.error 'No RTCPeerConnection available :('
+  return undefined
+
+
 setup = (template, isMaster) ->
   unless isMaster
     # XXX: For the desktop viewer set it to be a master as well.
@@ -116,9 +141,16 @@ setup = (template, isMaster) ->
   if isViewer()
     setBackground()
 
+    webRTCSignaller = setupWebRtc()
+    if webRTCSignaller?
+      Deps.autorun =>
+        message = webRTCSignaller.getMessage()
+        if message?
+          message = JSON.parse(message)
+          pubSub.trigger MESSAGE_RECIEVED, message
+
     $('#myModal').modal()
     Meteor.subscribe 'userStatus'
-
 
     trailHeadConfig = Meteor.settings.public.trailHeadConf
 
@@ -159,6 +191,12 @@ setup = (template, isMaster) ->
     # Synth events
     pubSub.on SKELETON, webGLSynth.synth.playSkeletons
   else
+    if isMaster
+      webRTCSignaller = setupWebRtc()
+      if webRTCSignaller?
+        webRTCSignaller.start()
+        webRTCSignaller.createOffer()
+
     keyboardCanvas = template.find '.keyboard'
     keyboard = new Keyboard(keyboardCanvas, window.innerWidth,
                             window.innerHeight, noteMap.getNumberOfNotes(),
@@ -179,6 +217,9 @@ setup = (template, isMaster) ->
     # Don't send unless our controller is "on"
     return unless isMaster or Session.get('isCurrentPlayer') == 'on'
     message.isMaster = isMaster
+    if webRTCSignaller?
+      webRTCSignaller.sendData(JSON.stringify(message))
+      return
     if message.type == 'start' or message.type == 'continue'
       lastMessageReceived = lastMessageReceivedMap[message.originalIdentifier]
       if Meteor.settings.public.waitForReplyBeforeSend

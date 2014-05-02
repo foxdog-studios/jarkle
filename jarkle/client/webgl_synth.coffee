@@ -15,6 +15,7 @@ class @WebGlSynth
       @currentPlayerId = null
     else
       @currentPlayerId = ONLY_MASTERS
+    @playerHandles = {}
 
   handleNoteMessage: (noteMessage) =>
     userId = noteMessage.userId
@@ -22,8 +23,17 @@ class @WebGlSynth
     if not @currentPlayerId? \
         or @currentPlayerId._id == userId \
         or noteMessage.isMaster
+      id = noteMessage.identifier
+      handle = @playerHandles[id]
+      if handle?
+        Meteor.clearTimeout(handle)
       @synth.handleMessage noteMessage, player.id
       @vis.handleMessage noteMessage, player.id
+      # Cancel notes which play for too long
+      @playerHandles[id] = Meteor.setTimeout =>
+        @vis.stopUserNoteWithId(noteMessage.userId, id)
+        @synth.stopPad(id)
+      , Meteor.settings.public.noteTimeoutMs
 
   _midiNoteNumberToNoteLetter: (midiNoteNumber) ->
     noteIndex = midiNoteNumber % NOTES.length
