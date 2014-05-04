@@ -14,9 +14,7 @@ node_global_packages=(
 
 python_packages=(
     'fabric==1.8.0'
-    'ws4py==0.3.2'
     'git+https://github.com/foxdog-studios/conf.git@v2.0.2'
-    'git+https://github.com/foxdog-studios/pyddp.git'
 )
 
 python_version=2.7
@@ -25,7 +23,6 @@ system_packages=(
     expect
     git
     nodejs
-    python2-pygame
     python2-virtualenv
 )
 
@@ -40,27 +37,6 @@ create_ve() {
 
 install_global_node_packages() {
     sudo npm install --global "${node_global_packages[@]}"
-}
-
-
-install_pygame() {
-    _ve _install_pygame
-}
-
-_install_pygame() {
-    local tmp patch_url source_url
-    patch_url=https://projects.archlinux.org/svntogit/packages.git/plain/trunk/pygame-v4l.patch?h=packages/python-pygame
-    source_url=http://www.pygame.org/ftp/pygame-1.9.1release.tar.gz
-    tmp=$(mktemp -d)
-
-    pushd .
-    cd -- "${tmp}"
-    curl "${source_url}" | tar xz
-    curl "${patch_url}" | patch -p0
-    cd pygame-1.9.1release
-    pip install .
-    rm -fr "${tmp}"
-    popd
 }
 
 install_python_packages() {
