@@ -45,8 +45,8 @@ import yaml
 # = External configuration ====================================================
 
 def load_config(config_name, config_format):
-    config_dir = os.environ.get('JARKLE_CONFIG_DIR', 'local/config/default')
-    with open(os.path.join(config_dir, config_name)) as config_file:
+    config_path = os.path.join('local/config/default', config_name)
+    with open(config_path) as config_file:
         return config_format.load(config_file)
 
 config = load_config('fabric.yaml', yaml)
@@ -169,7 +169,7 @@ def reload_nginx():
 # =============================================================================
 
 def margin(text):
-    return re.sub(r'^ *\|', '', text, flags=re.MULTILINE).strip()
+    return re.sub(r'^ *\|', '', text.strip(), flags=re.MULTILINE)
 
 
 def puts(string, remote_path=None, use_sudo=False):

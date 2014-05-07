@@ -83,10 +83,7 @@ function init_local()
         fi
     done
 
-    local target=$config_dir/default
-    if [[ ! -e $target ]]; then
-        ln --force --symbolic $dev_dir:t $target
-    fi
+    $repo/scripts/config.zsh development
 }
 
 
