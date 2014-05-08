@@ -1,4 +1,4 @@
-@ImageCanvasComposer = class ImageCanvasComposer
+class @ImageCanvasComposer
   constructor: (@canvas, @imageCanvas) ->
     @canvasContext = @canvas.getContext '2d'
 

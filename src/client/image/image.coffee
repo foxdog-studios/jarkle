@@ -1,4 +1,4 @@
-@ImageCanvas = class ImageCanvas
+class @ImageCanvas
   constructor: (@width, @height, @src) ->
     @loaded = false
     @canvas = document.createElement 'canvas'
