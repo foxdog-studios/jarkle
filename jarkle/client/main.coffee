@@ -92,6 +92,7 @@ setupWebRtc = ->
   config = {}
 
   dataChannelConfig =
+    reliable: false
     ordered: false
     maxRetransmitTime: 0
 
