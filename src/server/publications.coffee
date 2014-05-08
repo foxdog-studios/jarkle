@@ -1,3 +1,4 @@
 Meteor.publish 'userStatus', ->
-  Meteor.users.find 'status.online': true
+  Meteor.users.find
+    'status.online': true
 
