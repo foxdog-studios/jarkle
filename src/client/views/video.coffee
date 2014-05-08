@@ -27,13 +27,14 @@ Template.video.helpers
     videoSrc
   videoSrcs: ->
     VIDEO_SRCS
+
   selected: ->
-    if @src == Session.get 'videoSrc'
+    if Session.equals 'videoSrc'
       return 'selected'
 
 getYoutubeId = (url) ->
-  regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-  match = url.match(regExp);
+  regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/
+  match = url.match regExp
   if match? and match[2].length == 11
     return match[2]
 
