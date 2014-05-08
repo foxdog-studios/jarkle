@@ -1,4 +1,4 @@
-@NoteMessenger = class NoteMessenger
+class @NoteMessenger
   @MESSAGE_SENT = 'message-sent'
   @NOTE_START = 'start'
   @NOTE_CONTINUE = 'continue'
