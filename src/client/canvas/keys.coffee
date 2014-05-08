@@ -11,15 +11,6 @@ class @Keys
       @keys[i] = 0
     $(window).resize @setCanvasSize
 
-    drawKeys = =>
-      @canvas.width = @canvas.width
-      @canvasContext.fillStyle = rgb2Color 255, 255, 255
-      for key, i in @keys
-        if key > 0
-          @_applyCanvasFunction(i, 'fillRect')
-      requestAnimationFrame(drawKeys)
-    drawKeys()
-
   setCanvasSize: =>
     @width = $(window).width()
     @height = $(window).height()
@@ -36,6 +27,8 @@ class @Keys
     unless oldNumber? and oldNumber == noteNumber
       @ids[message.identifier] = noteNumber
       @keys[noteNumber] += 1
+    @canvasContext.fillStyle = rgb2Color 255, 255, 255
+    @applyCanvasFunction(message, 'fillRect')
 
   applyCanvasFunction: (message, func) =>
     noteNumber = @_getNoteNumber(message)
@@ -58,6 +51,8 @@ class @Keys
     if numberOfTimesNotePressed == 0
       return
     numberOfTimesNotePressed -= 1
+    if numberOfTimesNotePressed == 0
+      @_applyCanvasFunction(noteNumber, 'clearRect')
     @keys[noteNumber] = numberOfTimesNotePressed
 
   moveKey: (message) =>
