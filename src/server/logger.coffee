@@ -1,0 +1,3 @@
+Meteor.methods
+  log: (args...) ->
+    console.log args...

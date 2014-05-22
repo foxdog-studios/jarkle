@@ -2,9 +2,12 @@
   "meteor": {},
   "dependencies": {
     "basePackages": {
+      "audiocontext-monkeypatch": {
+        "git": "https://github.com/foxdog-studios/meteor-AudioContext-MonkeyPatch.git",
+        "branch": "master"
+      },
       "bootstrap-3": {},
       "device-detection": {},
-      "fastclick": {},
       "iron-router": {},
       "streams": {},
       "user-status": {},
@@ -15,9 +18,16 @@
       "webrtc-signalling": {
         "git": "https://github.com/foxdog-studios/meteor-webrtc",
         "branch": "master"
-      }
+      },
+      "keycodes": {},
+      "power-queue": {}
     },
     "packages": {
+      "audiocontext-monkeypatch": {
+        "git": "https://github.com/foxdog-studios/meteor-AudioContext-MonkeyPatch.git",
+        "branch": "master",
+        "commit": "eb0e84a52ca076781afebdb1659f77411565cf8e"
+      },
       "bootstrap-3": {
         "git": "https://github.com/mangasocial/meteor-bootstrap-3.git",
         "tag": "v3.1.1-1",
@@ -27,11 +37,6 @@
         "git": "https://github.com/mystor/meteor-device-detection.git",
         "tag": "v0.1.6",
         "commit": "a7909c2319a694b9caa959164485d7413dced435"
-      },
-      "fastclick": {
-        "git": "https://github.com/percolatestudio/meteor-fastclick",
-        "tag": "v0.6.7",
-        "commit": "fcb3bfd34d9f6874e626b4e24e8f54107938db41"
       },
       "iron-router": {
         "git": "https://github.com/EventedMind/iron-router.git",
@@ -56,7 +61,17 @@
       "webrtc-signalling": {
         "git": "https://github.com/foxdog-studios/meteor-webrtc",
         "branch": "master",
-        "commit": "617bf37c839444e37b7049b512ae45d7fa0f336e"
+        "commit": "dd7db4a0e2840f549888f3c99d5aaf8b26703691"
+      },
+      "keycodes": {
+        "git": "https://github.com/foxdog-studios/meteor-keycodes.git",
+        "tag": "v0.2.0",
+        "commit": "0c155fb447ffdbc5ecf8cc1ad4e3726ebed552e7"
+      },
+      "power-queue": {
+        "git": "https://github.com/CollectionFS/Meteor-power-queue.git",
+        "tag": "v0.9.9",
+        "commit": "567d3905784a8be6aacfbb69d477003ba9b5c4b5"
       },
       "blaze-layout": {
         "git": "https://github.com/EventedMind/blaze-layout.git",
@@ -67,6 +82,21 @@
         "git": "https://github.com/mizzao/meteor-timesync.git",
         "tag": "v0.1.6",
         "commit": "83067433f511bc13a11ae8c87e9a4d331256915e"
+      },
+      "reactive-property": {
+        "git": "https://github.com/CollectionFS/Meteor-reactive-property.git",
+        "tag": "v0.0.1",
+        "commit": "f742b8656bb88fafff2a9c3a32ff1f97b3ebf2f7"
+      },
+      "micro-queue": {
+        "git": "https://github.com/CollectionFS/Meteor-micro-queue.git",
+        "tag": "v0.0.3",
+        "commit": "70266ce2c273a12c5af17b5c056253936caabb01"
+      },
+      "reactive-list": {
+        "git": "https://github.com/CollectionFS/Meteor-reactive-list.git",
+        "tag": "v0.0.7",
+        "commit": "5855e3795947145b20a331250113ce927060445b"
       }
     }
   }

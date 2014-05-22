@@ -1,34 +1,29 @@
 Router.configure
   layoutTemplate: 'layout'
+  loadingTemplate: 'loading'
+
+
+Router.onBeforeAction 'loading'
+
+window.onerror = (args...) ->
+  Meteor.call 'log', args...
 
 Router.map ->
-  @route 'master',
-    path: '/master'
-    template: 'master'
-
-  @route 'reroute',
+  @route 'lobby',
     path: '/'
+    controller: 'LobbyController'
 
-    template: 'main'
+  @route 'viewer',
+    path: '/:roomId/viewer'
+    controller: 'ViewerController'
 
-    onBeforeAction: ->
-      if Meteor.settings.public.automaticRoomIds
-        @redirect("/#{ generateName(2) }")
-      else
-        Session.set 'roomId', 'main'
+  if Settings.keyboard.master.enable
+    @route 'masterKeyboard',
+      path: '/:roomId/master'
+      controller: 'MasterKeyboardController'
 
-  @route 'main',
-    path: '/:roomId'
-
-    onBeforeAction: ->
-      Session.set 'roomId', @params.roomId
-
-    action: ->
-      if isViewer()
-        @render('viewer')
-      else
-        @render('main')
-
-    onStop: ->
-      Session.set 'roomId'
+  if Settings.keyboard.player.enable
+    @route 'playerKeyboard',
+      path: '/:roomId'
+      controller: 'PlayerKeyboardController'
 

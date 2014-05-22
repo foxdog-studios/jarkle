@@ -1,13 +1,36 @@
 Meteor.methods
-  messageSent: (roomName, args) ->
-    chatStream.emit roomName, args
+  joinRoom: (roomId, isMaster) ->
+    check roomId, String
+    check isMaster, Boolean
+    RoomControls.joinRoom roomId, @connection.id, isMaster
+    undefined
 
-  midiNoteOn: (noteInfo) ->
-    chatStream.emit 'midiNoteOn', noteInfo
+  leaveRooms: ->
+    RoomControls.leaveRooms @connection.id
+    undefined
 
-  midiDrumsNoteOn: (noteInfo) ->
-    chatStream.emit 'midiDrumsNoteOn', noteInfo
+  showMessage: (roomId) ->
+    check roomId, String
+    RoomControls.showMessage roomId
+    undefined
 
-  skeleton: (skeleton) ->
-    chatStream.emit 'skeleton', skeleton
+  hideMessage: (roomId) ->
+    check roomId, String
+    RoomControls.hideMessage roomId
+    undefined
+
+  enableSinglePlayer: (roomId) ->
+    check roomId, String
+    RoomControls.enableSinglePlayer roomId
+    undefined
+
+  enableAllPlayers: (roomId) ->
+    check roomId, String
+    RoomControls.enableAllPlayers roomId
+    undefined
+
+  disableAllPlayers: (roomId) ->
+    check roomId, String
+    RoomControls.disableAllPlayers roomId
+    undefined
 

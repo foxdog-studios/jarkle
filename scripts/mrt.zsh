@@ -1,16 +1,10 @@
 #!/usr/bin/env zsh
 
-setopt err_exit
-setopt no_unset
+setopt ERR_EXIT
+setopt NO_UNSET
 
-repo=$(realpath -- ${0:h}/..)
-
-if [[ $# -eq 0 ]]; then
-    args=( --settings $repo/local/config/default/meteor_settings.json )
-else
-    args=( $@ )
-fi
+repo=$(realpath "$(dirname "$(realpath -- $0)")/..")
 
 cd $repo/src
-exec mrt $args
+exec mrt $@
 
