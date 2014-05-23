@@ -6,22 +6,45 @@ Router.configure
 Router.onBeforeAction 'loading'
 
 
-Router.map ->
-  @route 'lobby',
+mapLobby = (router) ->
+  controller = if Settings.autoRoom
+    'AutoRoomController'
+  else
+    'LobbyController'
+
+  router.route 'lobby',
     path: '/'
-    controller: 'LobbyController'
+    controller: controller
 
-  @route 'viewer',
-    path: '/:roomId/viewer'
-    controller: 'ViewerController'
 
+mapMasterKeyboard = (router) ->
   if Settings.keyboard.master.enable
-    @route 'masterKeyboard',
+    router.route 'masterKeyboard',
       path: '/:roomId/master'
       controller: 'MasterKeyboardController'
 
+
+mapPlayerKeyboard = (router) ->
   if Settings.keyboard.player.enable
-    @route 'playerKeyboard',
+    router.route 'playerKeyboard',
       path: '/:roomId'
       controller: 'PlayerKeyboardController'
+
+
+mapViewer = (router) ->
+  router.route 'viewer',
+    path: '/:roomId/viewer'
+    controller: 'ViewerController'
+
+
+Router.map ->
+  mappers = [
+    mapLobby
+    mapMasterKeyboard
+    mapPlayerKeyboard
+    mapViewer
+  ]
+
+  for mapper in mappers
+    mapper this
 
