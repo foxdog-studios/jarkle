@@ -46,6 +46,42 @@ class @RoomControls
 # = Room controls                                                              =
 # ==============================================================================
 
+# Player documents
+#
+#   isEnabled {Boolean} If true, the player can use their controller.
+#
+#   isMaster {Boolean} If true, the player can always use their
+#                      controller.
+#
+#   name {String} The player's name.
+#
+#
+#   roomId {String} The ID of the room they are currently in.
+#
+#   singleAt  {Number} The Unix time that this person was last
+#                      singularly enabled. If not present, this player
+#                      has never been singularly enabled.
+#
+#
+# Room documents
+#
+#   allEnabled {Boolean} If true, everyone in the room can use their
+#                        controller. If false or does not exist, only
+#                        masters or singularly enabled players can
+#                        use their controllers.
+#
+#   enabledPlayerId {String} The ID of the player that has been
+#                            singularly enabled. If this field does not
+#                            exists, no player is singularly enabled.
+#
+#   message {String} The message to show at the top of viewer of the
+#                    room. If this field does not exists, no message
+#                    is to be shown.
+#
+#   roomId {String} The name of the room.
+
+
+
 joinRoom = (roomId, playerId, isMaster) ->
   # Enable the player if they are a master or that is the default
   # state.
@@ -67,6 +103,13 @@ joinRoom = (roomId, playerId, isMaster) ->
     $unset:
       singledAt: ''
 
+  # Ensure that the room exists so that it shows up in the lobby.
+  Rooms.upsert
+    roomId: roomId
+  ,
+    $set:
+      roomId: roomId
+
 
 leaveRooms = (playerId) ->
   player = Players.findOne
@@ -82,6 +125,11 @@ leaveRooms = (playerId) ->
   # Remove the player.
   Players.remove
     playerId: playerId
+
+  # If the room is now empty, remove it.
+  if Players.find(roomId: player.roomId).count() == 0
+    Rooms.remove
+      roomId: player.roomId
 
 
 showMessage = (roomId) ->

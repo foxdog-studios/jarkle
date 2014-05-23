@@ -48,6 +48,9 @@ _.defaults settings.viewer,
   showSidePanel: true
   videos: []
 
+  twoD: {}
+  threeD: {}
+
 
 # 1.2.1) Viewer video settings
 
@@ -63,4 +66,24 @@ if _.isEmpty settings.viewer.videos
   ,
     id: 'Kr0tTbTbmVA'
     name: 'Summertime'
+
+
+# 1.2.2) 2D viewer settings
+
+_.defaults settings.viewer.twoD,
+  headSize: 60
+  headUrls: []
+
+
+# 1.2.2.1) 2D viewer head URLs
+
+if _.isEmpty settings.viewer.twoD.headUrls
+  headUrls = [
+    '/viewer/heads2d/face.png'
+    '/viewer/heads2d/dino.png'
+  ]
+  settings.viewer.twoD.headUrls.splice 0, 0, headUrls...
+
+
+# 1.2.3) 3D Viewer settings
 

@@ -5,8 +5,6 @@ Router.configure
 
 Router.onBeforeAction 'loading'
 
-window.onerror = (args...) ->
-  Meteor.call 'log', args...
 
 Router.map ->
   @route 'lobby',

@@ -1,15 +1,13 @@
 class @Visualizer2d
-  constructor: (@_canvas, settings) ->
-    @_initSettings settings
+  constructor: (@_canvas) ->
+    @_initSettings()
     @_initContext()
     @_initHeads()
     @_initResizer()
     @_initUsers()
 
-  _initSettings: (settings) ->
-   settings = _.defaults (settings ? {}),
-      headSize: 100
-      headUrls: ['/heads2d/face.png', '/heads2d/dino.png']
+  _initSettings: ->
+    settings = Settings.viewer.twoD
     @_headSize = settings.headSize
     @_headUrls = settings.headUrls
 

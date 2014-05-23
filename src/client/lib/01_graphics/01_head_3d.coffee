@@ -1,11 +1,11 @@
-class @Head
+class @Head3D
   constructor: (@_object) ->
     @_isInputStarted = false
     @_isVisible = false
     @_limit = 1500
     @_scale = 5
     @_speed = -10
-    @_startZ = 0
+    @_startZ =  Settings.viewer.drawDistance / 2 - 30
 
     @_hide()
 
@@ -13,6 +13,7 @@ class @Head
     @_setVisible false
 
   _resetZ: ->
+    console.log @_startZ
     @_object.position.z = @_startZ
 
   _setPositionAxisFromInput: (input, axis) ->
@@ -31,6 +32,9 @@ class @Head
     @_setPositionAxisFromInput input, 'y'
     @_resetZ()
 
+  addToScene: (scene) ->
+    scene.add @_object
+
   animate: ->
     if @_isVisible and not @_isInputStarted
       if Math.abs(@_object.position.x += @_speed) > @_limit
@@ -44,7 +48,7 @@ class @Head
   onInputMove: (input) ->
     @_updatePositionFromInput input
 
-  onMoveStop: (input) ->
+  onInputStop: (input) ->
     @_isInputStarted = false
     @_updatePositionFromInput input
 

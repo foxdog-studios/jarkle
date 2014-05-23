@@ -11,7 +11,7 @@ class @RoomController extends RouteController
       Meteor.subscribe 'room', @params.roomId
       Meteor.subscribe 'player'
       ready: =>
-        @_joinCalled and not @_isJoining and hasPlayer @params.roomId
+        hasPlayer(@params.roomId) and @_joinCalled and not @_isJoining
     ]
 
   onBeforeAction: ->

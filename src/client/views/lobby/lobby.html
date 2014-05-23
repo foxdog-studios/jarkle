@@ -1,4 +1,17 @@
 <template name="lobby">
-  <h1>Lobby</h1>
+  <h1>The Jarkle's Lobby</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>Room</th>
+        <th>Players</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each rooms}}
+        {{> lobbyRoomListItem}}
+      {{/each}}
+    </tbody>
+  </table>
 </template>
 

@@ -113,13 +113,9 @@ class @WebGlVisualization
 
   _initHead: (loader, name, settings) ->
     loader.load settings.obj, settings.mtl, (head) =>
-      head.scale.multiplyScalar @_headScale
-      head.position.z = @_headZ
-      head.traverse (object) ->
-        object.visible = false
       @_heads[name] = for i in [0...@_headClones]
-        clone = head.clone()
-        @_scene.add clone
+        clone = new Head3D head.clone()
+        clone.addToScene @_scene
         clone
 
   _initParticles: ->
@@ -139,7 +135,10 @@ class @WebGlVisualization
   _animate: ->
     @_animateControls()
     @_animateCubes()
-    @_animateHeads()
+
+    for _, head in @_inputHeads
+      head.animate()
+
     @_animateParticles()
     @_render()
 
@@ -164,8 +163,6 @@ class @WebGlVisualization
 
     undefined
 
-  _animateHeads: ->
-
   _animateParticles: ->
     @_particleSystem.animate()
 
@@ -189,22 +186,15 @@ class @WebGlVisualization
     head = @_heads[@_users[input.userId]].pop()
     if head?
       @_inputHeads[input.inputId] = head
-      head.traverse (object) ->
-        object.visible = true
-      @_updateHead head, input
+      head.onInputStart input
 
   _moveHead: (input) ->
     if (head = @_inputHeads[input.inputId])?
-      @_updateHead head, input
-
-  _updateHead:(head, input) ->
-    head.position.x = @_cubeScale * (input.x - 0.5)
-    head.position.y = @_cubeScale * (input.y - 0.5)
-    head.position.z = @_headZ
+      head.onInputMove input
 
   _stopHead: (input) ->
     if (head = @_inputHeads[input.inputId])?
-      head.traverse (object) -> object.visible = false
+      head.onInputStop input
       delete @_inputHeads[input.inputId]
       @_heads[@_users[input.userId]].push head
 

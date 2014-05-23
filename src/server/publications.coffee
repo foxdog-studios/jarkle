@@ -4,7 +4,15 @@ Meteor.publish 'room', (roomId) ->
     roomId: roomId
 
 
+Meteor.publish 'rooms', ->
+  Rooms.find()
+
+
 Meteor.publish 'player', ->
   Players.find
     playerId: @connection.id
+
+
+Meteor.publish 'players', ->
+  Players.find()
 
