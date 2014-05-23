@@ -10,16 +10,22 @@ class @RoomController extends RouteController
     [
       Meteor.subscribe 'room', @params.roomId
       Meteor.subscribe 'player'
-      ready: =>
-        hasPlayer(@params.roomId) and @_joinCalled and not @_isJoining
     ]
 
   onBeforeAction: ->
-    unless @_isJoining or hasPlayer @params.roomId
+    unless @_isJoining
       Meteor.call 'joinRoom', @params.roomId, @isMaster, (error, result) =>
+        if error?
+          message = 'An error occured while attempting to join room.'
+          console.error message, error
         @_isJoining = false
       @_isJoining = true
-      @_joinCalled = true
+
+  onStop: ->
+    Meteor.call 'leaveRooms', (error, result) ->
+      if error?
+        message = 'An error occured while attempting to leave rooms.'
+        console.error message, error
 
 
 hasPlayer = (roomId) ->
