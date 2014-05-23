@@ -6,7 +6,7 @@
 _.defaults settings,
   autoRoom: false
   defaultRoom: 'jarkle'
-  pitchAxis: 'y'                        # Valid options are 'x', 'y', '-x', '-y'
+  pitchAxis: 'y' # Valid options are 'x', 'y', '-x', '-y'
   pitches: 'c4 d4 e4 f4 g4 a4 b4 c5'
 
   keyboard: {}
@@ -87,5 +87,18 @@ if _.isEmpty settings.viewer.twoD.headUrls
   settings.viewer.twoD.headUrls.splice 0, 0, headUrls...
 
 
-# 1.2.3) 3D Viewer settings
+# 1.2.3) 3D viewer settings
+
+_.defaults settings.viewer.threeD,
+  drawDistance: 1500
+  cubes: {}
+
+
+# 1.2.3.1) 3D viewer cube settings
+
+_.defaults settings.viewer.threeD.cubes,
+  color: '0x00ff00'
+  count: 50
+  scale: 10
+  speed: -2
 

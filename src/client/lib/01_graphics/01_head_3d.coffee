@@ -13,7 +13,6 @@ class @Head3D
     @_setVisible false
 
   _resetZ: ->
-    console.log @_startZ
     @_object.position.z = @_startZ
 
   _setPositionAxisFromInput: (input, axis) ->

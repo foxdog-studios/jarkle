@@ -5,7 +5,6 @@ class @WebGlVisualization
     @_initSettings settings
     @_initExternalDimensions()
     @_initResizeListener()
-    @_initInputListener()
 
     @_initRenderer()
     @_initCamera()
@@ -32,13 +31,6 @@ class @WebGlVisualization
     # Global settings
     @_cameraZ = settings.cameraZ ? 5
     @_drawDistance = settings.drawDistance ? 1000
-
-    # Cube settings
-    @_cubeColor = parseInt (cubes.color ? '0x00ff00'), 16
-    @_cubeCount = cubes.count ? 50
-    @_cubeLimit = cubes.limit ? @_drawDistance / 1000
-    @_cubeScale = cubes.scale ? 5
-    @_cubeSpeed = cubes.speed ? -10
 
     # Heads
     @_headAppearances = heads.appearances ? {}
@@ -86,16 +78,8 @@ class @WebGlVisualization
     @_scene.add new THREE.HemisphereLight 0xffeedd, 0xffeedd
 
   _initCubes: ->
-    @_cubeIndex = 0
-
-    geometry = new THREE.CubeGeometry 1, 1, 1
-    material = new THREE.MeshBasicMaterial color: @_cubeColor
-
-    @_cubes = for i in [0...@_cubeCount]
-      cube = new THREE.Mesh geometry, material
-      cube.visible = false
-      @_scene.add cube
-      cube
+    @_cubes = new Cubes
+    @_cubes.addToScene @_scene
 
   _initHeads: ->
     @_heads = {}
@@ -134,34 +118,15 @@ class @WebGlVisualization
 
   _animate: ->
     @_animateControls()
-    @_animateCubes()
-
-    for _, head in @_inputHeads
-      head.animate()
-
     @_animateParticles()
+    @_animateCubes()
     @_render()
 
   _animateControls: ->
     @_controls.update()
 
   _animateCubes: ->
-    # Move the currently active cubes away from the camera.
-    for cube in @_cubes when cube.visible
-      cube.position.z += @_cubeSpeed
-      if cube.position.z < -@_drawDistance
-        cube.visible = false
-
-    # Active another cube for each input
-    for inputId, input of @_inputs
-      cube = @_cubes[@_cubeIndex]
-      @_cubeIndex = (@_cubeIndex + 1) % @_cubes.length
-      cube.position.x = @_cubeScale * (input.x - 0.5)
-      cube.position.y = @_cubeScale * (input.y - 0.5)
-      cube.position.z = 0
-      cube.visible = true
-
-    undefined
+    @_cubes.animate()
 
   _animateParticles: ->
     @_particleSystem.animate()
@@ -169,61 +134,14 @@ class @WebGlVisualization
   _render: ->
     @_renderer.render @_scene, @_camera
 
-
-  # ==========================================================================
-  # = Events                                                                 =
-  # ==========================================================================
-
-  _initInputListener: ->
-    @_inputs = {}
-    @_inputHeads = {}
-    @_users = {}
-
-
-  # ==========================================================================
-
-  _startHead: (input) ->
-    head = @_heads[@_users[input.userId]].pop()
-    if head?
-      @_inputHeads[input.inputId] = head
-      head.onInputStart input
-
-  _moveHead: (input) ->
-    if (head = @_inputHeads[input.inputId])?
-      head.onInputMove input
-
-  _stopHead: (input) ->
-    if (head = @_inputHeads[input.inputId])?
-      head.onInputStop input
-      delete @_inputHeads[input.inputId]
-      @_heads[@_users[input.userId]].push head
-
-
-  # ==========================================================================
-
   onInputStart: (input) =>
-    @_inputs[input.inputId] = input
-    @_ensureUser input
-    @_startHead input
+    @_cubes.onInputStart input
 
   onInputMove: (input) =>
-    @_inputs[input.inputId] = input
-    @_moveHead input
+    @_cubes.onInputMove input
 
   onInputStop: (input) =>
-    delete @_inputs[input.inputId]
-    @_stopHead input
-
-  # ==========================================================================
-
-  _ensureUser: (input) ->
-    return if @_users[input.userId]?
-    cycle = if input.isMaster
-      @_masterHeadsCycle
-    else
-      @_userHeadsCycle
-    @_users[input.userId] = cycle()
-
+    @_cubes.onInputStop input
 
   # ==========================================================================
   # = Resize                                                                 =
