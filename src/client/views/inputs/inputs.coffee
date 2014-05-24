@@ -14,6 +14,12 @@ Template.inputs.rendered = ->
       @_touch.disable()
 
 
+Template.inputs.helpers
+  style: ->
+    unless Session.equals 'enableInputs', true
+      'display: none;'
+
+
 Template.inputs.destroyed = ->
   @_enableComp?.stop()
   @_touch?.disable()

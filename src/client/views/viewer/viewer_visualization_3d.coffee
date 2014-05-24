@@ -8,21 +8,23 @@ Template.viewerVisualization3d.rendered = ->
   @_inputListener = new PubsubInputListener pubsub, @_visualization
   @_inputListener.enable()
 
-  # Toggle between mouse and trackball controls
-  onCtrl = (event, enable) =>
-    if event.which == KeyCodes.CTRL
-      if enable
+  # Toggle between mouse and trackball controls.
+  @_controlsListener = new DomEventListener window,
+    keydown:(event) =>
+      if event.which == KeyCodes.CTRL
+        event.preventDefault()
         @_visualization.enableControls()
-      else
+        Session.set 'enableInputs', false
+    keyup: (event) =>
+      if event.which == KeyCodes.CTRL
+        event.preventDefault()
         @_visualization.disableControls()
-
-  $(window)
-    .keydown (event) -> onCtrl event, true
-    .keyup   (event) -> onCtrl event, false
+        Session.set 'enableInputs', true
+  @_controlsListener.enable()
 
 
 Template.viewerVisualization3d.destroyed = ->
-  @_inputListener.disable()
+  @_controlsListener?.disable()
+  @_inputListener?.disable()
   @_visualization?.disable()
-  $(window).off 'keydown keyup'
 
