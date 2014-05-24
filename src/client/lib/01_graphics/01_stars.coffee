@@ -7,14 +7,8 @@ class @StarField
     @_initSystem()
 
   _initSettings: (settings) ->
-    settings = _.defaults (settings ? {}),
-      density: 0.000001
-      fieldSize: 1000
-      map: '/viewer/stars/particle.png'
-      speed: 2
-      starColor: '0xfefefe'
-      starSize: 10
-      travelAxis: 'z'
+    settings = Settings.viewer.threeD.starField
+
 
     @_density    = settings.density
     @_fieldSize  = settings.fieldSize

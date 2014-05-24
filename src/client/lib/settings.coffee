@@ -93,6 +93,7 @@ _.defaults settings.viewer.threeD,
   drawDistance: 1500
   cubes: {}
   heads: {}
+  starField: {}
 
 
 # 1.2.3.1) 3D viewer cube settings
@@ -146,4 +147,15 @@ if _.isEmpty settings.viewer.threeD.heads.appearances
       mtl: '/viewer/heads3d/santa/santa.mtl'
       master: false
 
+
+# 1.2.3.3) 3D viewer star field
+
+_.defaults settings.viewer.threeD.starField,
+  density: 0.000001
+  fieldSize: 1000
+  map: '/viewer/stars/particle.png'
+  speed: 2
+  starColor: '0xfefefe'
+  starSize: 10
+  travelAxis: 'z'
 

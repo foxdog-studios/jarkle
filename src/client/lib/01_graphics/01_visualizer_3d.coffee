@@ -1,19 +1,19 @@
-class @WebGlVisualization
-  constructor: (@_parent, settings) ->
+class @Visualizer3D
+  constructor: (@_parent) ->
     @_animating = false
+    @_updateDimensions()
 
-    @_initSettings settings
-    @_initExternalDimensions()
     @_initResizeListener()
+
+    @_initScene()
+    @_initLights()
+    @_initStarField()
+    @_initCubes()
+    @_initHeads()
 
     @_initRenderer()
     @_initCamera()
     @_initControls()
-    @_initScene()
-    @_initLights()
-    @_initHeads()
-    @_initCubes()
-    @_initParticles()
 
     @_resize()
     @_render()
@@ -23,49 +23,9 @@ class @WebGlVisualization
   # = Initialisation                                                         =
   # ==========================================================================
 
-  _initSettings: (settings) ->
-    settings = settings ? {}
-    cubes = settings.cubes ? {}
-    heads = settings.heads ? {}
-
-    # Global settings
-    @_cameraZ = settings.cameraZ ? 5
-    @_drawDistance = settings.drawDistance ? 1000
-
-    # Heads
-    @_headAppearances = heads.appearances ? {}
-    @_headClones = heads.clones ? 10
-    @_headScale = heads.scale ? 0.5
-    @_headZ = heads.z ? -10
-
-
-  _initExternalDimensions: ->
-    @_width = window.innerWidth
-    @_height = window.innerHeight
-
   _initResizeListener: ->
     @_resizeListener = new DomEventListener window,
       resize: @_onResize
-
-
-  # ==========================================================================
-
-  _initRenderer: ->
-    @_renderer = new THREE.WebGLRenderer alpha: true
-    @_parent.appendChild @_renderer.domElement
-
-  _initCamera: ->
-    fov = 75
-    aspect = @_width / @_height
-    near = 1
-    far = @_drawDistance
-    @_camera = new THREE.PerspectiveCamera fov, aspect, near, far
-    @_camera.position.z = @_drawDistance / 2
-
-
-  _initControls: ->
-    @_controls = new THREE.TrackballControls @_camera, @_renderer.domElement
-    @_controls.enabled = false
 
 
   # ==========================================================================
@@ -77,6 +37,10 @@ class @WebGlVisualization
     @_scene.add new THREE.AmbientLight 0x888888
     @_scene.add new THREE.HemisphereLight 0xffeedd, 0xffeedd
 
+  _initStarField: ->
+    @_starField = new StarField
+    @_starField.addToScene @_scene
+
   _initCubes: ->
     @_cubes = new Cubes
     @_cubes.addToScene @_scene
@@ -86,33 +50,42 @@ class @WebGlVisualization
       @_heads.addToScene @_scene
     @_heads = new Head3DManager
 
-  _initParticles: ->
-    @_particleSystem = new StarField
-      fieldSize: @_drawDistance
-    @_particleSystem.addToScene @_scene
+
+  # ==========================================================================
+
+  _initRenderer: ->
+    @_renderer = new THREE.WebGLRenderer alpha: true
+    @_parent.appendChild @_renderer.domElement
+
+  _initCamera: ->
+    @_cameraManager = new CameraManager @_width, @_height
+
+  _initControls: ->
+    @_controls = new THREE.TrackballControls(
+      @_cameraManager.getCamera(),
+      @_renderer.domElement
+    )
+    @_controls.enabled = false
 
 
   # ==========================================================================
-  # = Rendering                                                              =
+  # = Animation                                                              =
   # ==========================================================================
 
   _onAnimate: =>
-    return unless @_animating
-    requestAnimationFrame @_onAnimate
-    @_animate()
+    if @_animating
+      requestAnimationFrame @_onAnimate
+      @_animate()
 
   _animate: ->
-    @_animateControls()
-    @_animateParticles()
+    @_animateStarField()
     @_animateCubes()
     @_animateHeads()
+    @_updateControls()
     @_render()
 
-  _animateControls: ->
-    @_controls.update()
-
-  _animateParticles: ->
-    @_particleSystem.animate()
+  _animateStarField: ->
+    @_starField.animate()
 
   _animateCubes: ->
     @_cubes.animate()
@@ -120,8 +93,16 @@ class @WebGlVisualization
   _animateHeads: ->
     @_heads.animate()
 
+  _updateControls: ->
+    @_controls.update()
+
   _render: ->
-    @_renderer.render @_scene, @_camera
+    @_renderer.render @_scene, @_cameraManager.getCamera()
+
+
+  # ==========================================================================
+  # = Inputs                                                                 =
+  # ==========================================================================
 
   onInputStart: (input) =>
     @_cubes.onInputStart input
@@ -141,19 +122,19 @@ class @WebGlVisualization
   # ==========================================================================
 
   _onResize: (event) =>
-    @_initExternalDimensions()
+    @_updateDimensions()
     @_resize()
+
+  _updateDimensions: ->
+    @_width = window.innerWidth
+    @_height = window.innerHeight
 
   _resize: ->
     @_resizeRenderer()
-    @_resizeCamera()
+    @_cameraManager.resize @_width, @_height
 
   _resizeRenderer: ->
     @_renderer.setSize @_width, @_height
-
-  _resizeCamera: ->
-    @_camera.aspect = @_width / @_height
-    @_camera.updateProjectionMatrix()
 
 
   # ==========================================================================

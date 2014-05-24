@@ -1,7 +1,7 @@
 Template.viewerVisualization3d.rendered = ->
   target = @find '.viewer-visualization'
 
-  @_visualization = new WebGlVisualization target, Settings.viewer
+  @_visualization = new Visualizer3D target, Settings.viewer
   @_visualization.enable()
 
   pubsub = Singletons.getPubsub()
