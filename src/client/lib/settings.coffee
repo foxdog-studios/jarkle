@@ -1,4 +1,4 @@
-@Settings = settings = Meteor.settings.public ? {}
+@Settings = settings = Meteor.settings?.public ? {}
 
 
 # 1) Public settings
@@ -92,6 +92,7 @@ if _.isEmpty settings.viewer.twoD.headUrls
 _.defaults settings.viewer.threeD,
   drawDistance: 1500
   cubes: {}
+  heads: {}
 
 
 # 1.2.3.1) 3D viewer cube settings
@@ -101,4 +102,48 @@ _.defaults settings.viewer.threeD.cubes,
   count: 50
   scale: 10
   speed: -2
+
+
+# 1.2.3.2) 3D viewer head settings
+
+_.defaults settings.viewer.threeD.heads,
+  count: 10
+  headScale: 0.2
+  movementScale: 10
+  speed: -2
+
+  appearances: {}
+
+
+# 1.2.3.2.1) 3D viewer head appearance settings
+
+if _.isEmpty settings.viewer.threeD.heads.appearances
+  _.extend settings.viewer.threeD.heads.appearances,
+    # Masters
+    pug:
+      obj: '/viewer/heads3d/pug/pug.obj'
+      mtl: '/viewer/heads3d/pug/pug.mtl'
+      master: true
+
+    # Players
+    dino:
+      obj: '/viewer/heads3d/dino/dino.obj'
+      mtl: '/viewer/heads3d/dino/dino.mtl'
+      master: false
+
+    fox:
+      obj: '/viewer/heads3d/fox/fox.obj'
+      mtl: '/viewer/heads3d/fox/fox.mtl'
+      master: false
+
+    godzilla:
+      obj: '/viewer/heads3d/godzilla/godzilla.obj'
+      mtl: '/viewer/heads3d/godzilla/godzilla.mtl'
+      master: false
+
+    santa:
+      obj: '/viewer/heads3d/santa/santa.obj'
+      mtl: '/viewer/heads3d/santa/santa.mtl'
+      master: false
+
 

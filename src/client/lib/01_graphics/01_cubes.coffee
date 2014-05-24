@@ -13,7 +13,7 @@ class @Cubes
     @_count = settings.count
 
   _initGeometry: ->
-    @_geometry = new THREE.CubeGeometry 1, 1, 1
+    @_geometry = new THREE.BoxGeometry 1, 1, 1
 
   _initMaterial: ->
     @_material = new THREE.MeshBasicMaterial

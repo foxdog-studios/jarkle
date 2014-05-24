@@ -14,7 +14,6 @@ iron-router
 bootstrap-3
 showdown
 device-detection
-threejs
 webrtc-signalling
 keycodes
 less
@@ -25,3 +24,4 @@ random
 power-queue
 micro-queue
 audiocontext-monkeypatch
+meteor-threejs

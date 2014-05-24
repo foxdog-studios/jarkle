@@ -82,30 +82,15 @@ class @WebGlVisualization
     @_cubes.addToScene @_scene
 
   _initHeads: ->
-    @_heads = {}
-    @_masterHeadsCycle = @_makeHeadCycle true
-    @_userHeadsCycle = @_makeHeadCycle false
-
-    manager = new THREE.LoadingManager()
-    loader = new THREE.OBJMTLLoader manager
-    for name, settings of @_headAppearances
-      @_initHead loader, name, settings
-
-  _makeHeadCycle: (isMaster) ->
-    names = (n for n, s of @_headAppearances when s.master == isMaster)
-    cycle _.shuffle names
-
-  _initHead: (loader, name, settings) ->
-    loader.load settings.obj, settings.mtl, (head) =>
-      @_heads[name] = for i in [0...@_headClones]
-        clone = new Head3D head.clone()
-        clone.addToScene @_scene
-        clone
+    THREE.DefaultLoadingManager.onLoad = =>
+      @_heads.addToScene @_scene
+    @_heads = new Head3DManager
 
   _initParticles: ->
     @_particleSystem = new StarField
       fieldSize: @_drawDistance
     @_particleSystem.addToScene @_scene
+
 
   # ==========================================================================
   # = Rendering                                                              =
@@ -120,28 +105,36 @@ class @WebGlVisualization
     @_animateControls()
     @_animateParticles()
     @_animateCubes()
+    @_animateHeads()
     @_render()
 
   _animateControls: ->
     @_controls.update()
 
+  _animateParticles: ->
+    @_particleSystem.animate()
+
   _animateCubes: ->
     @_cubes.animate()
 
-  _animateParticles: ->
-    @_particleSystem.animate()
+  _animateHeads: ->
+    @_heads.animate()
 
   _render: ->
     @_renderer.render @_scene, @_camera
 
   onInputStart: (input) =>
     @_cubes.onInputStart input
+    @_heads.onInputStart input
 
   onInputMove: (input) =>
     @_cubes.onInputMove input
+    @_heads.onInputMove input
 
   onInputStop: (input) =>
     @_cubes.onInputStop input
+    @_heads.onInputStop input
+
 
   # ==========================================================================
   # = Resize                                                                 =

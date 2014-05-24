@@ -1,48 +1,46 @@
 class @Head3D
-  constructor: (@_object) ->
-    @_isInputStarted = false
-    @_isVisible = false
-    @_limit = 1500
-    @_scale = 5
-    @_speed = -10
-    @_startZ =  Settings.viewer.drawDistance / 2 - 30
+  constructor: (@_head) ->
+    @_initSettings()
+    @_initHead()
 
+  _initSettings: ->
+    limit = Settings.viewer.threeD.drawDistance / 2
+    @_far = -limit
+    @_near  = 0.99 * limit
+
+    settings = Settings.viewer.threeD.heads
+    @_speed = settings.speed
+    @_headScale = settings.headScale
+    @_movementScale = settings.movementScale
+
+  _initHead: ->
+    @_isInputStarted = false
+    @_head.scale.multiplyScalar @_headScale
     @_hide()
 
-  _hide: ->
-    @_setVisible false
+  addToScene: (scene) ->
+    scene.add @_head
 
-  _resetZ: ->
-    @_object.position.z = @_startZ
-
-  _setPositionAxisFromInput: (input, axis) ->
-    @_object.position[axis] = @_scale * (input[axis] - 0.5)
-
-  _setVisible: (visible) ->
-    @_isVisible = visible
-    @_object.traverse (object) ->
-      object.visible = visible
+  animate: ->
+    if @_isVisible and not @_isInputStarted
+      if (@_head.position.z += @_speed) < @_far
+        @_hide()
 
   _show: ->
     @_setVisible true
 
-  _updatePositionFromInput: (input) ->
-    @_setPositionAxisFromInput input, 'x'
-    @_setPositionAxisFromInput input, 'y'
-    @_resetZ()
+  _hide: ->
+    @_setVisible false
 
-  addToScene: (scene) ->
-    scene.add @_object
-
-  animate: ->
-    if @_isVisible and not @_isInputStarted
-      if Math.abs(@_object.position.x += @_speed) > @_limit
-        @_hide()
+  _setVisible: (visible) ->
+    @_isVisible = visible
+    @_head.traverse (object) ->
+      object.visible = visible
 
   onInputStart: (input) ->
     @_isInputStarted = true
     @_updatePositionFromInput input
-    @_setVisible true
+    @_show()
 
   onInputMove: (input) ->
     @_updatePositionFromInput input
@@ -50,4 +48,12 @@ class @Head3D
   onInputStop: (input) ->
     @_isInputStarted = false
     @_updatePositionFromInput input
+
+  _updatePositionFromInput: (input) ->
+    @_setPositionAxisFromInput input, 'x'
+    @_setPositionAxisFromInput input, 'y'
+    @_head.position.z = @_near
+
+  _setPositionAxisFromInput: (input, axis) ->
+    @_head.position[axis] = @_movementScale * (input[axis] - 0.5)
 
