@@ -109,17 +109,17 @@ def fake_drums(conn, room_id):
             break
 
         name = {
-            's': 'snare',
-            'k': 'kick',
-            'h': 'hi-hat closed',
-            'u': 'low tom',
-            'p': 'hi-hat pedal',
-            'o': 'hi-hat open',
-            'y': 'mid tom',
-            'u': 'high tom',
-            'c': 'crash',
-            'r': 'ride',
             'a': 'hi-hat stamp',
+            'c': 'crash',
+            'h': 'hi-hat closed',
+            'k': 'kick',
+            'o': 'hi-hat open',
+            'p': 'hi-hat pedal',
+            'r': 'ride',
+            's': 'snare',
+            't': 'high tom',
+            'u': 'low tom',
+            'y': 'mid tom',
         }.get(c)
 
         if not name:

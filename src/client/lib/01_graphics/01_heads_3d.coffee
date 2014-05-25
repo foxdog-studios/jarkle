@@ -1,11 +1,12 @@
 class @Heads3D
-  constructor: (@_head) ->
-    @_initSettings()
+  constructor: (@_head, options) ->
+    @_initOptions options
     @_initHeads()
 
-  _initSettings: ->
-    settings = Settings.viewer.threeD.heads
-    @_count = settings.count
+  _initOptions: (options) ->
+    options = _.defaults (options ? {}),
+      count: 1
+    @_count = options.count
 
   _initHeads: ->
     @_nextIndex = 0
@@ -22,8 +23,7 @@ class @Heads3D
       head.animate()
 
   onInputStart: (input) ->
-    if (head = @_heads[@_nextIndex])?
-      @_nextIndex = (@_nextIndex + 1) % @_count
+    if (head = @_getNextHead())?
       @_assigned[input.inputId] = head
       head.onInputStart input
 
@@ -34,4 +34,13 @@ class @Heads3D
     if (head = @_assigned[input.inputId])?
       head.onInputStop input
       delete @_assigned[input.inputId]
+
+  onDrumHit: (drumName) ->
+    if (head = @_getNextHead())?
+      head.onDrumHit drumName
+
+  _getNextHead: ->
+    if (head = @_heads[@_nextIndex])?
+      @_nextIndex = (@_nextIndex + 1) % @_count
+      head
 

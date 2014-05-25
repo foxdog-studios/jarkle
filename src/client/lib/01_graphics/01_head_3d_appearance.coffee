@@ -1,10 +1,7 @@
 class @Head3DAppearance
-  constructor: (@_loader, @_appearance) ->
-    @_initHeads()
-
-  _initHeads: ->
-    @_loader.load @_appearance.obj, @_appearance.mtl, (head) =>
-      @_heads = new Heads3D head
+  constructor: (loader, objUrl, mtlUrl, options) ->
+    loader.load objUrl, mtlUrl, (head) =>
+      @_heads = new Heads3D head, options
 
   addToScene: (scene) ->
     @_heads.addToScene scene
@@ -20,4 +17,7 @@ class @Head3DAppearance
 
   onInputStop: (input) ->
     @_heads?.onInputStop input
+
+  onDrumHit: (drumName) ->
+    @_heads?.onDrumHit drumName
 

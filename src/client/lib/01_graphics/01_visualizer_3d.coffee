@@ -8,8 +8,10 @@ class @Visualizer3D
     @_initScene()
     @_initLights()
     @_initStarField()
+    @_initDrumVisualization()
     @_initCubes()
     @_initHeads()
+    @_onLoad()
 
     @_initRenderer()
     @_initCamera()
@@ -41,14 +43,20 @@ class @Visualizer3D
     @_starField = new StarField
     @_starField.addToScene @_scene
 
+  _initDrumVisualization: ->
+    @_drumVisualization = new DrumVisualization new THREE.OBJMTLLoader
+
   _initCubes: ->
     @_cubes = new Cubes
     @_cubes.addToScene @_scene
 
   _initHeads: ->
-    THREE.DefaultLoadingManager.onLoad = =>
-      @_heads.addToScene @_scene
     @_heads = new Head3DManager
+
+  _onLoad: ->
+    THREE.DefaultLoadingManager.onLoad = =>
+      @_drumVisualization.addToScene @_scene
+      @_heads.addToScene @_scene
 
 
   # ==========================================================================
@@ -79,6 +87,7 @@ class @Visualizer3D
 
   _animate: ->
     @_animateStarField()
+    @_animateDrumVisualization()
     @_animateCubes()
     @_animateHeads()
     @_updateControls()
@@ -86,6 +95,9 @@ class @Visualizer3D
 
   _animateStarField: ->
     @_starField.animate()
+
+  _animateDrumVisualization: ->
+    @_drumVisualization?.animate()
 
   _animateCubes: ->
     @_cubes.animate()
@@ -115,6 +127,9 @@ class @Visualizer3D
   onInputStop: (input) =>
     @_cubes.onInputStop input
     @_heads.onInputStop input
+
+  onDrumHit: (drumName) =>
+    @_drumVisualization.onDrumHit drumName
 
 
   # ==========================================================================

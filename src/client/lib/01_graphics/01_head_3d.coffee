@@ -1,3 +1,18 @@
+# TODO: Separate input and drum hit animation.
+
+DRUM_POSITIOINS =
+  'crash':         { x: -1   , y:  1    }
+  'hi-hat closed': { x: -1   , y:  1    }
+  'hi-hat open':   { x: -1   , y: -1    }
+  'hi-hat pedal':  { x:  0.25, y:  0.25 }
+  'high tom':      { x:  0   , y:  0.25 }
+  'kick':          { x:  0   , y: -1    }
+  'low tom':       { x:  1   , y: -1    }
+  'mid tom':       { x:  1   , y:  0.5  }
+  'ride':          { x:  0.5 , y:  1    }
+  'snare':         { x: -1   , y:  0    }
+
+
 class @Head3D
   constructor: (@_head) ->
     @_initSettings()
@@ -39,21 +54,27 @@ class @Head3D
 
   onInputStart: (input) ->
     @_isInputStarted = true
-    @_updatePositionFromInput input
+    @_updatePosition input
     @_show()
 
   onInputMove: (input) ->
-    @_updatePositionFromInput input
+    @_updatePosition input
 
   onInputStop: (input) ->
     @_isInputStarted = false
-    @_updatePositionFromInput input
+    @_updatePosition input, -0.5
 
-  _updatePositionFromInput: (input) ->
-    @_setPositionAxisFromInput input, 'x'
-    @_setPositionAxisFromInput input, 'y'
+  onDrumHit: (drumName) ->
+    if (position = DRUM_POSITIOINS[drumName])?
+      @_isInputStarted = false
+      @_updatePosition position, 0
+      @_show()
+
+  _updatePosition: (position, offset) ->
+    @_updatePositionAxis position, 'x', offset
+    @_updatePositionAxis position, 'y', offset
     @_head.position.z = @_near
 
-  _setPositionAxisFromInput: (input, axis) ->
-    @_head.position[axis] = @_movementScale * (input[axis] - 0.5)
+  _updatePositionAxis: (position, axis, offset) ->
+    @_head.position[axis] = @_movementScale * (position[axis] + offset)
 

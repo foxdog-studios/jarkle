@@ -8,6 +8,14 @@ Template.viewerVisualization3d.rendered = ->
   @_inputListener = new PubsubInputListener pubsub, @_visualization
   @_inputListener.enable()
 
+  if Settings.viewer.threeD.drums.enabled
+    @_drumHitListener = new StreamDrumHitListener(
+      Singletons.getStream(),
+      @data.roomId,
+      @_visualization
+    )
+    @_drumHitListener.enable()
+
   # Toggle between mouse and trackball controls.
   @_controlsListener = new DomEventListener window,
     keydown:(event) =>
@@ -25,6 +33,7 @@ Template.viewerVisualization3d.rendered = ->
 
 Template.viewerVisualization3d.destroyed = ->
   @_controlsListener?.disable()
+  @_drumHitListener?.disable()
   @_inputListener?.disable()
   @_visualization?.disable()
 

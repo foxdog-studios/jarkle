@@ -5,10 +5,11 @@ class @Head3DAppearances
     @_initInputs()
 
   _initHeads: ->
+    options = Settings.viewer.threeD.heads
     @_heads = {}
-    for appearance in @_appearances
-      head = new Head3DAppearance @_loader, appearance
-      @_heads[appearance.name] = head
+    for {name: name, obj: objUrl, mtl: mtlUrl} in @_appearances
+      head = new Head3DAppearance @_loader, objUrl, mtlUrl, options
+      @_heads[name] = head
 
   _initCycle: ->
     @_cycle = cycle _.shuffle _.keys @_heads

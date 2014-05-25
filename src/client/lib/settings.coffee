@@ -91,6 +91,7 @@ if _.isEmpty settings.viewer.twoD.headUrls
 _.defaults settings.viewer.threeD,
   drawDistance: 1500
   cubes: {}
+  drums: {}
   heads: {}
   starField: {}
 
@@ -104,7 +105,16 @@ _.defaults settings.viewer.threeD.cubes,
   speed: -2
 
 
-# 1.2.3.2) 3D viewer head settings
+# 1.2.3.2) 3D viewer drum visualization settings
+
+_.defaults settings.viewer.threeD.drums,
+  enabled: false
+  obj: '/viewer/heads3d/fox/fox.obj'
+  mtl: '/viewer/heads3d/fox/fox.mtl'
+  count: 50
+
+
+# 1.2.3.3) 3D viewer head settings
 
 _.defaults settings.viewer.threeD.heads,
   count: 10
@@ -115,7 +125,7 @@ _.defaults settings.viewer.threeD.heads,
   appearances: {}
 
 
-# 1.2.3.2.1) 3D viewer head appearance settings
+# 1.2.3.3.1) 3D viewer head appearance settings
 
 if _.isEmpty settings.viewer.threeD.heads.appearances
   _.extend settings.viewer.threeD.heads.appearances,
@@ -147,7 +157,7 @@ if _.isEmpty settings.viewer.threeD.heads.appearances
       master: false
 
 
-# 1.2.3.3) 3D viewer star field
+# 1.2.3.4) 3D viewer star field
 
 _.defaults settings.viewer.threeD.starField,
   density: 0.000001
