@@ -1,7 +1,7 @@
 class @StreamInput
   constructor: (pubsub, stream, roomId) ->
     @_trigger = new PubsubInputTrigger pubsub
-    @_stream = new StreamInputListener stream, roomId, this
+    @_listener = new StreamInputListener stream, roomId, this
     @_monitors = {}
 
   onInputStart: (input) =>
@@ -21,8 +21,11 @@ class @StreamInput
       monitor.stop input
 
   enable: ->
-    @_stream.enable()
+    @_listener.enable()
 
   disable: ->
-    @_stream.disable()
+    @_listener.disable()
+    for inputId, monitor of @_monitors
+      monitor.forceStop()
+    @_monitors = {}
 

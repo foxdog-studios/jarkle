@@ -29,4 +29,7 @@ class @NotePublisher
 
   disable: ->
     @_listener.disable()
+    for inputId, monitor of @_monitors
+      monitor.forceStop()
+    @_monitors = {}
 
