@@ -1,16 +1,16 @@
 # TODO: Separate input and drum hit animation.
 
 DRUM_POSITIOINS =
-  'crash':         { x: -1   , y:  1    }
+  'crash'        : { x: -1   , y:  1    }
   'hi-hat closed': { x: -1   , y:  1    }
-  'hi-hat open':   { x: -1   , y: -1    }
-  'hi-hat pedal':  { x:  0.25, y:  0.25 }
-  'high tom':      { x:  0   , y:  0.25 }
-  'kick':          { x:  0   , y: -1    }
-  'low tom':       { x:  1   , y: -1    }
-  'mid tom':       { x:  1   , y:  0.5  }
-  'ride':          { x:  0.5 , y:  1    }
-  'snare':         { x: -1   , y:  0    }
+  'hi-hat open'  : { x: -1   , y: -1    }
+  'hi-hat pedal' : { x:  0.25, y:  0.25 }
+  'high tom'     : { x:  0   , y:  0.25 }
+  'kick'         : { x:  0   , y: -1    }
+  'low tom'      : { x:  1   , y: -1    }
+  'mid tom'      : { x:  1   , y:  0.5  }
+  'ride'         : { x:  0.5 , y:  1    }
+  'snare'        : { x: -1   , y:  0    }
 
 
 class @Head3D
@@ -54,11 +54,11 @@ class @Head3D
 
   onInputStart: (input) ->
     @_isInputStarted = true
-    @_updatePosition input
+    @_updatePosition input, -0.5
     @_show()
 
   onInputMove: (input) ->
-    @_updatePosition input
+    @_updatePosition input, -0.5
 
   onInputStop: (input) ->
     @_isInputStarted = false
