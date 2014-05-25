@@ -1,4 +1,6 @@
 Meteor.methods
   drumHit: (roomId, drumName) ->
-    console.log drumName
+    check roomId, String
+    check drumName, String
+    Stream.emit "#{ roomId }:drumHit", drumName
 

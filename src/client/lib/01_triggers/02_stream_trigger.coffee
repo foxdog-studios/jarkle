@@ -3,5 +3,5 @@ class @StreamTrigger extends AbstractTrigger
     super type
 
   trigger: (type, data) ->
-    @_stream.emit @_roomId, type, data
+    @_stream.emit "#{ @_roomId }:#{ type }", data
 

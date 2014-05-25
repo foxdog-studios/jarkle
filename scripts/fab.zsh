@@ -2,5 +2,5 @@
 
 repo=$(realpath -- $0:h:h)
 source $repo/local/venv/bin/activate
-exec fab --fabfile=$repo/fabfile.py $@
+exec fab --fabfile=$repo/tools/fabfile.py $@
 

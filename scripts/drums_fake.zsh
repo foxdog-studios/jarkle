@@ -9,5 +9,5 @@ unsetopt NO_UNSET
 source $repo/local/venv/bin/activate
 setopt NO_UNSET
 
-exec python $repo/scripts/drums_fake.py $@
+exec python $repo/tools/drums_fake.py $@
 

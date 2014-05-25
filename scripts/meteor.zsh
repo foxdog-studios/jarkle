@@ -3,7 +3,7 @@
 setopt ERR_EXIT
 setopt NO_UNSET
 
-repo=$(realpath -- ${0:h}/..)
+repo=$(realpath "$(dirname "$(realpath -- $0)")/..")
 
 if [[ $# -eq 0 ]]; then
     args=( --settings $repo/local/config/default/meteor_settings.json )

@@ -9,5 +9,5 @@ unsetopt NO_UNSET
 source $repo/local/venv/bin/activate
 setopt NO_UNSET
 
-exec python -m midimule -L $repo/scripts/room_controls.py $@
+exec python -m midimule -L $repo/tools/room_controls.py $@
 
