@@ -3,7 +3,7 @@ ecdsa==0.11
 -e git://github.com/foxdog-studios/midimule.git@55491448ab9c0e2219051700bd9c4cfa9bc6fd71#egg=midimule-master
 paramiko==1.12.4
 pycrypto==2.6.1
-pyddp==0.2.0
+pyddp==0.2.1
 python-rtmidi==0.4.3b1
 ws4py==0.3.4
 wsgiref==0.1.2
