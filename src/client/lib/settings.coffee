@@ -93,6 +93,7 @@ _.defaults settings.viewer.threeD,
   cubes: {}
   drums: {}
   heads: {}
+  skeleton: {}
   starField: {}
 
 
@@ -157,7 +158,15 @@ if _.isEmpty settings.viewer.threeD.heads.appearances
       master: false
 
 
-# 1.2.3.4) 3D viewer star field
+# 1.2.3.4) 3D viewer skeleton
+
+_.defaults settings.viewer.threeD.skeleton,
+  enabled: true
+  obj: '/viewer/heads3d/fox/fox.obj'
+  mtl: '/viewer/heads3d/fox/fox.mtl'
+
+
+# 1.2.3.5) 3D viewer star field
 
 _.defaults settings.viewer.threeD.starField,
   density: 0.000001

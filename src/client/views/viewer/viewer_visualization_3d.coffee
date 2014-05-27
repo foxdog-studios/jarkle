@@ -1,13 +1,16 @@
 Template.viewerVisualization3d.rendered = ->
   target = @find '.viewer-visualization'
 
+  # Visualiztion
   @_visualization = new Visualizer3D target, Settings.viewer
   @_visualization.enable()
 
+  # Input
   pubsub = Singletons.getPubsub()
   @_inputListener = new PubsubInputListener pubsub, @_visualization
   @_inputListener.enable()
 
+  # Drums
   if Settings.viewer.threeD.drums.enabled
     @_drumHitListener = new StreamDrumHitListener(
       Singletons.getStream(),
@@ -15,6 +18,15 @@ Template.viewerVisualization3d.rendered = ->
       @_visualization
     )
     @_drumHitListener.enable()
+
+  # Skeletons
+  if Settings.viewer.threeD.skeleton.enabled
+    @_skeletonsListener = new StreamSkeletonsListener(
+      Singletons.getStream(),
+      @data.roomId,
+      @_visualization
+    )
+    @_skeletonsListener.enable()
 
   # Toggle between mouse and trackball controls.
   @_controlsListener = new DomEventListener window,
@@ -33,6 +45,7 @@ Template.viewerVisualization3d.rendered = ->
 
 Template.viewerVisualization3d.destroyed = ->
   @_controlsListener?.disable()
+  @_skeletonsListener?.disable()
   @_drumHitListener?.disable()
   @_inputListener?.disable()
   @_visualization?.disable()

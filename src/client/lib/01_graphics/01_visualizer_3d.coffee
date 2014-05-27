@@ -5,12 +5,14 @@ class @Visualizer3D
 
     @_initResizeListener()
 
+    loader = new THREE.OBJMTLLoader
     @_initScene()
     @_initLights()
     @_initStarField()
-    @_initDrumVisualization()
+    @_initDrumVisualization loader
     @_initCubes()
     @_initHeads()
+    @_initSkeletonVisualization loader
     @_onLoad()
 
     @_initRenderer()
@@ -43,8 +45,8 @@ class @Visualizer3D
     @_starField = new StarField
     @_starField.addToScene @_scene
 
-  _initDrumVisualization: ->
-    @_drumVisualization = new DrumVisualization new THREE.OBJMTLLoader
+  _initDrumVisualization: (loader) ->
+    @_drumVisualization = new DrumVisualization loader
 
   _initCubes: ->
     @_cubes = new Cubes
@@ -53,10 +55,14 @@ class @Visualizer3D
   _initHeads: ->
     @_heads = new Head3DManager
 
+  _initSkeletonVisualization: (loader) ->
+    @_skeletonVisualization = new SkeletonVisualization loader
+
   _onLoad: ->
     THREE.DefaultLoadingManager.onLoad = =>
       @_drumVisualization.addToScene @_scene
       @_heads.addToScene @_scene
+      @_skeletonVisualization.addToScene @_scene
 
 
   # ==========================================================================
@@ -130,6 +136,9 @@ class @Visualizer3D
 
   onDrumHit: (drumName) =>
     @_drumVisualization.onDrumHit drumName
+
+  onSkeletons: (skeletons) =>
+    @_skeletonVisualization.onSkeleton skeletons[0]?.skeleton
 
 
   # ==========================================================================
