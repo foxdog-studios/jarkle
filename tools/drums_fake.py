@@ -56,23 +56,22 @@ def main(argv=None):
        Press 'q' to quit
     '''.split('\n'))))
 
-    conn = ddp.DdpConnection(ddp.ServerUrl(args.server_url))
+    client = ddp.DdpClient(args.server_url)
 
     fd = sys.stdin.fileno()
     old_settings = termios.tcgetattr(fd)
 
     try:
-        conn.connect()
+        client.enable()
         tty.setraw(fd)
-        fake_drums(conn, args.room_id)
+        fake_drums(client, args.room_id)
     finally:
         try:
             termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
         except:
             pass
-
         try:
-            conn.disconnect()
+            client.disable()
         except:
             pass
 
@@ -100,7 +99,7 @@ def config_logging(args):
     logger = logging.getLogger(__name__)
 
 
-def fake_drums(conn, room_id):
+def fake_drums(client, room_id):
     next_id = 0
 
     while True:
@@ -125,7 +124,7 @@ def fake_drums(conn, room_id):
         if not name:
             continue
 
-        conn.send(ddp.MethodMessage('0', 'drumHit', [room_id, name]))
+        client.call('drumHit', room_id, name)
 
 
 if __name__ == '__main__':

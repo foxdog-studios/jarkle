@@ -15,12 +15,11 @@ def get_listener(args):
 
 class DrumsListener(midimule.MidiPortListener):
     def __init__(self, server_url, roomId):
-        self._conn = ddp.DdpConnection(ddp.ServerUrl(server_url))
-        self._next_id = 0
+        self._client = ddp.DdpClient(server_url)
         self._roomId = roomId
 
     def on_before_open(self):
-        self._conn.connect()
+        self._client.enable()
 
     def on_message(self, message, data=None):
         event = message[0]
@@ -47,11 +46,8 @@ class DrumsListener(midimule.MidiPortListener):
         if name is None:
             return
 
-        params = [self._roomId, name]
-        msg = ddp.MethodMessage(str(self._next_id), 'drumHit', params)
-        self._next_id += 1
-        self._conn.send(msg)
+        self._client.call('drumHit', self._roomId, name)
 
     def on_after_close(self):
-        self._conn.disconnect()
+        self._client.disable()
 

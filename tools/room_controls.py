@@ -21,12 +21,11 @@ def get_listener(args):
 
 class RoomControls(midimule.MidiPortListener):
     def __init__(self, server_url, roomId):
-        self._conn = ddp.DdpConnection(ddp.ServerUrl(server_url))
-        self._next_id = 0
+        self._client = ddp.DdpClient(server_url)
         self._roomId = roomId
 
     def on_before_open(self):
-        self._conn.connect()
+        self._client.enable()
 
     def on_message(self, message, data=None):
         event, delta = message
@@ -56,7 +55,7 @@ class RoomControls(midimule.MidiPortListener):
         handler()
 
     def on_after_close(self):
-        self._conn.disconnect()
+        self._client.disable()
 
     def _hide_message(self):
         self._call_methods('hideMessage')
@@ -73,8 +72,6 @@ class RoomControls(midimule.MidiPortListener):
     def _disable_all_players(self):
         self._call_methods('disableAllPlayers')
 
-    def _call_methods(self, name, *params):
-        msg = ddp.MethodMessage(str(self._next_id), name, [self._roomId])
-        self._next_id += 1
-        self._conn.send(msg)
+    def _call_methods(self, name):
+        self._client.call(name, self._roomId)
 
