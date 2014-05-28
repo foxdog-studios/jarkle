@@ -1,4 +1,4 @@
-Template.viewer.created = ->
+Template.viewer.rendered = ->
   settings = Settings.viewer
 
   # Inputs
@@ -28,8 +28,6 @@ Template.viewer.created = ->
   )
   @_streamInput.enable()
 
-
-Template.viewer.rendered = ->
   if Settings.viewer.enableRoomControls
     @_roomControls = new ComputerKeyboardRoomControls @data.roomId
     @_roomControls.enable()

@@ -12,10 +12,9 @@ class @RoomController extends RouteController
       'jarkle'
 
   data: ->
-    data =
-      pitchAxis: PitchAxis.parse Settings.pitchAxis
-      pitches: Pitches.parse Settings.pitches
-      roomId: @_getRoomId()
+    pitchAxis: PitchAxis.parse Settings.pitchAxis
+    pitches: Pitches.parse Settings.pitches
+    roomId: @_getRoomId()
 
   waitOn: ->
     [
