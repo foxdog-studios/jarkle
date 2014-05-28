@@ -126,7 +126,7 @@ class @RoomControls
 joinRoom = (roomId, playerId, isMaster) ->
   # Enable the player if they are a master or that is the default
   # state.
-  isEnabled = if isMaster or Settings.players.enableOnJoin
+  isEnabled = if isMaster or ServerSettings.players.enableOnJoin
     true
   else
     # The joining player should be enabled if all players in the room
@@ -178,7 +178,7 @@ showMessage = (roomId) ->
     roomId: roomId
   ,
     $set:
-      message: Settings.viewer.message
+      message: ServerSettings.viewer.message
 
 
 hideMessage = (roomId) ->

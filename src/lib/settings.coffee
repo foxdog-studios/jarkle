@@ -5,6 +5,7 @@
 
 _.defaults settings,
   enableRooms: false
+  randomRoomsOnRootPath: true
   pitchAxis: 'y' # Valid options are 'x', 'y', '-x', '-y'
   pitches: 'c4 d4 e4 f4 g4 a4 b4 c5'
 
