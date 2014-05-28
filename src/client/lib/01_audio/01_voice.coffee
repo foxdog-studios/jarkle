@@ -5,7 +5,7 @@ class @Voice
     @_oscillator.frequency.value = 0
     @_oscillator.start 0
 
-    @_gain = ctx.createGainNode()
+    @_gain = ctx.createGain()
     @_gain.gain.value = 0
 
     @_oscillator.connect @_gain
