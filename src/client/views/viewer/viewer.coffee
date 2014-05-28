@@ -37,7 +37,11 @@ Template.viewer.helpers
   inputsData: ->
     isMaster: true
     maxTouches: Settings.viewer.maxTouches
-    trigger: new PubsubInputTrigger Singletons.getPubsub()
+    trigger: new PubsubAndStreamInputTrigger(
+      Singletons.getPubsub(),
+      Singletons.getStream(),
+      @roomId
+    )
 
   showSidePanel: ->
     Settings.viewer.showSidePanel

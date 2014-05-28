@@ -16,13 +16,13 @@ Template.keyboard.helpers
     pubsub: @pubsub
 
   inputsData: ->
-    pubsubTrigger = new PubsubInputTrigger Singletons.getPubsub()
-    streamTrigger = new StreamInputTrigger Singletons.getStream(), @roomId
-    trigger = new CompositeInputTrigger [pubsubTrigger, streamTrigger]
-
     isMaster: @isMaster
     maxTouches:@maxTouches
-    trigger: trigger
+    trigger: new PubsubAndStreamInputTrigger(
+      Singletons.getPubsub(),
+      Singletons.getStream(),
+      @roomId
+    )
 
 
 Template.keyboard.destroyed = ->
