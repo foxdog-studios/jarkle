@@ -2,7 +2,7 @@ Template.keyboard.created = ->
   @data.pubsub = Singletons.getPubsub()
   @data.stream = Singletons.getStream()
   if supportsWebAudio() and @data.enableSynth
-    Singletons.getVoices().enable()
+    Singletons.getVoiceManager().enable()
   Singletons.getKeyPublisher().enable()
   Singletons.getNotePublisher().enable()
 
@@ -30,6 +30,6 @@ Template.keyboard.helpers
 Template.keyboard.destroyed = ->
   Singletons.getNotePublisher().disable()
   Singletons.getKeyPublisher().disable()
-  if @data.enableSynth
-    Singletons.getVoices().disable()
+  if supportsWebAudio() and @data.enableSynth
+    Singletons.getVoiceManager().disable()
 

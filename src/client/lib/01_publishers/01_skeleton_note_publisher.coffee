@@ -1,8 +1,8 @@
-class @SkeletonInput
-  constructor: (pubsub, @_stream) ->
+class @SkeletonNotePublisher
+  constructor: (stream, roomId, pubsub) ->
     # Configuration
     @_config = {}
-    for jointNameA, jointBs of Settings.skeleton
+    for jointNameA, jointBs of Settings.viewer.threeD.skeleton.notes
       @_config[jointNameA] = jointA = {}
       for jointNameB, pitch of jointBs
         jointA[jointNameB] = Pitches.parse(pitch)[0].getFrequency()
@@ -13,7 +13,10 @@ class @SkeletonInput
     for jointAName, jointBs of @_config
       @_monitors[jointAName] = new Monitor trigger
 
-  _onSkeletons: (skeletons) =>
+    # Listener
+    @_skeletonsListener = new StreamSkeletonsListener stream, roomId, this
+
+  onSkeletons: (skeletons) =>
     if (skeleton = skeletons[0])?
       @_onSkeleton skeleton.skeleton
     else
@@ -37,9 +40,12 @@ class @SkeletonInput
         inRange = _.sortBy inRange, (element) -> element[2]
         [jointBName, frequency, distance] = inRange[0]
         monitor.move
-          inputId: "skeleton:#{ jointAName }"
-          userId: 'skeleton'
           frequency: frequency
+          inputId: "skeleton:#{ jointAName }"
+          isMaster: true
+          jointA: jointAName
+          jointB: jointBName
+          userId: 'skeleton'
       else
         monitor.forceStop()
 
@@ -52,8 +58,8 @@ class @SkeletonInput
   _stopAllNote: ->
 
   enable: ->
-    @_stream.on 'skeletons', @_onSkeletons
+    @_skeletonsListener.enable()
 
   disable: ->
-    @_stream.removeListener 'skeletons', @_onSkeletons
+    @_skeletonsListener.disable()
 

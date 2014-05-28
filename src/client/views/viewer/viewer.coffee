@@ -16,8 +16,8 @@ Template.viewer.created = ->
     Session.set 'message'
 
   # Synth
-  if settings.enableSynth
-    Singletons.getVoices().enable()
+  if supportsWebAudio() && settings.enableSynth
+    Singletons.getVoiceManager().enable()
   Singletons.getNotePublisher().enable()
 
   # Remote players
@@ -50,8 +50,8 @@ Template.viewer.destroyed = ->
   @_streamInput?.disable()
 
   Singletons.getNotePublisher().disable()
-  if Settings.viewer.enableSynth
-    Singletons.getVoices().disable()
+  if supportsWebAudio() and Settings.viewer.enableSynth
+    Singletons.getVoiceManager().disable()
 
   @_messageComp?.stop()
   Session.set 'message'

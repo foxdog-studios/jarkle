@@ -1,5 +1,5 @@
 class @Voice
-  constructor: (ctx, oscillatorType) ->
+  constructor: (ctx, oscillatorType, @_startGain) ->
     @_oscillator = ctx.createOscillator()
     @_oscillator.type = oscillatorType
     @_oscillator.frequency.value = 0
@@ -19,7 +19,7 @@ class @Voice
 
   start: (frequency) ->
     @_setFrequency frequency
-    @_setGain 1
+    @_setGain @_startGain
 
   move: (frequency) ->
     @_setFrequency frequency

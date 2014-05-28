@@ -44,6 +44,10 @@ class @SkeletonVisualization
 
   _initOptions: ->
     @_scale = 0.1
+    @_boxSize = 5
+    @_boxOffColor = 0xff0000
+    @_boxOnColor = 0xffffff
+    @_boxLines = 0x00ff00
     Settings.viewer.threeD.skeleton
 
   _initHead: (loader, options) ->
@@ -53,17 +57,17 @@ class @SkeletonVisualization
         descendant.visible = false
 
   _initBoxes: ->
-    geometry = new THREE.BoxGeometry 1, 1, 1
-    material = new THREE.MeshBasicMaterial color: 0xff0000
+    geometry = new THREE.BoxGeometry @_boxSize, @_boxSize, @_boxSize
+    @_boxOffMaterial = new THREE.MeshBasicMaterial color: @_boxOffColor
+    @_boxOnMaterial = new THREE.MeshBasicMaterial color: @_boxOnColor
     @_boxes = {}
     for joint in JOINTS
-      box = new THREE.Mesh geometry, material
-      box.visible = false
+      box = new THREE.Mesh geometry, @_boxOffMaterial
       @_boxes[joint] = box
 
   _initLines: ->
     material = new THREE.LineBasicMaterial
-      color: 0x00ff00
+      color: @_boxLines
       linewidth: 1000
     @_lines = for [jointA, jointB] in LIMBS
       geometry = new THREE.Geometry()
@@ -117,4 +121,22 @@ class @SkeletonVisualization
       box.visible = visible
     for line in @_lines
       line.visible = visible
+
+  onNoteStart: (note) ->
+    @onNoteMove note
+
+  onNoteMove: (note) ->
+    @_setBoxState true, note
+
+  onNoteStop: (note) ->
+    @_setBoxState false, note
+
+  _setBoxState: (isOn, note) ->
+    material = if isOn
+      @_boxOnMaterial
+    else
+      @_boxOffMaterial
+    for joint in [note.jointA, note.jointB]
+      @_boxes[joint].material = material
+
 

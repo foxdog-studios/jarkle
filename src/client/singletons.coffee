@@ -4,7 +4,7 @@ class @Singletons
   notePublisher = null
   pubsub = null
   stream = null
-  voices = null
+  voiceManager = null
 
   @getAudioContext: ->
     audioContext ?= new window.AudioContext
@@ -21,8 +21,11 @@ class @Singletons
   @getStream: ->
     stream ?= new Meteor.Stream 'stream'
 
-  @getVoices: ->
-    voices ?= new Voices Singletons.getPubsub(), Singletons.getAudioContext()
+  @getVoiceManager: ->
+    voiceManager ?= new VoiceManager(
+      Singletons.getPubsub(),
+      Singletons.getAudioContext()
+    )
 
 
 makeNoteBuilder = ->

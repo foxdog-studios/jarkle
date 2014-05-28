@@ -1,25 +1,23 @@
 class @Voices
-  constructor: (pubsub, @_ctx) ->
+  constructor: (@_ctx, voices) ->
+    @_cycle = cycle _.shuffle _.clone voices
     @_voices = {}
-    @_listener = new PubsubNoteListener pubsub, this
 
-  _apply: (note, funcName) ->
-    @_voices[note.inputId][funcName] note.frequency
-
-  onNoteStart: (note) =>
-    unless @_voices[note.inputId]?
-      @_voices[note.inputId] = new Voice @_ctx, 'sine'
+  onNoteStart: (note) ->
+    @_makeVoice note unless @_voices[note.userId]?
     @_apply note, 'start'
 
-  onNoteMove: (note) =>
+  _makeVoice: (note) ->
+    userId = note.userId
+    {oscillator: oscillatorType, gain: gain} = @_cycle()
+    @_voices[note.userId] = new Voice @_ctx, oscillatorType, gain
+
+  onNoteMove: (note) ->
     @_apply note, 'move'
 
-  onNoteStop: (note) =>
+  onNoteStop: (note) ->
     @_apply note, 'stop'
 
-  enable: ->
-    @_listener.enable()
-
-  disable: ->
-    @_listener.disable()
+  _apply: (note, funcName) ->
+    @_voices[note.userId][funcName] note.frequency
 
