@@ -183,7 +183,7 @@ _.defaults settings.viewer.threeD.starField,
   density: 0.000001
   fieldSize: 1000
   map: '/viewer/stars/particle.png'
-  speed: 2
+  speed: -2
   starColor: '0xfefefe'
   starSize: 10
   travelAxis: 'z'

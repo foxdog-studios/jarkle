@@ -11,7 +11,7 @@ _.defaults settings,
 # 1.1) Player settings
 
 _.defaults settings.players,
-  enableOnJoin: false
+  enableOnJoin: true
 
 
 
