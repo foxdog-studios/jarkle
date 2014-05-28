@@ -5,6 +5,11 @@ class @Visualizer3D
 
     @_initResizeListener()
 
+    cameraZ = Settings.viewer.threeD.drawDistance / 2
+    cameraPosition = new THREE.Vector3(0, 0, cameraZ)
+
+    @_initCamera(cameraPosition.clone())
+
     loader = new THREE.OBJMTLLoader
     @_initScene()
     @_initLights()
@@ -12,11 +17,14 @@ class @Visualizer3D
     @_initDrumVisualization loader
     @_initCubes()
     @_initHeads()
-    @_initSkeletonVisualization loader
+
+    skeletonPosition = cameraPosition.clone()
+    skeletonPosition.setZ(skeletonPosition.z * 0.9)
+    @_initSkeletonVisualization loader, skeletonPosition
+
     @_onLoad()
 
     @_initRenderer()
-    @_initCamera()
     @_initControls()
 
     @_resize()
@@ -55,8 +63,8 @@ class @Visualizer3D
   _initHeads: ->
     @_heads = new Head3DManager
 
-  _initSkeletonVisualization: (loader) ->
-    @_skeletonVisualization = new SkeletonVisualization loader
+  _initSkeletonVisualization: (loader, position) ->
+    @_skeletonVisualization = new SkeletonVisualization loader, position
 
   _onLoad: ->
     THREE.DefaultLoadingManager.onLoad = =>
@@ -71,8 +79,8 @@ class @Visualizer3D
     @_renderer = new THREE.WebGLRenderer alpha: true
     @_parent.appendChild @_renderer.domElement
 
-  _initCamera: ->
-    @_cameraManager = new CameraManager @_width, @_height
+  _initCamera: (position) ->
+    @_cameraManager = new CameraManager @_width, @_height, position
 
   _initControls: ->
     @_controls = new THREE.TrackballControls(

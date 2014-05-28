@@ -1,18 +1,17 @@
 class @CameraManager
-  constructor: (width, height) ->
+  constructor: (width, height, position) ->
     @_initSettings()
-    @_initCamera width, height
+    @_initCamera width, height, position
 
   _initSettings: ->
     @_far = Settings.viewer.threeD.drawDistance
     @_fov = 75
     @_near = 1
-    @_z = @_far / 2
 
-  _initCamera: (width, hieght) ->
-    aspect = width / hieght
+  _initCamera: (width, height, position) ->
+    aspect = width / height
     @_camera = new THREE.PerspectiveCamera @_fov, aspect, @_near, @_far
-    @_camera.position.z = @_z
+    @_camera.position = position
 
   getCamera: ->
     @_camera
