@@ -20,7 +20,8 @@
       "webrtc-signalling": {
         "git": "https://github.com/foxdog-studios/meteor-webrtc",
         "branch": "master"
-      }
+      },
+      "sequencer": {}
     },
     "packages": {
       "audiocontext-monkeypatch": {
@@ -72,6 +73,11 @@
         "git": "https://github.com/foxdog-studios/meteor-webrtc",
         "branch": "master",
         "commit": "dd7db4a0e2840f549888f3c99d5aaf8b26703691"
+      },
+      "sequencer": {
+        "git": "https://github.com/foxdog-studios/meteor-sequencer.git",
+        "tag": "v0.0.5",
+        "commit": "d0c9733c7498bb4729f5439e5586795b66cbcbbd"
       },
       "blaze-layout": {
         "git": "https://github.com/EventedMind/blaze-layout.git",
