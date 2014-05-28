@@ -4,7 +4,7 @@ Template.keyboardForeground.rendered = ->
   keyPositions = new KeyPositions target, @data.pitches, @data.pitchAxis
   keyDownDrawer = new KeyDownDrawer target, keyPositions
 
-  @_keyListener = new PubsubKeyListener @data.pubsub, keyDownDrawer
+  @_keyListener = new PubsubKeyListener Singletons.getPubsub(), keyDownDrawer
   @_keyListener.enable()
 
   resize = ->
