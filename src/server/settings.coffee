@@ -1,4 +1,4 @@
-@Settings = settings = Meteor.settings ? {}
+@ServerSettings = settings = Meteor.settings ? {}
 
 
 # 1) Top-level settings

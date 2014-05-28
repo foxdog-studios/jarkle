@@ -4,13 +4,22 @@ Router.configure
   notFoundTemplate: 'loading'
 
 
-Router.onBeforeAction 'loading'
+if Meteor.isClient
+  Router.onBeforeAction 'loading'
 
 
 mapLobby = (router) ->
   if Settings.enableRooms
-    router.route 'lobby',
+    if Settings.randomRoomsOnRootPath
+      where = 'server'
+      controller = 'RandomRoomController'
+    else
+      where = 'client'
+      controller = 'LobbyController'
+
+    router.route 'default',
       path: '/'
+      where: where
       controller: controller
 
 
