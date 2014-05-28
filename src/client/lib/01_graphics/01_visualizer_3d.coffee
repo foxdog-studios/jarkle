@@ -65,6 +65,7 @@ class @Visualizer3D
 
   _initSkeletonVisualization: (loader, position) ->
     @_skeletonVisualization = new SkeletonVisualization loader, position
+    @_skeletonListener = new PubsubNoteListener Singletons.getPubsub(), this
 
   _onLoad: ->
     THREE.DefaultLoadingManager.onLoad = =>
@@ -148,6 +149,18 @@ class @Visualizer3D
   onSkeletons: (skeletons) =>
     @_skeletonVisualization.onSkeleton skeletons[0]?.skeleton
 
+  onNoteStart: (note) =>
+    if note.jointA?
+      @_skeletonVisualization.onNoteStart note
+
+  onNoteMove: (note) =>
+    if note.jointA?
+      @_skeletonVisualization.onNoteMove note
+
+  onNoteStop: (note) =>
+    if note.jointA?
+      @_skeletonVisualization.onNoteStop note
+
 
   # ==========================================================================
   # = Resize                                                                 =
@@ -174,6 +187,7 @@ class @Visualizer3D
   # ==========================================================================
 
   enable: ->
+    @_skeletonListener.enable()
     @_enableResizeListener()
     @_animating = true
     @_onAnimate()
@@ -185,6 +199,7 @@ class @Visualizer3D
     @_resizeListener.enable()
 
   disable: ->
+    @_skeletonListener.disable()
     @disableControls()
     @_disableResizeListener()
     @_animating = false
