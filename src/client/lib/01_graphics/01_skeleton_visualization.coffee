@@ -63,6 +63,7 @@ class @SkeletonVisualization
     @_boxes = {}
     for joint in JOINTS
       box = new THREE.Mesh geometry, @_boxOffMaterial
+      box.visible = false
       @_boxes[joint] = box
 
   _initLines: ->
