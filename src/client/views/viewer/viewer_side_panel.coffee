@@ -1,6 +1,6 @@
 Template.viewerSidePlane.created = ->
+  Session.set 'sidePaneVisible', true
   Session.set 'videoId', Settings.viewer.videos[0].id
-
 
 Template.viewerSidePlane.helpers
   keyboardUrl: ->
@@ -12,6 +12,9 @@ Template.viewerSidePlane.helpers
 
   videos: ->
     Settings.viewer.videos
+
+  sidePaneVisible: ->
+    Session.get('sidePaneVisible')
 
 Template.viewerSidePlane.events
   'change .video-select': (event, template) ->
@@ -25,6 +28,13 @@ Template.viewerSidePlane.events
 
 Template.viewerSidePlane.destroyed = ->
   Session.set 'videoId'
+
+
+Template.viewerSidePlane.events
+  'click [name=hide]': (event) ->
+    event.preventDefault()
+    sidePane = Session.get('sidePaneVisible')
+    Session.set('sidePaneVisible', not sidePane)
 
 
 # ==============================================================================
