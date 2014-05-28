@@ -1,49 +1,67 @@
 <template name="viewerSidePlane">
-  <div class="video">
-    <h1>The Jarkle</h1>
+  {{#if sidePaneVisible}}
+    <div class="video">
+      <h1>The Jarkle</h1>
 
-    {{!-- YouTube video --}}
-    <iframe width="300" height="200" src="{{videoSrc}}" frameborder="0" allowfullscreen></iframe>
+      <span class="hide-button-wrapper">
+        <button name="hide">Hide &lt;</button>
+      </span>
 
-    {{!-- Preset YouTube videos --}}
-    <label for="video-select">Classics</label>
-    <select name="video-select" class="video-select">
-      {{#each videos}}
-        {{> viewerVideoOption}}
-      {{/each}}
-    </select>
+      <div class="clearfix"></div>
+      <p><small>An instrument from the future</small></p>
 
-    {{!-- Custom YouTube video --}}
-    <form class="youtube-id form-inline" role="form">
-      <div class="form-group">
-        <label for="youtube-id-field">Custom</label>
-        <input id="youtube-id-field" class="form-control" type="text" placeholder="Paste YouTube URL">
+      {{!-- Instructions --}}
+      <h2>How to use this</h2>
+      <div class="left">
+        <p>Drag mouse or fingers through space and face. Play sounds from a time ahead of ours.</p>
       </div>
-    </form>
+      <div class="right">
+        <img class="icon" src="/viewer/side_panel/video.png">
+      </div>
+      <div class="clearfix"></div>
+      <div class="text-center">
+        <h3>Multiplayer!</h3>
+        <p>Go to<br><a href="{{keyboardUrl}}" target="_blank">{{keyboardUrl}}</a><br> on your phone browser.</p>
+      </div>
+      <div class="clearfix"></div>
 
-    {{!-- Instructions --}}
-    <div class="left">
-      <p>Play video, drag mouse or fingers through space, and play the synth.</p>
-    </div>
-    <div class="right">
-      <img class="icon" src="/viewer/side_panel/video.png">
-    </div>
-    <div class="clearfix"></div>
-    <div class="left">
-      <img class="icon" src="/viewer/side_panel/phone.png">
-    </div>
-    <div class="right">
-      <p>Touch control: go to <a href="{{keyboardUrl}}">{{keyboardUrl}}</a> on your phone browser.</p>
-    </div>
+      <h2>Need a groove?</h2>
+      {{!-- YouTube video --}}
+      <iframe width="300" height="200" src="{{videoSrc}}" frameborder="0" allowfullscreen></iframe>
 
-    {{!-- Links --}}
-    <div class="clearfix"></div>
-    <p>
-      See professionals use it <a href="https://www.youtube.com/watch?v=aQ9GsJ-GXkM">live</a>.
-      Created by <a href="http://foxdogstudios.com">Foxdog Studios</a> MMXIV (2014).
-      <a href="https://github.com/foxdog-studios/jarkle">Source code</a>.
-      Background by <a href="http://smattila.deviantart.com/art/Starfield-stock-154786926">Smattila</a>
-    </p>
-  </div>
+      {{!-- Preset YouTube videos --}}
+      <label for="video-select">Classics</label>
+      <select name="video-select" class="video-select">
+        {{#each videos}}
+          {{> viewerVideoOption}}
+        {{/each}}
+      </select>
+
+      {{!-- Custom YouTube video --}}
+      <form class="youtube-id form-inline" role="form">
+        <div class="form-group">
+          <label for="youtube-id-field">Custom</label>
+          <input id="youtube-id-field" class="form-control" type="text" placeholder="Paste YouTube URL">
+        </div>
+      </form>
+
+      <div class="text-center">
+        <h3>Then kick out the jams</h3>
+        <p><small>...marmalades, conservatives and other political parties</small></p>
+        <img class="image-full" src="/viewer/instructions/kick-it-white.png">
+      </div>
+      <div class="clearfix"></div>
+
+      {{!-- Links --}}
+      <p>
+        See professionals use it <a href="https://www.youtube.com/watch?v=aQ9GsJ-GXkM">live</a>.
+        Created by <a href="http://foxdogstudios.com">Foxdog Studios</a> MMXIV (2014).
+        <a href="https://github.com/foxdog-studios/jarkle">Source code</a>.
+        Background by <a href="http://smattila.deviantart.com/art/Starfield-stock-154786926">Smattila</a>
+      </p>
+    </div>
+  {{else}}
+    <button class="showButton" name="hide">&gt;</button>
+  {{/if}}
 </template>
 
