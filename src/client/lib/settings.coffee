@@ -180,8 +180,7 @@ _.defaults settings.viewer.threeD.skeleton,
 # 1.2.3.5) 3D viewer star field
 
 _.defaults settings.viewer.threeD.starField,
-  density: 0.000001
-  fieldSize: 1000
+  count: 20000
   map: '/viewer/stars/particle.png'
   speed: -2
   starColor: '0xfefefe'

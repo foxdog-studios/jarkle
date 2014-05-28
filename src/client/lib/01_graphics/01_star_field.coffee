@@ -7,11 +7,10 @@ class @StarField
     @_initSystem()
 
   _initSettings: (settings) ->
+    @_fieldSize  = Settings.viewer.threeD.drawDistance
+
     settings = Settings.viewer.threeD.starField
-
-
-    @_density    = settings.density
-    @_fieldSize  = settings.fieldSize
+    @_count      = settings.count
     @_mapUrl     = settings.map
     @_speed      = settings.speed
     @_starColor  = parseInt settings.starColor, 16
@@ -20,18 +19,15 @@ class @StarField
 
   _initStars: ->
     @_stars = new THREE.Geometry
-    @_stars.vertices = for i in [0...@_calcNumStars()]
+    @_stars.vertices = for i in [0...@_count]
       new THREE.Vector3(
-        @_getRandomCoordinate(),
-        @_getRandomCoordinate(),
+        @_getRandomCoordinate(2),
+        @_getRandomCoordinate(2),
         @_getRandomCoordinate()
       )
 
-  _calcNumStars: ->
-    Math.round Math.pow(@_fieldSize, 3) * @_density
-
-  _getRandomCoordinate: ->
-    @_fieldSize * (Math.random() - 0.5)
+  _getRandomCoordinate: (scale = 1) ->
+    scale * @_fieldSize * (Math.random() - 0.5)
 
   _initMap: ->
     @_map = THREE.ImageUtils.loadTexture @_mapUrl
