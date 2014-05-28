@@ -165,7 +165,17 @@ _.defaults settings.viewer.threeD.skeleton,
   enabled: true
   obj: '/viewer/heads3d/fox/fox.obj'
   mtl: '/viewer/heads3d/fox/fox.mtl'
-
+  notes:
+    leftHand:
+      rightHand: 'c4'
+      leftShoulder: 'd4'
+      leftHip: 'e4'
+      rightShoulder: 'f4'
+    rightHand:
+      rightShoulder: 'g4'
+      leftHip: 'a4'
+      rightHip: 'b4'
+      leftShoulder: 'c5'
 
 # 1.2.3.5) 3D viewer star field
 

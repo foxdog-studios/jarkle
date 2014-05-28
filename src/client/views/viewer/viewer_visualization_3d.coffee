@@ -21,6 +21,13 @@ Template.viewerVisualization3d.rendered = ->
 
   # Skeletons
   if Settings.viewer.threeD.skeleton.enabled
+    @_skeletonNotePublisher = new SkeletonNotePublisher(
+      Singletons.getStream(),
+      @data.roomId,
+      Singletons.getPubsub()
+    )
+    @_skeletonNotePublisher.enable()
+
     @_skeletonsListener = new StreamSkeletonsListener(
       Singletons.getStream(),
       @data.roomId,
@@ -46,6 +53,7 @@ Template.viewerVisualization3d.rendered = ->
 Template.viewerVisualization3d.destroyed = ->
   @_controlsListener?.disable()
   @_skeletonsListener?.disable()
+  @_skeletonNotePublisher?.disable()
   @_drumHitListener?.disable()
   @_inputListener?.disable()
   @_visualization?.disable()
