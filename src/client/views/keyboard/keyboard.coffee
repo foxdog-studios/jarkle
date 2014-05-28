@@ -1,6 +1,4 @@
 Template.keyboard.created = ->
-  @data.pubsub = Singletons.getPubsub()
-  @data.stream = Singletons.getStream()
   if supportsWebAudio() and @data.enableSynth
     Singletons.getVoiceManager().enable()
   Singletons.getKeyPublisher().enable()
@@ -18,8 +16,8 @@ Template.keyboard.helpers
     pubsub: @pubsub
 
   inputsData: ->
-    pubsubTrigger = new PubsubInputTrigger @pubsub
-    streamTrigger = new StreamInputTrigger @stream, @roomId
+    pubsubTrigger = new PubsubInputTrigger Singletons.getPubsub()
+    streamTrigger = new StreamInputTrigger Singletons.getStream(), @roomId
     trigger = new CompositeInputTrigger [pubsubTrigger, streamTrigger]
 
     isMaster: @isMaster
