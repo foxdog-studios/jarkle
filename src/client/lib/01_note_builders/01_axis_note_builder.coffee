@@ -2,9 +2,10 @@ class @AxisNoteBuilder
   constructor: (@_pitches, @_axis) ->
 
   build: (input) ->
-    inputId: input.inputId
-    userId: input.userId
     frequency: @_calcFrequency input
+    inputId: input.inputId
+    isMaster: input.isMaster
+    userId: input.userId
 
   _calcFrequency: (input) ->
     @_pitches[@_calcPitchIndex input].getFrequency()

@@ -10,6 +10,7 @@ _.defaults settings,
 
   keyboard: {}
   viewer: {}
+  voices: {}
 
 
 # 1.1) Keyboard settings
@@ -176,4 +177,44 @@ _.defaults settings.viewer.threeD.starField,
   starColor: '0xfefefe'
   starSize: 10
   travelAxis: 'z'
+
+
+# 1.3) Voices
+
+_.defaults settings.voices,
+  masters: []
+  players: []
+
+
+# 1.3.1) Master voices
+
+if _.isEmpty settings.voices.masters
+  masterVoices = [
+    oscillator: 'sawtooth'
+    gain: 0.8
+  ]
+  settings.voices.masters.splice 0, 0, masterVoices...
+
+for voice in settings.voices.masters
+  _.defaults voice,
+    oscillator: 'sine'
+    gain: 0.5
+
+
+# 1.3.2) Player voices
+
+if _.isEmpty settings.voices.players
+  playerVoices = [
+    oscillator: 'sine'
+  ,
+    oscillator: 'square'
+  ,
+    oscillator: 'triangle'
+  ]
+  settings.voices.players.splice 0, 0, playerVoices...
+
+for voice in settings.voices.players
+  _.defaults voice,
+    oscillator: 'sine'
+    gain: 0.2
 
