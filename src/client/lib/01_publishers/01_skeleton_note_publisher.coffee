@@ -11,7 +11,7 @@ class @SkeletonNotePublisher
     @_monitors = {}
     trigger = new PubsubNoteTrigger pubsub
     for jointAName, jointBs of @_config
-      @_monitors[jointAName] = new Monitor trigger
+      @_monitors[jointAName] = new TimeoutMonitor trigger
 
     # Listener
     @_skeletonsListener = new StreamSkeletonsListener stream, roomId, this

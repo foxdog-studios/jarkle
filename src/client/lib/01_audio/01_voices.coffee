@@ -1,16 +1,13 @@
 class @Voices
-  constructor: (@_ctx, voices) ->
-    @_cycle = cycle _.shuffle _.clone voices
+  constructor: (@_ctx, @_oscillatorType, @_startGain) ->
     @_voices = {}
 
   onNoteStart: (note) ->
-    @_makeVoice note unless @_voices[note.userId]?
+    @_makeVoice note unless @_voices[note.inputId]?
     @_apply note, 'start'
 
   _makeVoice: (note) ->
-    userId = note.userId
-    {oscillator: oscillatorType, gain: gain} = @_cycle()
-    @_voices[note.userId] = new Voice @_ctx, oscillatorType, gain
+    @_voices[note.inputId] = new Voice @_ctx, @_oscillatorType, @_startGain
 
   onNoteMove: (note) ->
     @_apply note, 'move'
@@ -19,5 +16,5 @@ class @Voices
     @_apply note, 'stop'
 
   _apply: (note, funcName) ->
-    @_voices[note.userId][funcName] note.frequency
+    @_voices[note.inputId][funcName] note.frequency
 

@@ -3,8 +3,8 @@ class @VoiceManager
     @_listener = new PubsubNoteListener pubsub, this
 
     settings = Settings.voices
-    @_masterVoices = new Voices ctx, settings.masters
-    @_playerVoices = new Voices ctx, settings.players
+    @_masterVoices = new PlayerVoices ctx, settings.masters
+    @_playerVoices = new PlayerVoices ctx, settings.players
 
   onNoteStart: (note) =>
     @_apply 'onNoteStart', note
