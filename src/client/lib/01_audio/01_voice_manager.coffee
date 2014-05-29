@@ -1,8 +1,14 @@
 class @VoiceManager
   constructor: (pubsub, ctx) ->
-    @_listener = new PubsubNoteListener pubsub, this
+    @_listeners = [
+      new PubsubNoteListener pubsub, this
+    ]
 
     settings = Settings.voices
+
+    if settings.vibrato.enabled
+      @_listeners.push new PubsubInputListener pubsub, this
+
     @_masterVoices = new PlayerVoices ctx, settings.masters
     @_playerVoices = new PlayerVoices ctx, settings.players
 
@@ -15,6 +21,15 @@ class @VoiceManager
   onNoteStop: (note) =>
     @_apply 'onNoteStop', note
 
+  onInputStart: (input) =>
+    @_apply 'onInputStart', input
+
+  onInputMove: (input) =>
+    @_apply 'onInputMove', input
+
+  onInputStop: (input) =>
+    @_apply 'onInputStop', input
+
   _apply: (funcName, note) ->
     voices = if note.isMaster
       @_masterVoices
@@ -23,8 +38,10 @@ class @VoiceManager
     voices[funcName] note
 
   enable: ->
-    @_listener.enable()
+    for listener in @_listeners
+      listener.enable()
 
   disable: ->
-    @_listener.disable()
+    for listener in @_listeners
+      listener.disable()
 

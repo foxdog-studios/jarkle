@@ -2,6 +2,7 @@ class @Singletons
   audioContext = null
   keyPublisher = null
   notePublisher = null
+  pitchAxis = null
   pubsub = null
   stream = null
   voiceManager = null
@@ -14,6 +15,9 @@ class @Singletons
 
   @getNotePublisher: ->
     notePublisher ?= new NotePublisher Singletons.getPubsub(), makeNoteBuilder()
+
+  @getPitchAxis: ->
+    pitchAxis ?= PitchAxis.parse Settings.pitchAxis
 
   @getPubsub: ->
     pubsub ?= new Pubsub
@@ -29,7 +33,7 @@ class @Singletons
 
 
 makeNoteBuilder = ->
-  new AxisNoteBuilder makePitches(), makePitchAxis()
+  new AxisNoteBuilder makePitches(), Singletons.getPitchAxis()
 
 
 makePitchAxis = ->

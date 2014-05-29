@@ -194,7 +194,9 @@ _.defaults settings.viewer.threeD.starField,
 _.defaults settings.voices,
   masters: []
   players: []
-
+  vibrato:
+    enabled: true
+    multiplier: 1000
 
 # 1.3.1) Master voices
 
@@ -209,7 +211,6 @@ for voice in settings.voices.masters
   _.defaults voice,
     oscillator: 'sine'
     gain: 0.5
-
 
 # 1.3.2) Player voices
 

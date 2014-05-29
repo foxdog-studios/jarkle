@@ -11,19 +11,29 @@ class @Voice
     @_oscillator.connect @_gain
     @_gain.connect ctx.destination
 
+    @_vibratorMultiplier =  Settings.voices.vibrato.multiplier
+
   _setFrequency: (frequency) ->
     @_oscillator.frequency.value = frequency
+
+  _setDetune: (detune) ->
+    @_oscillator.detune.value = detune
 
   _setGain: (gain) ->
     @_gain.gain.value = gain
 
-  start: (frequency) ->
-    @_setFrequency frequency
+  start: (note) ->
+    @_setFrequency note.frequency
     @_setGain @_startGain
 
-  move: (frequency) ->
-    @_setFrequency frequency
+  move: (note) ->
+    @_setFrequency note.frequency
 
   stop: ->
     @_setGain 0
+
+  detune: (input) ->
+    pitchAxis = Singletons.getPitchAxis()
+    detuneRatio = input[pitchAxis.inverseAxis] - 0.5
+    @_setDetune detuneRatio * @_vibratorMultiplier
 
