@@ -7,7 +7,7 @@ _.defaults settings,
   enableRooms: false
   randomRoomsOnRootPath: true
   pitchAxis: 'y' # Valid options are 'x', 'y', '-x', '-y'
-  pitches: 'c4 d4 e4 f4 g4 a4 b4 c5'
+  pitches: 'a0 f1 g1 a1 f2 g2 a2 f3 g3 a3 f4 g4 a4 f5 g5 a5 f6 g6 a6 f7 g7 a7'
 
   keyboard: {}
   viewer: {}
