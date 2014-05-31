@@ -14,7 +14,6 @@ _.defaults settings.players,
   enableOnJoin: true
 
 
-
 # 1.2) Viewer settings
 
 _.defaults settings.viewer,
