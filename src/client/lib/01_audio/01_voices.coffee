@@ -9,7 +9,7 @@ class @Voices
     @_voices[note.inputId] = new Voice @_ctx, @_oscillatorType, @_startGain
 
   onNoteStart: (note) ->
-    @_ensureVoice(event)
+    @_ensureVoice note
     @_apply note, 'start'
 
   onNoteMove: (note) ->
@@ -19,7 +19,7 @@ class @Voices
     @_apply note, 'stop'
 
   onInputStart: (input) ->
-    @_makeVoice input unless @_voices[input.inputId]?
+    @_ensureVoice input
     @_apply input, 'detune'
 
   onInputMove: (input) ->
