@@ -4,8 +4,14 @@ class @Singletons
   notePublisher = null
   pitchAxis = null
   pubsub = null
-  stream = null
   voiceManager = null
+
+  # Construct when the app loads because I believe lazy initialization
+  # was the source of bug where messages where received from the server
+  # via the stream. My guess is that when the stream was created inside
+  # a route the subscriptions it created go cut off when the route
+  # changed.
+  stream = new Meteor.Stream 'stream'
 
   @getAudioContext: ->
     audioContext ?= new window.AudioContext
@@ -23,7 +29,7 @@ class @Singletons
     pubsub ?= new Pubsub
 
   @getStream: ->
-    stream ?= new Meteor.Stream 'stream'
+    stream
 
   @getVoiceManager: ->
     voiceManager ?= new VoiceManager(
