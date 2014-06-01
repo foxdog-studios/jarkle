@@ -209,16 +209,13 @@ if _.isEmpty settings.voices.masters
 
 for voice in settings.voices.masters
   _.defaults voice,
-    oscillator: 'sine'
+    oscillator: 'sawtooth'
     gain: 0.5
 
 # 1.3.2) Player voices
 
 if _.isEmpty settings.voices.players
   playerVoices = [
-    oscillator: 'sine'
-    gain: 0.8
-  ,
     oscillator: 'square'
   ,
     oscillator: 'triangle'
@@ -227,6 +224,6 @@ if _.isEmpty settings.voices.players
 
 for voice in settings.voices.players
   _.defaults voice,
-    oscillator: 'sine'
+    oscillator: 'square'
     gain: 0.5
 
