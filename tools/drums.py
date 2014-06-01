@@ -22,13 +22,24 @@ class DrumsListener(midimule.MidiPortListener):
         self._client.enable()
 
     def on_message(self, message, data=None):
+        # Check the event is the correct length.
         event = message[0]
         if len(event) != 3:
             return
+
+        # Check the event is a channel 10 note-on event.
         status, data1, data2 = message[0]
-        if status != 153 or data2 == 0:
+        if status != 153:
             return
 
+        note = data1
+        velocity = data2
+
+        # Check that the note is audible.
+        if velocity == 0:
+            return
+
+        # Check if there is a name for this note.
         name = {
             31: 'snare',
             33: 'kick',
@@ -41,12 +52,16 @@ class DrumsListener(midimule.MidiPortListener):
             49: 'crash',
             51: 'ride',
             85: 'hi-hat stamp',
-        }.get(data1)
+        }.get(note)
 
         if name is None:
             return
 
         self._client.call('drumHit', self._roomId, name)
+
+        # If this is a loud ride, also enable the next player.
+        if name == 'ride' and velocity == 127:
+            self._client.call('enableSinglePlayer', self._roomId)
 
     def on_after_close(self):
         self._client.disable()
