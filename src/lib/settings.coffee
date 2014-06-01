@@ -48,6 +48,7 @@ _.defaults settings.viewer,
   enableSynth: true
   maxTouches: 5
   showMessage: false
+  showPlayers: false
   showSidePanel: true
   videos: []
 

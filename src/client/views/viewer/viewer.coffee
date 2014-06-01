@@ -43,6 +43,9 @@ Template.viewer.helpers
       @roomId
     )
 
+  showPlayers: ->
+    Settings.viewer.showPlayers
+
   showSidePanel: ->
     Settings.viewer.showSidePanel
 
