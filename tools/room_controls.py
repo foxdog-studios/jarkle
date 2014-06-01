@@ -24,13 +24,26 @@ class RoomControls(midimule.MidiPortListener):
         self._client = ddp.DdpClient(server_url)
         self._roomId = roomId
 
+        handlers = {
+            (41, 43): self._show_message,
+            (48, 50): self._hide_message,
+            (55, 57): self._enable_single_player,
+            (62, 64): self._enable_all_players,
+            (69, 71): self._disable_all_players,
+        }
+
+        self._handlers = {}
+        for notes, handler in handlers.iteritems():
+            for note in notes:
+                self._handlers[note] = handler
+
     def on_before_open(self):
         self._client.enable()
 
     def on_message(self, message, data=None):
         event, delta = message
 
-        # Stop if this is not a 3-byte event
+        # Stop if this is not a 3-byte event.
         if len(event) != 3:
             return
 
@@ -40,15 +53,8 @@ class RoomControls(midimule.MidiPortListener):
         if status != 144 or data2 != 100:
             return
 
-        handler = {
-            41: self._show_message,
-            43: self._hide_message,
-            45: self._enable_single_player,
-            47: self._enable_all_players,
-            48: self._disable_all_players,
-        }.get(data1)
-
         # Stop if an operation is not assign to the note.
+        handler = self._handlers.get(data1)
         if handler is None:
             return
 
