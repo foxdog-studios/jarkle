@@ -217,6 +217,7 @@ for voice in settings.voices.masters
 if _.isEmpty settings.voices.players
   playerVoices = [
     oscillator: 'sine'
+    gain: 0.8
   ,
     oscillator: 'square'
   ,
@@ -227,5 +228,5 @@ if _.isEmpty settings.voices.players
 for voice in settings.voices.players
   _.defaults voice,
     oscillator: 'sine'
-    gain: 0.2
+    gain: 0.5
 

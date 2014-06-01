@@ -6,7 +6,6 @@ Stream.permissions.read ->
 
 
 Stream.permissions.write (eventName, event) ->
-  console.log eventName
   if event.isMaster
     return true
   cursor = Players.find
