@@ -29,7 +29,7 @@ class RoomControls(midimule.MidiPortListener):
             (48, 50): self._hide_message,
             (55, 57): self._enable_single_player,
             (62, 64): self._enable_all_players,
-            (69, 71): self._disable_all_players,
+            (69, 71, 72, 74, 76, 77): self._disable_all_players,
         }
 
         self._handlers = {}
