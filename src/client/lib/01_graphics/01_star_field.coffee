@@ -21,8 +21,8 @@ class @StarField
     @_stars = new THREE.Geometry
     @_stars.vertices = for i in [0...@_count]
       new THREE.Vector3(
-        @_getRandomCoordinate(2),
-        @_getRandomCoordinate(2),
+        @_getRandomCoordinate(),
+        @_getRandomCoordinate(),
         @_getRandomCoordinate()
       )
 
