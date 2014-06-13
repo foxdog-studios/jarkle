@@ -183,9 +183,9 @@ _.defaults settings.viewer.threeD.skeleton,
 # 1.2.3.5) 3D viewer star field
 
 _.defaults settings.viewer.threeD.starField,
-  count: 20000
+  count: 1000
   map: '/viewer/stars/particle.png'
-  speed: -2
+  speed: -8
   starColor: '0xfefefe'
   starSize: 10
   travelAxis: 'z'
