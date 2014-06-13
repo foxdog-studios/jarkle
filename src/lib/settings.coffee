@@ -179,6 +179,7 @@ _.defaults settings.viewer.threeD.skeleton,
       rightHip: 'b4'
       leftShoulder: 'c5'
 
+
 # 1.2.3.5) 3D viewer star field
 
 _.defaults settings.viewer.threeD.starField,
