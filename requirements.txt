@@ -1,17 +1,5 @@
-# Install wheel first
 wheel==0.23.0
-
 Fabric==1.9.0
-autobahn==0.8.9
-ecdsa==0.11
-futures==2.1.6
--e git://github.com/foxdog-studios/midimule.git@55491448ab9c0e2219051700bd9c4cfa9bc6fd71#egg=midimule-master
-paramiko==1.14.0
-pycrypto==2.6.1
-pyddp==0.3.0
-python-rtmidi==0.4.3b1
-six==1.7.2
-trollius==0.3
-ujson==1.33
-wsaccel==0.6.2
-wsgiref==0.1.2
+pyddp==0.3.1
+python-rtmidi==0.5b1
+-e git://github.com/foxdog-studios/midimule.git@fb4a961f5cb247e1c294466a23c1ed95cae695d2#egg=midimule-master

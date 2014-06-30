@@ -15,11 +15,11 @@ def get_listener(args):
 
 class DrumsListener(midimule.MidiPortListener):
     def __init__(self, server_url, roomId):
-        self._client = ddp.DdpClient(server_url)
+        self._client = ddp.ConcurrentDDPClient(server_url)
         self._roomId = roomId
 
     def on_before_open(self):
-        self._client.enable()
+        self._client.start()
 
     def on_message(self, message, data=None):
         # Check the event is the correct length.
@@ -64,5 +64,6 @@ class DrumsListener(midimule.MidiPortListener):
             self._client.call('enableSinglePlayer', self._roomId)
 
     def on_after_close(self):
-        self._client.disable()
+        self._client.stop()
+        self._client.join()
 
