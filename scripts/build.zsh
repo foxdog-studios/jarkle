@@ -4,18 +4,18 @@ setopt ERR_EXIT
 setopt NO_UNSET
 
 
-# =============================================================================
-# = Command line interface                                                    =
-# =============================================================================
+# ==============================================================================
+# = Command line interface                                                     =
+# ==============================================================================
 
 function usage()
 {
     cat <<-'EOF'
-		Build the Meteorite application.
+		Build the Meteor application.
 
 		Usage:
 
-			mrt-bundle.zsh
+		    build.zsh
 	EOF
     exit 1
 }
@@ -25,30 +25,23 @@ if [[ $# -ne 0 ]]; then
 fi
 
 
-# =============================================================================
-# = Configuration                                                             =
-# =============================================================================
+# ==============================================================================
+# = Configuration                                                              =
+# ==============================================================================
 
-repo=$(realpath -- ${0:h}/..)
-bundle_name=bundle
-build_dir=$repo/local/build
-bundle_archive=$build_dir/$bundle_name.tgz
-bundle_dir=$build_dir/$bundle_name
+repo=$(realpath "$(dirname "$(realpath -- $0)")/..")
+bundle_dir=$repo/local/bundle
 
 
-# =============================================================================
-# = Build                                                                     =
-# =============================================================================
+# ==============================================================================
+# = Build                                                                      =
+# ==============================================================================
 
 # Remove old build
-rm --force --recursive $build_dir
-mkdir --parents $build_dir
-
-cd $build_dir
+rm --force --recursive $bundle_dir
+mkdir --parents $bundle_dir:h
 
 # Create bundle
-$repo/scripts/meteor.zsh bundle $bundle_archive
-
-# Unbundle
-tar --extract --file $bundle_archive
+cd $repo/src
+meteor bundle --directory $bundle_dir
 
