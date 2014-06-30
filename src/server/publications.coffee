@@ -22,7 +22,11 @@ Meteor.publish 'playerCount', (roomId) ->
   count = 0
   initializing = true
 
-  handle = Players.find(roomId: roomId).observeChanges
+  cursor = Players.find
+    roomId: roomId
+    isMaster: false
+
+  handle = cursor.observeChanges
     added: (id) =>
       count++
       unless initializing
