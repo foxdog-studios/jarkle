@@ -56,13 +56,13 @@ def main(argv=None):
        Press 'q' to quit
     '''.split('\n'))))
 
-    client = ddp.DdpClient(args.server_url)
+    client = ddp.ConcurrentDDPClient(args.server_url)
 
     fd = sys.stdin.fileno()
     old_settings = termios.tcgetattr(fd)
 
     try:
-        client.enable()
+        client.start()
         tty.setraw(fd)
         fake_drums(client, args.room_id)
     finally:
@@ -71,7 +71,8 @@ def main(argv=None):
         except:
             pass
         try:
-            client.disable()
+            client.stop()
+            client.join()
         except:
             pass
 
@@ -84,7 +85,8 @@ def parse_argv(argv=None):
     parser = ArgumentParser()
     parser.add_argument('-l', '--log-level', choices=LOG_NAME_TO_LEVEL.keys(),
                         default=LOG_LEVEL_TO_NAMES[logging.INFO])
-    parser.add_argument('-s', '--server-url', default='127.0.0.1:3000')
+    parser.add_argument('-s', '--server-url',
+                        default='ws://127.0.0.1:3000/websocket')
     parser.add_argument('room_id')
     return parser.parse_args(args=argv[1:])
 

@@ -25,11 +25,11 @@ class RoomControls(midimule.MidiPortListener):
         self._roomId = roomId
 
         handlers = {
-            (41, 43): self._show_message,
-            (48, 50): self._hide_message,
-            (55, 57): self._enable_single_player,
-            (62, 64): self._enable_all_players,
-            (69, 71, 72, 74, 76, 77): self._disable_all_players,
+            (41, 42, 43): self._show_message,
+            (48, 49, 50): self._hide_message,
+            (55, 46, 57): self._enable_single_player,
+            (62, 63, 64): self._enable_all_players,
+            (69, 70, 71, 72, 73, 74, 75, 76, 77): self._disable_all_players,
         }
 
         self._handlers = {}
