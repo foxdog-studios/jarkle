@@ -4,18 +4,24 @@
 # but you can also edit it by hand.
 
 standard-app-packages
-insecure
 
 streams
 coffeescript
 
-fastclick
 backbone
 user-status
-accounts-password
 iron-router
 bootstrap-3
 showdown
 device-detection
-threejs
 webrtc-signalling
+keycodes
+less
+sequencer
+underscore
+jquery
+random
+power-queue
+micro-queue
+audiocontext-monkeypatch
+meteor-threejs

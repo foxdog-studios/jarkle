@@ -1,0 +1,3 @@
+@supportsWebAudio = ->
+    window.AudioContext?
+

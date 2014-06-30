@@ -1,0 +1,41 @@
+<template name="viewerInstructions">
+  <!-- Modal -->
+  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-body">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h1 class="text-center">The Jarkle</h1>
+          <p class="small text-center">A musical instrument from the future</p>
+          <div class="left">
+            <h3>Turn your speakers on/plug in them phones</h3>
+            <p>Enter a whole new era of G Funk</p>
+          </div>
+          <div class="right">
+            <img class="modal-image" src="step-1.png"/>
+          </div>
+          <div class="clearfix"></div>
+          <div class="left">
+            <img class="modal-image" src="step-2.png"/>
+          </div>
+          <div class="right">
+            <h3>To play the synth, use your mouse or go to <a href="{{jarkleUrl}}">{{jarkleDomainAndPath}}</a> on your phone for touch control</h3>
+            <p>Click anywhere in the dark void of space to make sweet music</p>
+          </div>
+          <div class="clearfix"></div>
+          <div class="left">
+            <h3>Select a video to guest star in and hit play</h3>
+            <p>Freestyle some fresh synth on a funky track</p>
+          </div>
+          <div class="right">
+            <img class="modal-image" src="step-3.png"/>
+          </div>
+          <div class="clearfix"></div>
+          <img class="modal-image-full" src="step-4.png"/>
+          <button type="button" class="btn btn-success btn-full-width start-button" data-dismiss="modal">Cool, I got this</button>
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
+</template>
+
