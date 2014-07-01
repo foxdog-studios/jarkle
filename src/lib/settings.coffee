@@ -219,8 +219,10 @@ for voice in settings.voices.masters
 if _.isEmpty settings.voices.players
   playerVoices = [
     oscillator: 'square'
+    gain: 0.8
   ,
-    oscillator: 'triangle'
+    oscillator: 'sawtooth'
+    gain: 0.8
   ]
   settings.voices.players.splice 0, 0, playerVoices...
 
