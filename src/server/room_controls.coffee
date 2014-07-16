@@ -89,6 +89,8 @@ class @RoomControls
 
 # Player documents
 #
+#   allEnabled {Boolean} True if everyone in the room is enabled.
+#
 #   isEnabled {Boolean} If true, the player can use their controller.
 #
 #   isMaster {Boolean} If true, the player can always use their
@@ -122,21 +124,28 @@ class @RoomControls
 #   roomId {String} The name of the room.
 
 
-
 joinRoom = (roomId, playerId, isMaster) ->
   # Enable the player if they are a master or that is the default
   # state.
+  room = Rooms.findOne
+    roomId: roomId
+  ,
+    fields:
+      allEnabled: true
+  allEnabled = room?.allEnabled ? false
+
   isEnabled = if isMaster or ServerSettings.players.enableOnJoin
     true
   else
     # The joining player should be enabled if all players in the room
     # are enabled.
-    Rooms.findOne(roomId: roomId, allEnabled: true)?
+    allEnabled
 
   Players.upsert
     playerId: playerId
   ,
     $set:
+      allEnabled: allEnabled
       isEnabled: isEnabled
       isMaster: isMaster
       name: generateName()
@@ -219,7 +228,7 @@ enableSinglePlayer = (roomId) ->
         isEnabled: true
         singledAt: Date.now()
 
-    # Update the room message.
+    # Update the room.
     Rooms.upsert
       roomId: roomId
     ,
@@ -227,6 +236,7 @@ enableSinglePlayer = (roomId) ->
         allEnabled: false
         enabledPlayerId: player.playerId
         message: player.name
+
   else
     # Show a message indicating the were no players to enable.
     Rooms.upsert
@@ -238,14 +248,22 @@ enableSinglePlayer = (roomId) ->
       $unset:
         enabledPlayerId: ''
 
-
-enableAllPlayers = (roomId) ->
   Players.update
-    isEnabled: false
-    isMaster: false
+    allEnabled: true
     roomId: roomId
   ,
     $set:
+      allEnabled: false
+  ,
+    multi: true
+
+
+enableAllPlayers = (roomId) ->
+  Players.update
+    roomId: roomId
+  ,
+    $set:
+      allEnabled: true
       isEnabled: true
   ,
     multi: true
@@ -268,6 +286,15 @@ disableAllPlayers = (roomId) ->
   ,
     $set:
       isEnabled: false
+  ,
+    multi: true
+
+  Players.update
+    allEnabled: true
+    roomId: roomId
+  ,
+    $set:
+      allEnabled: false
   ,
     multi: true
 
