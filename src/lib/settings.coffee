@@ -4,6 +4,7 @@
 # 1) Public settings
 
 _.defaults settings,
+  debug: false
   enableRooms: false
   randomRoomsOnRootPath: true
   pitchAxis: 'y' # Valid options are 'x', 'y', '-x', '-y'

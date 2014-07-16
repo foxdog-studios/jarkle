@@ -37,6 +37,13 @@ mapPlayerKeyboard = (router) ->
       controller: 'PlayerKeyboardController'
 
 
+mapDebugKeyboard = (router) ->
+  if Settings.debug
+    router.route 'debugKeyboard',
+      path: makeRoomPath 'debug'
+      controller: 'DebugKeyboardController'
+
+
 mapViewer = (router) ->
   router.route 'viewer',
     path: makeRoomPath 'viewer'
@@ -56,6 +63,7 @@ Router.map ->
     mapLobby
     mapMasterKeyboard
     mapPlayerKeyboard
+    mapDebugKeyboard
     mapViewer
   ]
 
