@@ -9,8 +9,13 @@ class @TouchInput
       touchcancel: @_onEventStop
       touchleave: @_onEventStop
 
+    monitorFactory = if isMaster
+      TimeoutMonitor
+    else
+      ThrottledMonitor
+
     @_monitors = for index in [0...maxTouches]
-      monitor = new TimeoutMonitor trigger
+      monitor = new monitorFactory trigger
       inputId = "touch-#{ index }"
       monitor.eventBuilder = new DomInputEventBuilder target, inputId, isMaster
       monitor

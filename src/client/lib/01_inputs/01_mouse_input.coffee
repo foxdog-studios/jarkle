@@ -6,7 +6,12 @@ class @MouseInput
       mouseup: @_onMouseUp
     @_move = new DomEventListener target,
       mousemove: @_onMouseMove
-    @_monitor = new TimeoutMonitor trigger
+
+    monitorFactory = if isMaster
+      TimeoutMonitor
+    else
+      ThrottledMonitor
+    @_monitor = new monitorFactory trigger
 
   _onMouseDown: (domEvent) =>
     domEvent.preventDefault()

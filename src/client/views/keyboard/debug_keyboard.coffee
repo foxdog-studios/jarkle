@@ -28,6 +28,7 @@ class FakeInput
   constructor: (stream, roomId, numPitches) ->
     @_builder = new InputEventBuilder 'debug', IS_MASTER
     @_trigger = new StreamTrigger stream, roomId, 'input'
+    @_monitor = new ThrottledMonitor @_trigger
     @_maxOrdinate = 1 - 1 / numPitches
     @_state = STOPPED
 
@@ -71,7 +72,7 @@ class FakeInput
     @_call 'stop'
 
   _call: (funcName) ->
-    @_trigger[funcName] @_builder.build @_x, @_y
+    @_monitor[funcName] @_builder.build @_x, @_y
 
   enable: ->
     return if @_intervalId?
