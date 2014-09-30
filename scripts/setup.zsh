@@ -14,16 +14,8 @@ repo=$(realpath -- ${0:h}/..)
 
 venv=$repo/local/venv
 
-
-# Packages
-
-global_node_packages=(
-    meteorite
-)
-
 pacman_packages=(
     git
-    nodejs
     python2-virtualenv
     zsh
 )
@@ -40,23 +32,13 @@ function install_pacman_packages()
 
 function install_meteor()
 {
-   curl https://install.meteor.com/ | sh
+    if (( ! $+commands[meteor] )); then
+       curl https://install.meteor.com | /bin/sh
+    fi
 }
-
-function install_global_node_packages()
-{
-    sudo --set-home npm install --global $global_node_packages
-}
-
-function install_meteorite_packages()
-{(
-    cd $repo/src
-    mrt install
-)}
 
 function create_virtualenv()
 {
-    mkdir --parents $venv:h
     virtualenv --python=python2.7 $venv
 }
 
@@ -69,21 +51,20 @@ function install_python_packages()
     pip install --requirement $repo/requirements.txt
 }
 
-function init_local()
+function init_config()
 {
-    local config_dir=$repo/local/config
-    local dev_dir=$config_dir/development
+    local config=$repo/config
+    local development=$config/development
 
-    mkdir --parents $dev_dir
+    mkdir --parents $development
 
-    local config_name
-    for config_name in fabric.yaml meteor_settings.json; do
-        if [[ ! -e $dev_dir/$config_name ]]; then
-            cp $repo/templates/$config_name $dev_dir
-        fi
-    done
+    if [[ ! -d $development ]]; then
+        cp --recursive $confif/template $development
+    fi
 
-    $repo/scripts/config.zsh development
+    if [[ ! -e $config/default ]]; then
+        $repo/scripts/config.zsh development
+    fi
 }
 
 
@@ -94,11 +75,9 @@ function init_local()
 tasks=(
     install_pacman_packages
     install_meteor
-    install_global_node_packages
-    install_meteorite_packages
     create_virtualenv
     install_python_packages
-    init_local
+    init_config
 )
 
 function usage()
@@ -114,12 +93,9 @@ function usage()
 
 		    install_pacman_packages
 		    install_meteor
-		    install_global_node_packages
-		    install_meteorite_packages
-		    install_node_packages
 		    create_virtualenv
 		    install_python_packages
-		    init_local
+		    init_config
 	EOF
     exit 1
 }

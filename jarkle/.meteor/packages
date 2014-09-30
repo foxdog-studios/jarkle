@@ -1,0 +1,22 @@
+# Meteor packages used by this project, one per line.
+#
+# 'meteor add' and 'meteor remove' will edit this file for you,
+# but you can also edit it by hand.
+
+arunoda:streams
+backbone
+cfs:micro-queue
+cfs:power-queue
+coffeescript
+fds:keycodes
+fds:sequencer
+fds:threejs
+iron:router
+jquery
+less
+mizzao:user-status
+nemo64:bootstrap
+random
+standard-app-packages
+underscore
+

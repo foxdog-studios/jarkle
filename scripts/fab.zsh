@@ -1,6 +1,6 @@
 #!/usr/bin/env zsh
 
-repo=$(realpath -- $0:h:h)
+repo=$(realpath "$(dirname "$(realpath -- $0)")/..")
 source $repo/local/venv/bin/activate
 exec fab --fabfile=$repo/tools/fabfile.py $@
 

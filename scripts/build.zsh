@@ -11,11 +11,11 @@ setopt NO_UNSET
 function usage()
 {
     cat <<-'EOF'
-		Build the Meteor application.
+		Build Jarkle.
 
 		Usage:
 
-		    build.zsh
+		    # build.zsh
 	EOF
     exit 1
 }
@@ -24,24 +24,12 @@ if [[ $# -ne 0 ]]; then
     usage
 fi
 
-
-# ==============================================================================
-# = Configuration                                                              =
-# ==============================================================================
-
 repo=$(realpath "$(dirname "$(realpath -- $0)")/..")
-bundle_dir=$repo/local/bundle
+build=$repo/local/build
 
-
-# ==============================================================================
-# = Build                                                                      =
-# ==============================================================================
-
-# Remove old build
-rm --force --recursive $bundle_dir
-mkdir --parents $bundle_dir:h
-
-# Create bundle
-cd $repo/src
-meteor bundle --directory $bundle_dir
+rm --force --recursive $build
+cd $repo/jarkle
+meteor build $build --directory
+cd $build/bundle/programs/server
+npm install
 

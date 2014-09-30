@@ -1,5 +1,6 @@
 wheel==0.23.0
 Fabric==1.9.0
+PyYAML==3.11
 pyddp==0.3.1
 python-rtmidi==0.5b1
 -e git://github.com/foxdog-studios/midimule.git@fb4a961f5cb247e1c294466a23c1ed95cae695d2#egg=midimule-master

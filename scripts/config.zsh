@@ -21,14 +21,14 @@ if [[ $# -ne 1 ]]; then
     usage
 fi
 
-target=$repo/local/config/$1
+target=$repo/config/$1
 
 if [[ ! -d $target ]]; then
     print -- "'$1' is not a config name"
     exit 1
 fi
 
-link_name=$repo/local/config/default
+link_name=$repo/config/default
 rm --force $link_name
 ln --symbolic                                       \
    --no-target-directory                            \

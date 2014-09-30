@@ -23,6 +23,7 @@ import json
 import os
 import posixpath
 import re
+import subprocess
 
 from fabric.api import (
     cd,
@@ -45,7 +46,7 @@ import yaml
 # = External configuration ====================================================
 
 def load_config(config_name, config_format):
-    config_path = os.path.join('local/config/default', config_name)
+    config_path = os.path.join('config/default', config_name)
     with open(config_path) as config_file:
         return config_format.load(config_file)
 
@@ -82,7 +83,7 @@ if not env.password:
 @task(default=True)
 def deploy(start=None, stop=None):
     subtasks = [
-        bundle,        # 1
+        build,         # 1
         put_bundle,    # 2
         deploy_bundle, # 3
         create_site,   # 4
@@ -104,8 +105,15 @@ def deploy(start=None, stop=None):
 
 
 @task
-def bundle():
-    local('scripts/mrt-build.zsh')
+def build():
+    subprocess.check_call(
+        [
+            '/usr/local/bin/meteor',
+            'build',
+            'local/build',
+        ],
+        cwd='jarkle'
+    )
 
 
 @task
@@ -115,16 +123,10 @@ def put_bundle():
 
 @task
 def deploy_bundle():
-    local('scripts/mrt-build.zsh')
     put('local/build/bundle.tgz', '')
-    run('rm --force --recursive bundle')
     run('tar --extract --file bundle.tgz')
-    with cd('bundle'):
-        run('mv main.js app.js')
-        run('mkdir public tmp')
-    with cd('bundle/programs/server/node_modules'):
-        run ('rm --force --recursive fibers')
-        run('npm install fibers@1.0.1')
+    with cd('bundle/programs/server'):
+        run('npm install')
     www = posixpath.join('/var/www', config['jarkle']['server_name'])
     sudo('rm --force --recursive {}'.format(www))
     sudo('mkdir --parents {}'.format(www))
