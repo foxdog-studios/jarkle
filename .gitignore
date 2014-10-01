@@ -1,6 +1,3 @@
 *.pyc
-/bundle.tar.gz
-/bundle/
-/conf/site/
-/env/
 /local/
+
