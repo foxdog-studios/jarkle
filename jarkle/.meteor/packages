@@ -15,8 +15,6 @@ iron:router
 jquery
 less
 mizzao:user-status
-nemo64:bootstrap
 random
 standard-app-packages
 underscore
-
