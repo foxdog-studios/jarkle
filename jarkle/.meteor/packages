@@ -4,6 +4,7 @@
 # but you can also edit it by hand.
 
 arunoda:streams
+awatson1978:bowser
 backbone
 cfs:micro-queue
 cfs:power-queue
@@ -18,3 +19,4 @@ mizzao:user-status
 random
 standard-app-packages
 underscore
+

@@ -3,7 +3,7 @@ Template.inputs.rendered = ->
   target = @find '.inputs'
 
   @_mouse = new MouseInput trigger, target, @data.isMaster
-  @_touch = new TouchInput trigger, target, @data.isMaster, @data.maxTouches
+  @_touch = TouchInput.create trigger, target, @data.isMaster, @data.maxTouches
 
   @_enableComp = Deps.autorun =>
     if Session.get 'enableInputs'
